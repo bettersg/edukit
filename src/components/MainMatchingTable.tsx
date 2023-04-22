@@ -1,8 +1,9 @@
+import { useSelector } from 'react-redux';
 import {Stack} from '@mui/material'
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid'
 
 const MainMatchingTable = () => {
-
+    const matchingTable = useSelector((state)=>state.matchesSummary)
     const columns: GridColDef[] = [
         { field: 'Tutor', headerName: 'Tutor', width: 130 },
         { field: 'Tutee1', headerName: 'Tutee-1', width: 70, type: 'number'},
@@ -12,20 +13,17 @@ const MainMatchingTable = () => {
         { field: 'Tutee5', headerName: 'Tutee-5', width: 70, type: 'number'},
       ];
       
-      const rows = [
-        { id:1, Tutor: "A", Tutee1: 101, Tutee2: 101,Tutee3: 101,Tutee4: 101,Tutee5: 101},
-        { id:2, Tutor: "B", Tutee1: 101, Tutee2: 101,Tutee3: 101,Tutee4: 101,Tutee5: 101},
-        { id:3, Tutor: "C", Tutee1: 101, Tutee2: 101,Tutee3: 101,Tutee4: 101,Tutee5: 101},
-        { id:4, Tutor: "D", Tutee1: 101, Tutee2: 101,Tutee3: 101,Tutee4: 101,Tutee5: 101},
-        { id:5, Tutor: "E", Tutee1: 101, Tutee2: 101,Tutee3: 101,Tutee4: 101,Tutee5: 101},
-      ];
+      const rows = matchingTable.map((tutorDetail, idx)=>{
+        // console.log(idx, tutorDetail)
+        return {id:idx, Tutor:tutorDetail.tutor, Tutee1: tutorDetail.tutee1, Tutee2: tutorDetail.tutee2, Tutee3: tutorDetail.tutee3, Tutee4: tutorDetail.tutee4, Tutee5: tutorDetail.tutee5}
+      })
 
   return (
     <>
         <Stack alignItems="center">
-        <p>
+        <h2>
         MainMatchingTable
-        </p>
+        </h2>
         <DataGrid  rows={rows} columns={columns}/>
         </Stack>
     </>

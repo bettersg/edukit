@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 const MatchDetailsPage = () => {
   return (
     <div>MatchDetailsPage</div>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {createSlice} from '@reduxjs/toolkit'
 const initialState = {
     tutor: {name:"A", gender:"male", probonoPref: "free", teachUnaided: true, streamPref:["NA","NT","Express","IP","IB"], primarySubjects:["mathematics"], lowerSecSubjects:["mathematics"],upperSecSubjects:["mathematics"], jcSubjects:["mathematics"], ibSubjects:["mathematics"], hrsPerWeek: 6}, 

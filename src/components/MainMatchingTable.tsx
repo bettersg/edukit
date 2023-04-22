@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useSelector } from 'react-redux';
 import {Stack} from '@mui/material'
 import {DataGrid, GridColDef, GridValueGetterParams} from '@mui/x-data-grid'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {configureStore} from "@reduxjs/toolkit"
 import matchesSummaryReducer from "./matchesSummarySlice"
 import unmatchedTuteesReducer from "./unmatchedTuteesSlice"

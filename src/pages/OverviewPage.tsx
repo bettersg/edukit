@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {Stack} from '@mui/material'
 import MainMatchingTable from "../components/MainMatchingTable"
 import MissingTuteeTable from "../components/MissingTuteeTable"

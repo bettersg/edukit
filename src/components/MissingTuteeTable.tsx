@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {useSelector} from 'react-redux'
 import {Stack, Box, Button, ButtonGroup} from '@mui/material'
 

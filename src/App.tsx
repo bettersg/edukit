@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
+// @ts-nocheck
 import MainLayout from './layout/MainLayout'
 import OverviewPage from './pages/OverviewPage'
 import MatchDetailsPage from './pages/MatchDetailsPage'

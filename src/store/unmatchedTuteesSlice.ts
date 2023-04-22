@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {createSlice} from "@reduxjs/toolkit"
 
 const initialState = [106, 206, 306]

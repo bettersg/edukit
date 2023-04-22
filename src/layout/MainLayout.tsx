@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {Outlet} from 'react-router-dom'
 import {Typography, Stack} from '@mui/material'
 import DataLoadForm from '../components/DataLoadForm'

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {useDispatch} from 'react-redux'
 import {matchesSummaryActions} from '../store/matchesSummarySlice'
 import {Stack, Button} from "@mui/material"

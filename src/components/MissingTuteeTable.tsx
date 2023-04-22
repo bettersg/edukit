@@ -9,9 +9,9 @@ const MissingTuteeTable = () => {
     <h2>MissingTuteeTable</h2>
     <Box sx={{display:"flex", flexDirection:"column", alignItems:"center", flexWrap:"wrap",m:1}}>
       <ButtonGroup variant="outlined" aria-label="outlined button group">
-        {unmatchedList.map((tutee)=>{
-          console.log(tutee)
-          return <Button>{tutee}</Button>
+        {unmatchedList.map((tutee, idx)=>{
+          // console.log(tutee)
+          return <Button key={idx}>{tutee}</Button>
         })}
       </ButtonGroup>
     </Box>

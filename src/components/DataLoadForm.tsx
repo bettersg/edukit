@@ -236,8 +236,8 @@ const DataLoadForm = () => {
     <Stack alignItems="center" justifyContent="center" sx={{w:100}}>
     <Stack direction="row">
       <Stack direction="column" alignItems="center" justifyContent="center" sx={{m:2}}>
-        <a href="https://docs.google.com/spreadsheets/d/1fN--bOYKGJRl2K7yNPembayRfZq4uf_N/edit?usp=share_link&ouid=101206299132410192457&rtpof=true&sd=true" target="_blank" style={{margin:"1rem"}}>Tutor Database HyperLink</a>
-        <a href="https://docs.google.com/spreadsheets/d/1D12x7sSkni-S0bSXZM34FNuOonwgFpZJ/edit?usp=share_link&ouid=101206299132410192457&rtpof=true&sd=true" target="_blank" style={{margin:"1rem"}}>Tutee Database HyperLink</a>
+        <a href="https://docs.google.com/spreadsheets/d/1WFCDr9R4_A3wDRCeWcR6K8XK-_Rx30gqGGCgzF6Y65c/edit#gid=0" target="_blank" style={{margin:"1rem"}}>Tutor Database HyperLink</a>
+        <a href="https://docs.google.com/spreadsheets/d/1QyUr8axA_qb5kuddaL4dvOwNo7VT8k5o2POgLO9G84g/edit#gid=0" target="_blank" style={{margin:"1rem"}}>Tutee Database HyperLink</a>
       </Stack>
       <Stack direction="column">
       <Button variant="contained" sx={{m:1}} onClick={loadData}>Load Data</Button>

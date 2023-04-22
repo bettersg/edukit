@@ -1,3 +1,4 @@
+import {useDispatch} from 'react-redux'
 import {Stack, Button} from "@mui/material"
 
 const DataLoadForm = () => {
@@ -30,22 +31,22 @@ const DataLoadForm = () => {
       tutorRawData = data.content.map((rowData)=>{
         return {
           index: rowData[tutorIndexIdx],
-          name: rowData[tutorNameIdx],
-          gender: rowData[genderIdx],
-          probonoPref: rowData[probonoPrefIdx],
-          teachUnaided: rowData[teachUnaidedIdx],
-          streamPref: rowData[streamPrefIdx],
-          priSubj: rowData[priSubjIdx],
-          lowerSecSubj: rowData[lowerSecSubjIdx],
-          upperSecSubj: rowData[upperSecSubjIdx],
-          jcSubj: rowData[jcSubjIdx],
+          name: rowData[tutorNameIdx].toLowerCase(),
+          gender: rowData[genderIdx].toLowerCase(),
+          probonoPref: rowData[probonoPrefIdx].toLowerCase(),
+          teachUnaided: rowData[teachUnaidedIdx].toLowerCase(),
+          streamPref: rowData[streamPrefIdx].toLowerCase(),
+          priSubj: rowData[priSubjIdx].toLowerCase(),
+          lowerSecSubj: rowData[lowerSecSubjIdx].toLowerCase(),
+          upperSecSubj: rowData[upperSecSubjIdx].toLowerCase(),
+          jcSubj: rowData[jcSubjIdx].toLowerCase(),
+          ibSubj: rowData[ibSubjIdx].toLowerCase(),
           hrsPerWeek: rowData[hrsPerWeekIdx]
         }
       })
       window.tutorRawData = tutorRawData
-      alert("Tutor Data Loaded")
-      
-      console.log(tutorRawData)
+      alert("Tutor Data Loaded")      
+      // console.log(tutorRawData)
     })
     .catch((err)=>{
       console.log(err)
@@ -59,7 +60,7 @@ const DataLoadForm = () => {
       const tuteeIndexIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("tutee") && colName.toLowerCase().includes("index")))
       const tuteeNameIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("name")))
       const genderIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("gender") && !colName.toLowerCase().includes("?")))
-      const genderPrefIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("gender?")))
+      const noGenderPrefIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("gender?")))
       const financialAidIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("financial aid")))
       const educationLevelIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("level") && colName.toLowerCase().includes("education") && colName.toLowerCase().includes("2023")))
       // const educationLevelIdx2 = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("level") && colName.toLowerCase().includes("education") && colName.toLowerCase().includes("2022")))
@@ -74,28 +75,28 @@ const DataLoadForm = () => {
         if (colName.toLowerCase().includes("subject")) {subjIdxArr.push(idx)}
       })
       // console.log(tuteeIndexIdx, tuteeNameIdx, genderIdx, genderPrefIdx, educationLevelIdx, streamIdx,subjIdx)
-      if ((tuteeIndexIdx<0)||(tuteeNameIdx<0)||(genderIdx<0)||(genderPrefIdx<0)||(educationLevelIdx<0)||(streamIdx<0)||(subjIdx<0)){
+      if ((tuteeIndexIdx<0)||(tuteeNameIdx<0)||(genderIdx<0)||(noGenderPrefIdx<0)||(educationLevelIdx<0)||(streamIdx<0)||(subjIdx<0)){
         alert("Tutee DB column name inaccurate! Tutee Data not loaded ")
         return
       }
       tuteeRawData = data.content.map((rowData)=>{
         return {
           index: rowData[tuteeIndexIdx],
-          name: rowData[tuteeNameIdx],
-          gender: rowData[genderIdx],
-          genderPref: rowData[genderPrefIdx],
-          financialAid: rowData[financialAidIdx],
+          name: rowData[tuteeNameIdx].toLowerCase(),
+          gender: rowData[genderIdx].toLowerCase(),
+          noGenderPref: rowData[noGenderPrefIdx].toLowerCase(),
+          financialAid: rowData[financialAidIdx].toLowerCase(),
           // educationLevel: rowData[educationLevelIdx],
           // educationLevel2: rowData[educationLevelIdx2],
-          educationLevel : educationLevelIdxArr.reduce((prev,curr)=>(prev+" "+rowData[curr]),""),
+          educationLevel : educationLevelIdxArr.reduce((prev,curr)=>(prev+" "+rowData[curr].toLowerCase()),""),
           stream: rowData[streamIdx],
           // subj: rowData[subjIdx],
-          subj: subjIdxArr.reduce((prev, curr) => (prev + ", "+rowData[curr]),"")
+          subj: subjIdxArr.reduce((prev, curr) => (prev + ", "+rowData[curr].toLowerCase()),"")
         }
       })
       window.tuteeRawData = tuteeRawData
       alert("Tutee Data Loaded!")
-      console.log(tuteeRawData)
+      // console.log(tuteeRawData)
     })
   }
 
@@ -122,15 +123,90 @@ const DataLoadForm = () => {
           index: tutee.index,
           matchingScore: 0
         }
+        // console.log(tutor, tutee)
         // gender match check 
-
+        if (tutee.noGenderPref.toLowerCase().includes("yes")){
+          tuteeMatchingScoreObj.matchingScore += 1 
+        } else if ((tutee.noGenderPref == "")||(tutor.gender == "")){
+          tuteeMatchingScoreObj.matchingScore += 0.5
+        } else if ((tutor.gender.includes("male")) && (tutee.noGenderPref.includes("male"))){
+          tuteeMatchingScoreObj.matchingScore += 1
+        } else if ((tutor.gender.includes("female")) && (tutee.noGenderPref.includes("female"))){
+          tuteeMatchingScoreObj.matchingScore += 1
+        }
         // probono match check
-
+        if ((tutor.probonoPref.includes("free")) || (tutor.probonoPref.includes("both")) || (tutee.financialAid.includes("yes"))){
+          tuteeMatchingScoreObj.matchingScore += 1
+        } else if ((tutor.probonoPref == "") || (tutee.financialAid == "")){
+          tuteeMatchingScoreObj.matchingScore += 0.5
+        }
         // finacial aid pref match check
-
+        if ((tutor.teachUnaided.includes("yes")) || (tutee.financialAid.includes("yes"))){
+          tuteeMatchingScoreObj.matchingScore += 1
+        } else if ((tutor.teachUnaided == "")||(tutee.financialAid=="")){
+          tuteeMatchingScoreObj.matchingScore += 0.5
+        }
         // subjects & level check
-
+        const tuteeSubjRegex = /(primary|secondary|jc|ib)/gi
+        if (!tutee.educationLevel.match(tuteeSubjRegex)){
+          tuteeMatchingScoreObj.matchingScore += 0.5
+        } else if (tutee.educationLevel.includes("jc")){
+          if (!tutor.jcSubj.includes("not like to teach")){
+            const tuteeSubjArr = tutee.subj.split(",")
+            const tutorSubjArr = tutor.jcSubj.split(",")
+            for (let tutorSubj of tutorSubjArr){
+              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
+                tuteeMatchingScoreObj.matchingScore += 1
+              }
+            }
+          }
+        } else if (tutee.educationLevel.includes("ib")){
+          if (!tutor.ibSubj.includes("not like to teach")){
+            const tuteeSubjArr = tutee.subj.split(",")
+            const tutorSubjArr = tutor.ibSubj.split(",")
+            for (let tutorSubj of tutorSubjArr){
+              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
+                tuteeMatchingScoreObj.matchingScore += 1
+              }
+            }
+          }
+        } else if ((tutee.educationLevel.includes("secondary")) && (tutee.educationLevel.match(/(3|4)/gi))){
+          if (!tutor.upperSecSubj.includes("not like to teach")){
+            const tuteeSubjArr = tutee.subj.split(",")
+            const tutorSubjArr = tutor.upperSecSubj.split(",")
+            for (let tutorSubj of tutorSubjArr){
+              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
+                tuteeMatchingScoreObj.matchingScore += 1
+              }
+            }
+          }
+        }else if ((tutee.educationLevel.includes("secondary")) && (tutee.educationLevel.match(/(1|2)/gi))){
+          if (!tutor.lowerSecSubj.includes("not like to teach")){
+            const tuteeSubjArr = tutee.subj.split(",")
+            const tutorSubjArr = tutor.lowerSecSubj.split(",")
+            for (let tutorSubj of tutorSubjArr){
+              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
+                tuteeMatchingScoreObj.matchingScore += 1
+              }
+            }
+          }
+        }else if (tutee.educationLevel.includes("primary")){
+          if (!tutor.priSubj.includes("not like to teach")){
+            const tuteeSubjArr = tutee.subj.split(",")
+            const tutorSubjArr = tutor.priSubj.split(",")
+            for (let tutorSubj of tutorSubjArr){
+              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
+                tuteeMatchingScoreObj.matchingScore += 1
+              }
+            }
+          }
+        }
         // stream preference match check
+        if (!(tutee.educationLevel.includes("secondary") || (tutor.streamPref == "")) || (tutee.stream == "")){
+          tuteeMatchingScoreObj.matchingScore += 0.5
+        } else if (tutor.streamPref.includes(tutee.stream)){
+          tuteeMatchingScoreObj.matchingScore += 1
+        }
 
 
         tutorMatches.tuteeMatchingScores.push(tuteeMatchingScoreObj)

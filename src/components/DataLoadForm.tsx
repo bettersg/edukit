@@ -1,7 +1,9 @@
 import {useDispatch} from 'react-redux'
+import {matchesSummaryActions} from '../store/matchesSummarySlice'
 import {Stack, Button} from "@mui/material"
 
 const DataLoadForm = () => {
+  const dispatch = useDispatch()
   let tutorRawData = []
   let tuteeRawData = []
   const loadData = () => {
@@ -44,6 +46,7 @@ const DataLoadForm = () => {
           hrsPerWeek: rowData[hrsPerWeekIdx]
         }
       })
+      tutorRawData.shift()
       window.tutorRawData = tutorRawData
       alert("Tutor Data Loaded")      
       // console.log(tutorRawData)
@@ -94,6 +97,7 @@ const DataLoadForm = () => {
           subj: subjIdxArr.reduce((prev, curr) => (prev + ", "+rowData[curr].toLowerCase()),"")
         }
       })
+      tuteeRawData.shift()
       window.tuteeRawData = tuteeRawData
       alert("Tutee Data Loaded!")
       // console.log(tuteeRawData)
@@ -207,12 +211,24 @@ const DataLoadForm = () => {
         } else if (tutor.streamPref.includes(tutee.stream)){
           tuteeMatchingScoreObj.matchingScore += 1
         }
-
-
         tutorMatches.tuteeMatchingScores.push(tuteeMatchingScoreObj)
       }
+      tutorMatches.tuteeMatchingScores.sort((a,b)=>(b.matchingScore - a.matchingScore))
       matchingList.push(tutorMatches)      
     }
+    const matchesSummary = []
+    for (let matchingListItem of matchingList){
+      const matchesSummaryItem = {
+        tutor: (matchingListItem.tutor.name + " - " + String(matchingListItem.tutor.index)),
+        tutee1: matchingListItem.tuteeMatchingScores[0].index,
+        tutee2: matchingListItem.tuteeMatchingScores[1].index,
+        tutee3: matchingListItem.tuteeMatchingScores[2].index,
+        tutee4: matchingListItem.tuteeMatchingScores[3].index,
+        tutee5: matchingListItem.tuteeMatchingScores[4].index,
+      }
+      matchesSummary.push(matchesSummaryItem)
+    }
+    dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary))
     console.log(matchingList)
  }
   return (

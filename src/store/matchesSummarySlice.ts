@@ -7,7 +7,8 @@ import {createSlice} from '@reduxjs/toolkit'
 //     {tutor:"C", tutee1:301, tutee2:302, tutee3:303, tutee4:304, tutee5:305}
 // ]
 const initialState = [
-    {tutor:"No Data", tutee1:0, tutee2:0, tutee3:0, tutee4:0, tutee5:0},
+    {tutor:{name:"No data", index:0}, 
+    tutee1:{index: 0, matchingScore:1}, tutee2:{index: 0, matchingScore:1}, tutee3:{index: 0, matchingScore:1}, tutee4:{index: 0, matchingScore:1}, tutee5:{index: 0, matchingScore:1}},
 ]
 
 const matchesSummary = createSlice({

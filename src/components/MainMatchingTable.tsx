@@ -19,22 +19,30 @@ const MainMatchingTable = () => {
       ];
       const rows = matchingTable.map((tutorDetail, idx)=>{
         // console.log(idx, tutorDetail)
-        return {id:idx, Tutor:tutorDetail.tutor, Tutee1: tutorDetail.tutee1, Tutee2: tutorDetail.tutee2, Tutee3: tutorDetail.tutee3, Tutee4: tutorDetail.tutee4, Tutee5: tutorDetail.tutee5}
+        return {id:idx, Tutor:(tutorDetail.tutor.name + " - "+String(tutorDetail.tutor.index)), Tutee1: tutorDetail.tutee1.index, Tutee2: tutorDetail.tutee2.index, Tutee3: tutorDetail.tutee3.index, Tutee4: tutorDetail.tutee4.index, Tutee5: tutorDetail.tutee5.index}
       })
       const handleRowClick : GridEventListener = (params, event, details) => {
         const tutorIndex = parseInt(params.row.Tutor.split("-")[1])
         const tutor = window.tutorRawData.find((row)=>(parseInt(row.index) === tutorIndex))
-        const tutee1 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee1))) 
-        const tutee2 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee2)))
-        const tutee3 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee3)))
-        const tutee4 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee4)))
-        const tutee5 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee5)))
-        console.log(tutor, tutee1, tutee2, tutee3, tutee4, tutee5)
+        const tutorMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutor.index==tutorIndex))
+        console.log(tutorMatchSummary)
+        let tutee1 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee1)))
+        tutee1 = {...tutee1, matchingScore:(tutorMatchSummary.tutee1.matchingScore)} 
+        let tutee2 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee2)))
+        tutee2 = {...tutee2, matchingScore:tutorMatchSummary.tutee2.matchingScore}
+        let tutee3 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee3)))
+        tutee3 = {...tutee3, matchingScore:tutorMatchSummary.tutee3.matchingScore}
+        let tutee4 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee4)))
+        tutee4 = {...tutee4, matchingScore:tutorMatchSummary.tutee4.matchingScore}
+        let tutee5 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee5)))
+        tutee5 = {...tutee5, matchingScore:tutorMatchSummary.tutee5.matchingScore}
+        // console.log(tutor, tutee1, tutee2, tutee3, tutee4, tutee5)
         const tuteeInfo = [tutee1, tutee2, tutee3, tutee4, tutee5]
         const selectedTutorMatchesState = {
           tutor: tutor,
           tuteeInfo
         }
+        console.log(selectedTutorMatchesState)
         dispatch(selectedTutorMatchesActions.updateSelectedTutorMatches(selectedTutorMatchesState))
         navigate("/details")
       }

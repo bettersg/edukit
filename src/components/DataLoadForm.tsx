@@ -217,15 +217,16 @@ const DataLoadForm = () => {
       tutorMatches.tuteeMatchingScores.sort((a,b)=>(b.matchingScore - a.matchingScore))
       matchingList.push(tutorMatches)      
     }
+    window.matchingList = matchingList
     const matchesSummary = []
     for (let matchingListItem of matchingList){
       const matchesSummaryItem = {
-        tutor: (matchingListItem.tutor.name + " - " + String(matchingListItem.tutor.index)),
-        tutee1: matchingListItem.tuteeMatchingScores[0].index,
-        tutee2: matchingListItem.tuteeMatchingScores[1].index,
-        tutee3: matchingListItem.tuteeMatchingScores[2].index,
-        tutee4: matchingListItem.tuteeMatchingScores[3].index,
-        tutee5: matchingListItem.tuteeMatchingScores[4].index,
+        tutor: matchingListItem.tutor,
+        tutee1: matchingListItem.tuteeMatchingScores[0],
+        tutee2: matchingListItem.tuteeMatchingScores[1],
+        tutee3: matchingListItem.tuteeMatchingScores[2],
+        tutee4: matchingListItem.tuteeMatchingScores[3],
+        tutee5: matchingListItem.tuteeMatchingScores[4],
       }
       matchesSummary.push(matchesSummaryItem)
     }

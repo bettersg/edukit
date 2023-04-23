@@ -10,7 +10,7 @@ const MainMatchingTable = () => {
     const dispatch = useDispatch()
     const matchingTable = useSelector((state)=>state.matchesSummary)
     const columns: GridColDef[] = [
-        { field: 'Tutor', headerName: 'Tutor', width: 130 },
+        { field: 'Tutor', headerName: 'Tutor_Name+Id', width: 130 },
         { field: 'Tutee1', headerName: 'Tutee-1', width: 70, type: 'number'},
         { field: 'Tutee2', headerName: 'Tutee-2', width: 70, type: 'number'},
         { field: 'Tutee3', headerName: 'Tutee-3', width: 70, type: 'number'},
@@ -29,10 +29,13 @@ const MainMatchingTable = () => {
         const tutee3 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee3)))
         const tutee4 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee4)))
         const tutee5 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee5)))
-        // console.log(tutorIndex, tutee1, tutee2, tutee3, tutee4, tutee5)
-        // console.log(window.tutorRawData)
-        // console.log(window.tuteeRawData)
         console.log(tutor, tutee1, tutee2, tutee3, tutee4, tutee5)
+        const tuteeInfo = [tutee1, tutee2, tutee3, tutee4, tutee5]
+        const selectedTutorMatchesState = {
+          tutor: tutor,
+          tuteeInfo
+        }
+        dispatch(selectedTutorMatchesActions.updateSelectedTutorMatches(selectedTutorMatchesState))
         navigate("/details")
       }
 

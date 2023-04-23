@@ -11,8 +11,8 @@ const MatchDetailsPage = () => {
     { field: 'Entity', headerName: 'Entity', width: 90 },
     { field: 'Index', headerName: 'Index', width: 20, type: 'number'},
     { field: 'Name', headerName: 'Name', width: 120, type: 'string'},
-    { field: 'Gender_GenderPref', headerName: 'Gender_GenderPref', width: 170, type: 'string'},
-    { field: 'SubjectsEduLevel', headerName: 'SubjectsEduLevel', width: 370, type: 'string'},
+    { field: 'Gender_GenderPref', headerName: 'Gender_NoGenderPref', width: 170, type: 'string'},
+    { field: 'SubjectsEduLevel', headerName: 'Subjects_EduLevel', width: 370, type: 'string'},
     { field: 'ProbonoPref_FinAid', headerName: 'ProbonoPref_FinAid', width: 170, type: 'string'},
   ];
   const rowsTutees = selectedTutorMatches.tuteeInfo.map((tutee, idx)=>{
@@ -21,12 +21,12 @@ const MatchDetailsPage = () => {
     Entity: ("Tutee"+String(idx+1)),
     Index: tutee.index,
     Name: tutee.name,
-    Gender_GenderPref: (tutee.gender+" + "+tutee.tutorgenderPref),
-    SubjectsEduLevel: (tutee.educationLevel +" - " +String(tutee.subjects)),
-    ProbonoPref_FinAid: (tutee.onAid)
+    Gender_GenderPref: (tutee.gender+" + "+tutee.noGenderPref),
+    SubjectsEduLevel: (tutee.educationLevel +" - " +String(tutee.subj)),
+    ProbonoPref_FinAid: (tutee.financialAid)
   }})
   const rows = [
-    {id: 0, Entity: "Tutor", Index:selectedTutorMatches.tutor.index, Name:selectedTutorMatches.tutor.name, Gender_GenderPref: selectedTutorMatches.tutor.gender, SubjectsEduLevel: ("primary: " + String(selectedTutorMatches.tutor.primarySubjects) + "   lowerSec: " + String(selectedTutorMatches.tutor.lowerSecSubjects)+ "   upperSec: " + String(selectedTutorMatches.tutor.upperSecSubjects)+ "   jc: " + String(selectedTutorMatches.tutor.jcSubjects)+ "   ib: " + String(selectedTutorMatches.tutor.ibSubjects)), ProbonoPref_FinAid: (selectedTutorMatches.tutor.probonoPref + "  +  " + selectedTutorMatches.tutor.teachUnaided)},
+    {id: 0, Entity: "Tutor", Index:selectedTutorMatches.tutor.index, Name:selectedTutorMatches.tutor.name, Gender_GenderPref: selectedTutorMatches.tutor.gender, SubjectsEduLevel: ("PRIMARY: " + String(selectedTutorMatches.tutor.priSubj) + ";   LOWERSEC: " + String(selectedTutorMatches.tutor.lowerSecSubj)+ "-   UPPERSEC: " + String(selectedTutorMatches.tutor.upperSecSubj)+ "   JC: " + String(selectedTutorMatches.tutor.jcSubj)+ "   IB: " + String(selectedTutorMatches.tutor.ibSubj)), ProbonoPref_FinAid: (selectedTutorMatches.tutor.probonoPref + "  +  " + selectedTutorMatches.tutor.teachUnaided)},
     ...rowsTutees
   ]
   return (

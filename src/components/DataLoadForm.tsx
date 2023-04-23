@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 import {matchesSummaryActions} from '../store/matchesSummarySlice'
 import {unmatchedTuteesActions} from "../store/unmatchedTuteesSlice"
+import {selectedTutorMatchesActions} from "../store/selectedTutorMatchesSlice"
 import {Stack, Button} from "@mui/material"
 
 const DataLoadForm = () => {
@@ -238,6 +239,8 @@ const DataLoadForm = () => {
     delete window.tuteeRawData
     dispatch(matchesSummaryActions.resetMatchesSummary())
     dispatch(unmatchedTuteesActions.resetUnmatchedTutees())
+    dispatch(selectedTutorMatchesActions.resetSelectedTutorMatches())
+    navigate("/")
  }
 
   return (

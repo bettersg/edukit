@@ -1,9 +1,12 @@
 // @ts-nocheck
+import {useNavigate} from 'react-router-dom'
 import {useDispatch} from 'react-redux'
 import {matchesSummaryActions} from '../store/matchesSummarySlice'
+import {unmatchedTuteesActions} from "../store/unmatchedTuteesSlice"
 import {Stack, Button} from "@mui/material"
 
 const DataLoadForm = () => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   let tutorRawData = []
   let tuteeRawData = []
@@ -103,10 +106,6 @@ const DataLoadForm = () => {
       alert("Tutee Data Loaded!")
       // console.log(tuteeRawData)
     })
-  }
-
-  const clearData = () => {
-
   }
 
   const calculateMatches = () => {
@@ -231,13 +230,23 @@ const DataLoadForm = () => {
     }
     dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary))
     console.log(matchingList)
+    navigate("/")
  }
+
+ const clearData = () => {
+    delete window.tutorRawData
+    delete window.tuteeRawData
+    dispatch(matchesSummaryActions.resetMatchesSummary())
+    dispatch(unmatchedTuteesActions.resetUnmatchedTutees())
+ }
+
   return (
     <Stack alignItems="center" justifyContent="center" sx={{w:100}}>
     <Stack direction="row">
       <Stack direction="column" alignItems="center" justifyContent="center" sx={{m:2}}>
         <a href="https://docs.google.com/spreadsheets/d/1WFCDr9R4_A3wDRCeWcR6K8XK-_Rx30gqGGCgzF6Y65c/edit#gid=0" target="_blank" style={{margin:"1rem"}}>Tutor Database HyperLink</a>
         <a href="https://docs.google.com/spreadsheets/d/1QyUr8axA_qb5kuddaL4dvOwNo7VT8k5o2POgLO9G84g/edit#gid=0" target="_blank" style={{margin:"1rem"}}>Tutee Database HyperLink</a>
+        <a href="https://docs.google.com/spreadsheets/d/1Xj0zkL2h0nyUR25NKtCIv3QVjZee6bLyWUdpbxVCVT0/edit?usp=sharing" target="_blank" style={{margin:"1rem"}}>Instructions for tool usage</a>
       </Stack>
       <Stack direction="column">
       <Button variant="contained" sx={{m:1}} onClick={loadData}>Load Data</Button>

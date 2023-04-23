@@ -1,7 +1,7 @@
 // @ts-nocheck
 import {createSlice} from "@reduxjs/toolkit"
 
-const initialState = [106, 206, 306]
+const initialState = [0]
 
 const unmatchedTuteeSlice = createSlice({
     name: "unmatchedTutee",
@@ -9,6 +9,9 @@ const unmatchedTuteeSlice = createSlice({
     reducers: {
         updateUnmatchedTutees : (state, action) => {
             return [...action.payload]
+        },
+        resetUnmatchedTutees : (state, action) => {
+            return initialState
         }
     }
 })

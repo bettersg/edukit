@@ -14,7 +14,7 @@ const MatchDetailsPage = () => {
     { field: 'Gender_GenderPref', headerName: 'Gender_NoGenderPref', width: 170, type: 'string'},
     { field: 'SubjectsEduLevel', headerName: 'Subjects_EduLevel', width: 370, type: 'string'},
     { field: 'ProbonoPref_FinAid', headerName: 'ProbonoPref_FinAid', width: 170, type: 'string'},
-    { field: 'MatchingScore', headerName: 'MatchingScore', width: 90, type: 'number'},
+    { field: 'MatchingScore', headerName: 'M-Score', width: 90, type: 'number'},
   ];
   const rowsTutees = selectedTutorMatches.tuteeInfo.map((tutee, idx)=>{
     return {

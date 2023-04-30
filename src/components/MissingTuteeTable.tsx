@@ -11,7 +11,6 @@ const MissingTuteeTable = () => {
     <Box sx={{display:"flex", flexDirection:"column", alignItems:"center", flexWrap:"wrap",m:1}}>
       <ButtonGroup variant="outlined" aria-label="outlined button group">
         {unmatchedList.map((tutee, idx)=>{
-          // console.log(tutee)
           return <Button key={idx}>{tutee}</Button>
         })}
       </ButtonGroup>

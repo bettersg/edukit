@@ -6,10 +6,6 @@ import MissingTuteeTable from "../components/MissingTuteeTable"
 import DownloadCSVButton from '../components/DownloadCSVButton'
 
 const OverviewPage = () => {
-  // const tutorDataLoaded = useSelector((state)=>{
-  //   return state.matchesSummary[0]?.tutor.name
-  // }) === "No data"
-  // console.log(window.matchingList)
   return (
     <Stack direction="column" alignItems="center">
      <MainMatchingTable/>

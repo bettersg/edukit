@@ -34,7 +34,7 @@ const MatchDetailsPage = () => {
   return (
     <Stack alignItems="center">
       <h3>MatchDetailsPage</h3>
-      <DataGrid  rows={rows} columns={columns} sx={{height: "auto"}}/>
+      <DataGrid  rows={rows} columns={columns}/>
     </Stack>
   )
 }

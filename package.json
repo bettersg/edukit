@@ -15,9 +15,11 @@
     "@mui/x-data-grid": "^6.2.1",
     "@reduxjs/toolkit": "^1.9.5",
     "react": "^18.2.0",
+    "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.10.0"
+    "react-router-dom": "^6.10.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.0.17",

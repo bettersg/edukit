@@ -5,6 +5,7 @@ import {matchesSummaryActions} from '../store/matchesSummarySlice'
 import {unmatchedTuteesActions} from "../store/unmatchedTuteesSlice"
 import {selectedTutorMatchesActions} from "../store/selectedTutorMatchesSlice"
 import {Stack, Button} from "@mui/material"
+import { CSVLink } from 'react-csv'
 
 const DataLoadForm = () => {
   const navigate = useNavigate()
@@ -231,19 +232,19 @@ const DataLoadForm = () => {
       matchesSummary.push(matchesSummaryItem)
     }
     dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary))
-    console.log(matchingList)
+    console.log(matchingList[0])
     navigate("/")
  }
 
  const clearData = () => {
     delete window.tutorRawData
     delete window.tuteeRawData
+    delete window.matchingList
     dispatch(matchesSummaryActions.resetMatchesSummary())
     dispatch(unmatchedTuteesActions.resetUnmatchedTutees())
     dispatch(selectedTutorMatchesActions.resetSelectedTutorMatches())
     navigate("/")
  }
-
   return (
     <Stack alignItems="center" justifyContent="center" sx={{w:100}}>
     <Stack direction="row">
@@ -255,7 +256,7 @@ const DataLoadForm = () => {
       <Stack direction="column">
       <Button variant="contained" sx={{m:1}} onClick={loadData}>Load Data</Button>
       <Button variant="contained" sx={{m:1}} onClick={clearData}>Clear Data</Button>
-      <Button variant="contained" sx={{m:1}} onClick={calculateMatches}>Match</Button>
+      <Button variant="contained" sx={{m:1}} onClick={calculateMatches}>Match</Button>      
       </Stack>
     </Stack>
     </Stack>

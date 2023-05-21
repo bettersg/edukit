@@ -1,5 +1,6 @@
-// @ts-nocheck
+//@ts-nocheck
 import {createSlice} from '@reduxjs/toolkit'
+import {matchesSummarySlice} from "../types/stateSlice"
 
 const initialState = [
     {tutor:{name:"No data", index:0}, 

@@ -3,8 +3,8 @@ import {createSlice} from '@reduxjs/toolkit'
 import {matchesSummarySlice} from "../types/stateSlice"
 
 const initialState = [
-    {tutor:{name:"No data", index:0}, 
-    tutee1:{index: 0, matchingScore:1}, tutee2:{index: 0, matchingScore:1}, tutee3:{index: 0, matchingScore:1}, tutee4:{index: 0, matchingScore:1}, tutee5:{index: 0, matchingScore:1}},
+    {tutee:{name:"No data", index:0}, 
+    tutor1:{index: 0, matchingScore:1}, tutor2:{index: 0, matchingScore:1}, tutor3:{index: 0, matchingScore:1}, tutor4:{index: 0, matchingScore:1}, tutor5:{index: 0, matchingScore:1}},
 ]
 
 const matchesSummary = createSlice({

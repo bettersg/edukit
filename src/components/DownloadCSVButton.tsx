@@ -6,12 +6,12 @@ import { useEffect, useState } from "react"
 
 const DownloadCSVButton = () => {
     const matchesSummary = useSelector((state)=>state.matchesSummary)
-    const [csvData, setCsvData] = useState([["Tutor Index", "Tutor Name", "Tutee Matching ID (Descending Order)"]])
+    const [csvData, setCsvData] = useState([["Tutee Index", "Tutee Name", "Tutor Matching ID (Descending Order)"]])
     useEffect(()=>{
         if (window.matchingList) {
             window.matchingList.map((row)=>{
-            const tuteeIDArr = row.tuteeMatchingScores.map((tuteeRow)=>tuteeRow.index)
-            const csvDataRowItem = [row.tutor.index, row.tutor.name, ...tuteeIDArr]
+            const tutorIDArr = row.tutorMatchingScores.map((tutorRow)=>tutorRow.index)
+            const csvDataRowItem = [row.tutee.index, row.tutee.name, ...tutorIDArr]
             setCsvData((state)=>[...state, csvDataRowItem])
         })}  
     },[matchesSummary])

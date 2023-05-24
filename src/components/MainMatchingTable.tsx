@@ -10,34 +10,40 @@ const MainMatchingTable = () => {
     const dispatch = useDispatch()
     const matchingTable = useSelector((state)=>state.matchesSummary)
     const columns: GridColDef[] = [
-        { field: 'Tutor', headerName: 'Tutor_Name+Id', width: 170 },
-        { field: 'Tutee1', headerName: 'Tutee-1', width: 70, type: 'number'},
-        { field: 'Tutee2', headerName: 'Tutee-2', width: 70, type: 'number'},
-        { field: 'Tutee3', headerName: 'Tutee-3', width: 70, type: 'number'},
-        { field: 'Tutee4', headerName: 'Tutee-4', width: 70, type: 'number'},
-        { field: 'Tutee5', headerName: 'Tutee-5', width: 70, type: 'number'},
+        { field: 'Tutee', headerName: 'Tutee_Name+Id', width: 170 },
+        { field: 'Tutor1', headerName: 'Tutor-1', width: 70, type: 'number'},
+        { field: 'Tutor2', headerName: 'Tutor-2', width: 70, type: 'number'},
+        { field: 'Tutor3', headerName: 'Tutor-3', width: 70, type: 'number'},
+        { field: 'Tutor4', headerName: 'Tutor-4', width: 70, type: 'number'},
+        { field: 'Tutor5', headerName: 'Tutor-5', width: 70, type: 'number'},
       ];
-      const rows = matchingTable.map((tutorDetail, idx)=>{
-        return {id:idx, Tutor:(tutorDetail.tutor.name + " - "+String(tutorDetail.tutor.index)), Tutee1: tutorDetail.tutee1.index, Tutee2: tutorDetail.tutee2.index, Tutee3: tutorDetail.tutee3.index, Tutee4: tutorDetail.tutee4.index, Tutee5: tutorDetail.tutee5.index}
+      const rows = matchingTable.map((tuteeDetail, idx)=>{
+        return {id:idx, Tutee:(tuteeDetail.tutee.name + " - "+String(tuteeDetail.tutee.index)), Tutor1: tuteeDetail.tutor1.index, Tutor2: tuteeDetail.tutor2.index, Tutor3: tuteeDetail.tutor3.index, Tutor4: tuteeDetail.tutor4.index, Tutor5: tuteeDetail.tutor5.index}
       })
+      console.log("Matched data:")
+      console.log(rows)
+      // const rows = matchingTable.map((tutorDetail, idx)=>{
+      //   return {id:idx, Tutor:(tutorDetail.tutor.name + " - "+String(tutorDetail.tutor.index)), Tutee1: tutorDetail.tutee1.index, Tutee2: tutorDetail.tutee2.index, Tutee3: tutorDetail.tutee3.index, Tutee4: tutorDetail.tutee4.index, Tutee5: tutorDetail.tutee5.index}
+      // })
       const handleRowClick : GridEventListener = (params, event, details) => {
-        const tutorIndex = parseInt(params.row.Tutor.split("-")[1])
-        const tutor = window.tutorRawData.find((row)=>(parseInt(row.index) === tutorIndex))
-        const tutorMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutor.index==tutorIndex))
-        console.log(tutorMatchSummary)
-        let tutee1 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee1)))
-        tutee1 = {...tutee1, matchingScore:(tutorMatchSummary.tutee1.matchingScore)} 
-        let tutee2 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee2)))
-        tutee2 = {...tutee2, matchingScore:tutorMatchSummary.tutee2.matchingScore}
-        let tutee3 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee3)))
-        tutee3 = {...tutee3, matchingScore:tutorMatchSummary.tutee3.matchingScore}
-        let tutee4 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee4)))
-        tutee4 = {...tutee4, matchingScore:tutorMatchSummary.tutee4.matchingScore}
-        let tutee5 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutee5)))
-        tutee5 = {...tutee5, matchingScore:tutorMatchSummary.tutee5.matchingScore}
-        const tuteeInfo = [tutee1, tutee2, tutee3, tutee4, tutee5]
+        const tuteeIndex = parseInt(params.row.Tutee.split("-")[1])
+        const tutee = window.tuteeRawData.find((row)=>(parseInt(row.index) === tuteeIndex))
+        const tuteeMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutee.index==tuteeIndex))
+        console.log(tuteeMatchSummary)
+        let tutor1 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor1)))
+        tutor1 = {...tutor1, matchingScore:(tuteeMatchSummary.tutor1.matchingScore)} 
+        let tutor2 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor2)))
+        tutor2 = {...tutor2, matchingScore:tuteeMatchSummary.tutor2.matchingScore}
+        let tutor3 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor3)))
+        tutor3 = {...tutor3, matchingScore:tuteeMatchSummary.tutor3.matchingScore}
+        let tutor4 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor4)))
+        tutor4 = {...tutor4, matchingScore:tuteeMatchSummary.tutor4.matchingScore}
+        let tutor5 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor5)))
+        tutor5 = {...tutor5, matchingScore:tuteeMatchSummary.tutor5.matchingScore}
+        const tuteeInfo = [tutor1, tutor2, tutor3, tutor4, tutor5]
+        // not updated this state yet - Berwyn
         const selectedTutorMatchesState = {
-          tutor: tutor,
+          tutor: tutee,
           tuteeInfo
         }
         dispatch(selectedTutorMatchesActions.updateSelectedTutorMatches(selectedTutorMatchesState))

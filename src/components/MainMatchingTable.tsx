@@ -2,6 +2,7 @@
 import {useNavigate} from 'react-router-dom'
 import {useSelector, useDispatch } from 'react-redux';
 import {selectedTutorMatchesActions} from "../store/selectedTutorMatchesSlice"
+import { selectedTuteeMatchesActions } from '../store/selectedTuteeMatchesSlice'; 
 import {Stack} from '@mui/material'
 import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@mui/x-data-grid'
 
@@ -30,23 +31,24 @@ const MainMatchingTable = () => {
         const tutee = window.tuteeRawData.find((row)=>(parseInt(row.index) === tuteeIndex))
         const tuteeMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutee.index==tuteeIndex))
         console.log(tuteeMatchSummary)
-        let tutor1 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor1)))
+        let tutor1 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor1)))
         tutor1 = {...tutor1, matchingScore:(tuteeMatchSummary.tutor1.matchingScore)} 
-        let tutor2 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor2)))
+        let tutor2 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor2)))
         tutor2 = {...tutor2, matchingScore:tuteeMatchSummary.tutor2.matchingScore}
-        let tutor3 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor3)))
+        let tutor3 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor3)))
         tutor3 = {...tutor3, matchingScore:tuteeMatchSummary.tutor3.matchingScore}
-        let tutor4 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor4)))
+        let tutor4 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor4)))
         tutor4 = {...tutor4, matchingScore:tuteeMatchSummary.tutor4.matchingScore}
-        let tutor5 = window.tuteeRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor5)))
+        let tutor5 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor5)))
         tutor5 = {...tutor5, matchingScore:tuteeMatchSummary.tutor5.matchingScore}
-        const tuteeInfo = [tutor1, tutor2, tutor3, tutor4, tutor5]
+        const tutorInfo = [tutor1, tutor2, tutor3, tutor4, tutor5]
         // not updated this state yet - Berwyn
-        const selectedTutorMatchesState = {
-          tutor: tutee,
-          tuteeInfo
+        const selectedTuteeMatchesState = {
+          tutee,
+          tutorInfo
         }
-        dispatch(selectedTutorMatchesActions.updateSelectedTutorMatches(selectedTutorMatchesState))
+        // dispatch(selectedTutorMatchesActions.updateSelectedTutorMatches(selectedTutorMatchesState))
+        dispatch(selectedTuteeMatchesActions.updateSelectedTuteeMatches(selectedTuteeMatchesState))
         navigate("/details")
       }
 

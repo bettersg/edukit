@@ -5,8 +5,8 @@ import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@m
 
 
 const MatchDetailsPage = () => {
-  const selectedTutorMatches = useSelector((state,action)=>state.selectedTutorMatches)
-  console.log(selectedTutorMatches)
+  const selectedTuteeMatches = useSelector((state,action)=>state.selectedTuteeMatches)
+  console.log(selectedTuteeMatches)
   const columns: GridColDef[] = [
     { field: 'Entity', headerName: 'Entity', width: 90 },
     { field: 'Index', headerName: 'Index', width: 20, type: 'number'},
@@ -16,20 +16,27 @@ const MatchDetailsPage = () => {
     { field: 'ProbonoPref_FinAid', headerName: 'ProbonoPref_FinAid', width: 170, type: 'string'},
     { field: 'MatchingScore', headerName: 'M-Score', width: 90, type: 'number'},
   ];
-  const rowsTutees = selectedTutorMatches.tuteeInfo.map((tutee, idx)=>{
+  const rowsTutors = selectedTuteeMatches.tutorInfo.map((tutor, idx)=>{
     return {
     id: (idx+1),
-    Entity: ("Tutee"+String(idx+1)),
-    Index: tutee.index,
-    Name: tutee.name,
-    Gender_GenderPref: (tutee.gender+" + "+tutee.noGenderPref),
-    SubjectsEduLevel: (tutee.educationLevel +" - " +String(tutee.subj)),
-    ProbonoPref_FinAid: (tutee.financialAid),
-    MatchingScore: (tutee.matchingScore)
+    Entity: ("Tutor"+String(idx+1)),
+    Index: tutor.index,
+    Name: tutor.name,
+    Gender_GenderPref: (tutor.gender),
+    // SubjectsEduLevel: (tutor.educationLevel +" - " +String(tutor.subj)),
+    SubjectsEduLevel: ("PRIMARY: " + String(tutor.priSubj) + ";   LOWERSEC: " + String(tutor.lowerSecSubj)+ "-   UPPERSEC: " + String(tutor.upperSecSubj)+ "   JC: " + String(tutor.jcSubj)+ "   IB: " + String(tutor.ibSubj)), 
+    ProbonoPref_FinAid: (tutor.probonoPref + "  +  " + tutor.teachUnaided),
+    MatchingScore: (tutor.matchingScore)
   }})
   const rows = [
-    {id: 0, Entity: "Tutor", Index:selectedTutorMatches.tutor.index, Name:selectedTutorMatches.tutor.name, Gender_GenderPref: selectedTutorMatches.tutor.gender, SubjectsEduLevel: ("PRIMARY: " + String(selectedTutorMatches.tutor.priSubj) + ";   LOWERSEC: " + String(selectedTutorMatches.tutor.lowerSecSubj)+ "-   UPPERSEC: " + String(selectedTutorMatches.tutor.upperSecSubj)+ "   JC: " + String(selectedTutorMatches.tutor.jcSubj)+ "   IB: " + String(selectedTutorMatches.tutor.ibSubj)), ProbonoPref_FinAid: (selectedTutorMatches.tutor.probonoPref + "  +  " + selectedTutorMatches.tutor.teachUnaided)},
-    ...rowsTutees
+    {id: 0, 
+      Entity: "Tutee", 
+      Index:selectedTuteeMatches.tutee.index, 
+      Name:selectedTuteeMatches.tutee.name, 
+      Gender_GenderPref: (selectedTuteeMatches.tutee.gender + " - " + selectedTuteeMatches.tutee.noGenderPref), 
+      SubjectsEduLevel:  (selectedTuteeMatches.tutee.educationLevel +" - " +String(selectedTuteeMatches.tutee.subj)), 
+      ProbonoPref_FinAid: (selectedTuteeMatches.tutee.financialAid)},
+    ...rowsTutors
   ]
   return (
     <Stack alignItems="center">

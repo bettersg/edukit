@@ -1,4 +1,5 @@
 // @ts-nocheck
+// Temp and need to delete later
 import {createSlice} from '@reduxjs/toolkit'
 const initialState = {
     tutor: {index:1, name:"A", gender:"male", probonoPref: "free", teachUnaided: true, streamPref:["NA","NT","Express","IP","IB"], priSubj:["mathematics"], lowerSecSubj:["mathematics"],upperSecSubj:["mathematics"], jcSubj:["mathematics"], ibSubj:["mathematics"], hrsPerWeek: 6}, 

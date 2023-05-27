@@ -49,6 +49,7 @@ const DataLoadForm = () => {
         }
       })
       tutorRawData.shift()
+      tutorRawData.reverse()
       window.tutorRawData = tutorRawData
       alert("Tutor Data Loaded")    
     })

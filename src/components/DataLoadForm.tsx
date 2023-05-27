@@ -28,8 +28,9 @@ const DataLoadForm = () => {
       const upperSecSubjIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("upper secondary") && colName.toLowerCase().includes("subject")))
       const jcSubjIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("jc") && colName.toLowerCase().includes("subject")))
       const ibSubjIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("international baccalaureate") && colName.toLowerCase().includes("subject")))
+      const contactNumIdx = colNames.findIndex((colName: string)=> (colName.toLowerCase().includes("number")))
       const hrsPerWeekIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("hours") && colName.toLowerCase().includes("week")))
-      if ((tutorIndexIdx<0)||(tutorNameIdx<0)||(genderIdx<0)||(probonoPrefIdx<0)||(teachUnaidedIdx<0)||(streamPrefIdx<0)||(priSubjIdx<0)||(lowerSecSubjIdx<0)||(upperSecSubjIdx<0)||(jcSubjIdx<0)||(ibSubjIdx<0)){
+      if ((tutorIndexIdx<0)||(tutorNameIdx<0)||(genderIdx<0)||(probonoPrefIdx<0)||(teachUnaidedIdx<0)||(streamPrefIdx<0)||(priSubjIdx<0)||(lowerSecSubjIdx<0)||(upperSecSubjIdx<0)||(jcSubjIdx<0)||(ibSubjIdx<0)||(contactNumIdx<0)){
         alert("Tutor DB column name inaccurate! Tutor Data not loaded ")
         return
       }
@@ -46,12 +47,14 @@ const DataLoadForm = () => {
           upperSecSubj: rowData[upperSecSubjIdx].toLowerCase(),
           jcSubj: rowData[jcSubjIdx].toLowerCase(),
           ibSubj: rowData[ibSubjIdx].toLowerCase(),
+          contactNum: rowData[contactNumIdx]
         }
       })
       tutorRawData.shift()
       tutorRawData.reverse()
       window.tutorRawData = tutorRawData
       alert("Tutor Data Loaded")    
+      // console.log(tutorRawData)
     })
     .catch((err)=>{
       console.log(err)
@@ -96,7 +99,6 @@ const DataLoadForm = () => {
       tuteeRawData.shift()
       window.tuteeRawData = tuteeRawData
       alert("Tutee Data Loaded!")
-      console.log(tuteeRawData)
     })
   }
 
@@ -118,6 +120,7 @@ const DataLoadForm = () => {
       for (let tutor of tutorRawData){
         const tutorMatchingScoreObj = {
           index: tutor.index,
+          contactNum: tutor.contactNum,
           matchingScore: 0
         }
         // gender match check 
@@ -214,6 +217,9 @@ const DataLoadForm = () => {
         tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
       }
       tuteeMatches.tutorMatchingScores.sort((a,b)=>(b.matchingScore - a.matchingScore))
+      if (tuteeMatches.tutorMatchingScores.length > 51){
+        tuteeMatches.tutorMatchingScores = tuteeMatches.tutorMatchingScores.slice(0,50)
+      }
       matchingList.push(tuteeMatches)      
     }
     window.matchingList = matchingList
@@ -230,7 +236,7 @@ const DataLoadForm = () => {
       matchesSummary.push(matchesSummaryItem)
     }
     dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary))
-    console.log(matchingList[0])
+    console.log(matchingList)
     navigate("/")
  }
 

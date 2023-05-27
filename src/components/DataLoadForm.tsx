@@ -96,6 +96,7 @@ const DataLoadForm = () => {
       tuteeRawData.shift()
       window.tuteeRawData = tuteeRawData
       alert("Tutee Data Loaded!")
+      console.log(tuteeRawData)
     })
   }
 
@@ -124,22 +125,13 @@ const DataLoadForm = () => {
           tutorMatchingScoreObj.matchingScore += 1 
         } else if ((tutee.noGenderPref == "")||(tutor.gender == "")){
           tutorMatchingScoreObj.matchingScore += 0.5
-        } else if ((tutor.gender.includes("male")) && (tutee.noGenderPref.includes("male"))){
+        } else if ((tutor.gender.includes("male")) && (!tutor.gender.includes("female")) && (tutee.noGenderPref.includes("male")) && (!tutee.noGenderPref.includes("female"))){
           tutorMatchingScoreObj.matchingScore += 1
         } else if ((tutor.gender.includes("female")) && (tutee.noGenderPref.includes("female"))){
           tutorMatchingScoreObj.matchingScore += 1
-        }
-        // probono match check
-        if ((tutor.probonoPref.includes("free")) || (tutor.probonoPref.includes("both")) || (tutee.financialAid.includes("yes"))){
-          tutorMatchingScoreObj.matchingScore += 1
-        } else if ((tutor.probonoPref == "") || (tutee.financialAid == "")){
-          tutorMatchingScoreObj.matchingScore += 0.5
-        }
-        // finacial aid pref match check
-        if ((tutor.teachUnaided.includes("yes")) || (tutee.financialAid.includes("yes"))){
-          tutorMatchingScoreObj.matchingScore += 1
-        } else if ((tutor.teachUnaided == "")||(tutee.financialAid=="")){
-          tutorMatchingScoreObj.matchingScore += 0.5
+        } else {
+          tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
+          continue
         }
         // subjects & level check
         const tuteeSubjRegex = /(primary|secondary|jc|ib)/gi
@@ -195,6 +187,23 @@ const DataLoadForm = () => {
               }
             }
           }
+        }
+        if (tutorMatchingScoreObj.matchingScore === 0){
+          tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
+          continue
+        }
+
+        // probono match check
+        if ((tutor.probonoPref.includes("free")) || (tutor.probonoPref.includes("both")) || (tutee.financialAid.includes("yes"))){
+          tutorMatchingScoreObj.matchingScore += 1
+        } else if ((tutor.probonoPref == "") || (tutee.financialAid == "")){
+          tutorMatchingScoreObj.matchingScore += 0.5
+        }
+        // finacial aid pref match check
+        if ((tutor.teachUnaided.includes("yes")) || (tutee.financialAid.includes("yes"))){
+          tutorMatchingScoreObj.matchingScore += 1
+        } else if ((tutor.teachUnaided == "")||(tutee.financialAid=="")){
+          tutorMatchingScoreObj.matchingScore += 0.5
         }
         // stream preference match check
         if (!(tutee.educationLevel.includes("secondary") || (tutor.streamPref == "")) || (tutee.stream == "")){

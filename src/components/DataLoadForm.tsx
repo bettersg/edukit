@@ -106,50 +106,51 @@ const DataLoadForm = () => {
       return
     }
     const matchingList = []
-    for (let tutor of tutorRawData){
-      const tutorMatches = {tutor:{}, tuteeMatchingScores:[]}
-      tutorMatches.tutor = {
-        index: tutor.index,
-        name: tutor.name
+    //for (let tutor of tutorRawData){
+    for (let tutee of tuteeRawData){
+      const tuteeMatches = {tutee:{}, tutorMatchingScores:[]}
+      tuteeMatches.tutee = {
+        index: tutee.index,
+        name: tutee.name
       }
-      for (let tutee of tuteeRawData){
-        const tuteeMatchingScoreObj = {
-          index: tutee.index,
+      for (let tutor of tutorRawData){
+        const tutorMatchingScoreObj = {
+          index: tutor.index,
           matchingScore: 0
         }
         // gender match check 
         if (tutee.noGenderPref.toLowerCase().includes("yes")){
-          tuteeMatchingScoreObj.matchingScore += 1 
+          tutorMatchingScoreObj.matchingScore += 1 
         } else if ((tutee.noGenderPref == "")||(tutor.gender == "")){
-          tuteeMatchingScoreObj.matchingScore += 0.5
+          tutorMatchingScoreObj.matchingScore += 0.5
         } else if ((tutor.gender.includes("male")) && (tutee.noGenderPref.includes("male"))){
-          tuteeMatchingScoreObj.matchingScore += 1
+          tutorMatchingScoreObj.matchingScore += 1
         } else if ((tutor.gender.includes("female")) && (tutee.noGenderPref.includes("female"))){
-          tuteeMatchingScoreObj.matchingScore += 1
+          tutorMatchingScoreObj.matchingScore += 1
         }
         // probono match check
         if ((tutor.probonoPref.includes("free")) || (tutor.probonoPref.includes("both")) || (tutee.financialAid.includes("yes"))){
-          tuteeMatchingScoreObj.matchingScore += 1
+          tutorMatchingScoreObj.matchingScore += 1
         } else if ((tutor.probonoPref == "") || (tutee.financialAid == "")){
-          tuteeMatchingScoreObj.matchingScore += 0.5
+          tutorMatchingScoreObj.matchingScore += 0.5
         }
         // finacial aid pref match check
         if ((tutor.teachUnaided.includes("yes")) || (tutee.financialAid.includes("yes"))){
-          tuteeMatchingScoreObj.matchingScore += 1
+          tutorMatchingScoreObj.matchingScore += 1
         } else if ((tutor.teachUnaided == "")||(tutee.financialAid=="")){
-          tuteeMatchingScoreObj.matchingScore += 0.5
+          tutorMatchingScoreObj.matchingScore += 0.5
         }
         // subjects & level check
         const tuteeSubjRegex = /(primary|secondary|jc|ib)/gi
         if (!tutee.educationLevel.match(tuteeSubjRegex)){
-          tuteeMatchingScoreObj.matchingScore += 0.5
+          tutorMatchingScoreObj.matchingScore += 0.5
         } else if (tutee.educationLevel.includes("jc")){
           if (!tutor.jcSubj.includes("not like to teach")){
             const tuteeSubjArr = tutee.subj.split(",")
             const tutorSubjArr = tutor.jcSubj.split(",")
             for (let tutorSubj of tutorSubjArr){
               if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
-                tuteeMatchingScoreObj.matchingScore += 1
+                tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
@@ -157,9 +158,9 @@ const DataLoadForm = () => {
           if (!tutor.ibSubj.includes("not like to teach")){
             const tuteeSubjArr = tutee.subj.split(",")
             const tutorSubjArr = tutor.ibSubj.split(",")
-            for (let tutorSubj of tutorSubjArr){
-              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
-                tuteeMatchingScoreObj.matchingScore += 1
+            for (let tuteeSubj of tuteeSubjArr){
+              if (tutorSubjArr.some((subj)=>(subj == tuteeSubj))){
+                tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
@@ -167,9 +168,9 @@ const DataLoadForm = () => {
           if (!tutor.upperSecSubj.includes("not like to teach")){
             const tuteeSubjArr = tutee.subj.split(",")
             const tutorSubjArr = tutor.upperSecSubj.split(",")
-            for (let tutorSubj of tutorSubjArr){
-              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
-                tuteeMatchingScoreObj.matchingScore += 1
+            for (let tuteeSubj of tuteeSubjArr){
+              if (tutorSubjArr.some((subj)=>(subj == tuteeSubj))){
+                tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
@@ -177,9 +178,9 @@ const DataLoadForm = () => {
           if (!tutor.lowerSecSubj.includes("not like to teach")){
             const tuteeSubjArr = tutee.subj.split(",")
             const tutorSubjArr = tutor.lowerSecSubj.split(",")
-            for (let tutorSubj of tutorSubjArr){
-              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
-                tuteeMatchingScoreObj.matchingScore += 1
+            for (let tuteeSubj of tuteeSubjArr){
+              if (tutorSubjArr.some((subj)=>(subj == tuteeSubj))){
+                tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
@@ -187,34 +188,34 @@ const DataLoadForm = () => {
           if (!tutor.priSubj.includes("not like to teach")){
             const tuteeSubjArr = tutee.subj.split(",")
             const tutorSubjArr = tutor.priSubj.split(",")
-            for (let tutorSubj of tutorSubjArr){
-              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
-                tuteeMatchingScoreObj.matchingScore += 1
+            for (let tuteeSubj of tuteeSubjArr){
+              if (tutorSubjArr.some((subj)=>(subj == tuteeSubj))){
+                tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
         }
         // stream preference match check
         if (!(tutee.educationLevel.includes("secondary") || (tutor.streamPref == "")) || (tutee.stream == "")){
-          tuteeMatchingScoreObj.matchingScore += 0.5
+          tutorMatchingScoreObj.matchingScore += 0.5
         } else if (tutor.streamPref.includes(tutee.stream)){
-          tuteeMatchingScoreObj.matchingScore += 1
+          tutorMatchingScoreObj.matchingScore += 1
         }
-        tutorMatches.tuteeMatchingScores.push(tuteeMatchingScoreObj)
+        tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
       }
-      tutorMatches.tuteeMatchingScores.sort((a,b)=>(b.matchingScore - a.matchingScore))
-      matchingList.push(tutorMatches)      
+      tuteeMatches.tutorMatchingScores.sort((a,b)=>(b.matchingScore - a.matchingScore))
+      matchingList.push(tuteeMatches)      
     }
     window.matchingList = matchingList
     const matchesSummary = []
     for (let matchingListItem of matchingList){
       const matchesSummaryItem = {
-        tutor: matchingListItem.tutor,
-        tutee1: matchingListItem.tuteeMatchingScores[0],
-        tutee2: matchingListItem.tuteeMatchingScores[1],
-        tutee3: matchingListItem.tuteeMatchingScores[2],
-        tutee4: matchingListItem.tuteeMatchingScores[3],
-        tutee5: matchingListItem.tuteeMatchingScores[4],
+        tutee: matchingListItem.tutee,
+        tutor1: matchingListItem.tutorMatchingScores[0],
+        tutor2: matchingListItem.tutorMatchingScores[1],
+        tutor3: matchingListItem.tutorMatchingScores[2],
+        tutor4: matchingListItem.tutorMatchingScores[3],
+        tutor5: matchingListItem.tutorMatchingScores[4],
       }
       matchesSummary.push(matchesSummaryItem)
     }

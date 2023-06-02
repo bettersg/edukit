@@ -1,40 +1,98 @@
 // @ts-nocheck
-import {useNavigate} from 'react-router-dom'
-import {useDispatch} from 'react-redux'
-import {matchesSummaryActions} from '../store/matchesSummarySlice'
-import {unmatchedTuteesActions} from "../store/unmatchedTuteesSlice"
-import {selectedTutorMatchesActions} from "../store/selectedTutorMatchesSlice"
-import {Stack, Button} from "@mui/material"
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { Stack, Button } from '@mui/material'
+
+import { matchesSummaryActions } from '../store/matchesSummarySlice'
+import { unmatchedTuteesActions } from '../store/unmatchedTuteesSlice'
+import { selectedTutorMatchesActions } from '../store/selectedTutorMatchesSlice'
+
+import { getGSheetsData } from '@/utils/api'
+import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/config'
 
 const DataLoadForm = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   let tutorRawData = []
   let tuteeRawData = []
-  const loadData = () => {
-    //Load Tutor Data
-    fetch("https://script.google.com/macros/s/AKfycbypZfVGYR5yZGYKWGLf5xCDKraFlHM1auz9hsJpW2V5NVQ_RUWahVI-exb70AUDIZ_X/exec")
-    .then((res)=>res.json())
-    .then((data)=>{
-      const colNames = data.content[0]
-      const tutorIndexIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("tutor") && colName.toLowerCase().includes("index")))
-      const tutorNameIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("name")))
-      const genderIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("gender")))
-      const probonoPrefIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("pro-bono")))
-      const teachUnaidedIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("financial aid")))
-      const streamPrefIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("stream")))
-      const priSubjIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("primary") && colName.toLowerCase().includes("subject")))
-      const lowerSecSubjIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("lower secondary") && colName.toLowerCase().includes("subject")))
-      const upperSecSubjIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("upper secondary") && colName.toLowerCase().includes("subject")))
-      const jcSubjIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("jc") && colName.toLowerCase().includes("subject")))
-      const ibSubjIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("international baccalaureate") && colName.toLowerCase().includes("subject")))
-      const contactNumIdx = colNames.findIndex((colName: string)=> (colName.toLowerCase().includes("number")))
-      const hrsPerWeekIdx = colNames.findIndex((colName: string)=>(colName.toLowerCase().includes("hours") && colName.toLowerCase().includes("week")))
-      if ((tutorIndexIdx<0)||(tutorNameIdx<0)||(genderIdx<0)||(probonoPrefIdx<0)||(teachUnaidedIdx<0)||(streamPrefIdx<0)||(priSubjIdx<0)||(lowerSecSubjIdx<0)||(upperSecSubjIdx<0)||(jcSubjIdx<0)||(ibSubjIdx<0)||(contactNumIdx<0)){
-        alert("Tutor DB column name inaccurate! Tutor Data not loaded ")
+
+  const loadTutorData = async () => {
+    try {
+      const data = await getGSheetsData(API_ENDPOINT_TUTOR, false)
+
+      const colNames = data[0]
+      const tutorIndexIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('tutor') &&
+          colName.toLowerCase().includes('index')
+      )
+      const tutorNameIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('name')
+      )
+      const genderIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('gender')
+      )
+      const probonoPrefIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('pro-bono')
+      )
+      const teachUnaidedIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('financial aid')
+      )
+      const streamPrefIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('stream')
+      )
+      const priSubjIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('primary') &&
+          colName.toLowerCase().includes('subject')
+      )
+      const lowerSecSubjIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('lower secondary') &&
+          colName.toLowerCase().includes('subject')
+      )
+      const upperSecSubjIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('upper secondary') &&
+          colName.toLowerCase().includes('subject')
+      )
+      const jcSubjIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('jc') &&
+          colName.toLowerCase().includes('subject')
+      )
+      const ibSubjIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('international baccalaureate') &&
+          colName.toLowerCase().includes('subject')
+      )
+      const contactNumIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('number')
+      )
+      const hrsPerWeekIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('hours') &&
+          colName.toLowerCase().includes('week')
+      )
+      if (
+        tutorIndexIdx < 0 ||
+        tutorNameIdx < 0 ||
+        genderIdx < 0 ||
+        probonoPrefIdx < 0 ||
+        teachUnaidedIdx < 0 ||
+        streamPrefIdx < 0 ||
+        priSubjIdx < 0 ||
+        lowerSecSubjIdx < 0 ||
+        upperSecSubjIdx < 0 ||
+        jcSubjIdx < 0 ||
+        ibSubjIdx < 0 ||
+        contactNumIdx < 0
+      ) {
+        alert('Tutor DB column name inaccurate! Tutor Data not loaded ')
         return
       }
-      tutorRawData = data.content.map((rowData)=>{
+
+      tutorRawData = data.map((rowData) => {
         return {
           index: rowData[tutorIndexIdx],
           name: rowData[tutorNameIdx].toLowerCase(),
@@ -47,90 +105,146 @@ const DataLoadForm = () => {
           upperSecSubj: rowData[upperSecSubjIdx].toLowerCase(),
           jcSubj: rowData[jcSubjIdx].toLowerCase(),
           ibSubj: rowData[ibSubjIdx].toLowerCase(),
-          contactNum: rowData[contactNumIdx]
+          contactNum: rowData[contactNumIdx],
         }
       })
       tutorRawData.shift()
       tutorRawData.reverse()
       window.tutorRawData = tutorRawData
-      alert("Tutor Data Loaded")    
-      // console.log(tutorRawData)
-    })
-    .catch((err)=>{
-      console.log(err)
-    })
-    //Load Tutee Data
-    fetch("https://script.google.com/macros/s/AKfycbw6A70Oga5e3802b2-RSB7eb7cranIzuv9_p86SuNmBzNb2j96J8vNn7jeTUrXuCSQkVg/exec")
-    .then((res)=>res.json())
-    .then((data)=>{
-      const colNames: [] = data.content[0]
-      const tuteeIndexIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("tutee") && colName.toLowerCase().includes("index")))
-      const tuteeNameIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("name")))
-      const genderIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("gender") && !colName.toLowerCase().includes("?")))
-      const noGenderPrefIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("gender?")))
-      const financialAidIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("financial aid")))
-      const educationLevelIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("level") && colName.toLowerCase().includes("education") && colName.toLowerCase().includes("2023")))
+      alert('Tutor Data Loaded')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const loadTuteeData = async () => {
+    try {
+      const data = await getGSheetsData(API_ENDPOINT_TUTEE, false)
+
+      const colNames: [] = data[0]
+      const tuteeIndexIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('tutee') &&
+          colName.toLowerCase().includes('index')
+      )
+      const tuteeNameIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('name')
+      )
+      const genderIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('gender') &&
+          !colName.toLowerCase().includes('?')
+      )
+      const noGenderPrefIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('gender?')
+      )
+      const financialAidIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('financial aid')
+      )
+      const educationLevelIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('level') &&
+          colName.toLowerCase().includes('education') &&
+          colName.toLowerCase().includes('2023')
+      )
       const educationLevelIdxArr: number[] = []
-      colNames.forEach((colName: string, idx: number)=>{
-        if (colName.toLowerCase().includes("level of education")) {educationLevelIdxArr.push(idx)}
+      colNames.forEach((colName: string, idx: number) => {
+        if (colName.toLowerCase().includes('level of education')) {
+          educationLevelIdxArr.push(idx)
+        }
       })
-      const streamIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("stream")))
-      const subjIdx = colNames.findIndex((colName:string)=>(colName.toLowerCase().includes("subject")))
+      const streamIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('stream')
+      )
+      const subjIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('subject')
+      )
       const subjIdxArr: number[] = []
-      colNames.forEach((colName:string, idx:number)=>{
-        if (colName.toLowerCase().includes("subject")) {subjIdxArr.push(idx)}
+      colNames.forEach((colName: string, idx: number) => {
+        if (colName.toLowerCase().includes('subject')) {
+          subjIdxArr.push(idx)
+        }
       })
-      if ((tuteeIndexIdx<0)||(tuteeNameIdx<0)||(genderIdx<0)||(noGenderPrefIdx<0)||(educationLevelIdx<0)||(streamIdx<0)||(subjIdx<0)){
-        alert("Tutee DB column name inaccurate! Tutee Data not loaded ")
+      if (
+        tuteeIndexIdx < 0 ||
+        tuteeNameIdx < 0 ||
+        genderIdx < 0 ||
+        noGenderPrefIdx < 0 ||
+        educationLevelIdx < 0 ||
+        streamIdx < 0 ||
+        subjIdx < 0
+      ) {
+        alert('Tutee DB column name inaccurate! Tutee Data not loaded ')
         return
       }
-      tuteeRawData = data.content.map((rowData)=>{
+      tuteeRawData = data.map((rowData) => {
         return {
           index: rowData[tuteeIndexIdx],
           name: rowData[tuteeNameIdx].toLowerCase(),
           gender: rowData[genderIdx].toLowerCase(),
           noGenderPref: rowData[noGenderPrefIdx].toLowerCase(),
           financialAid: rowData[financialAidIdx].toLowerCase(),
-          educationLevel : educationLevelIdxArr.reduce((prev,curr)=>(prev+" "+rowData[curr].toLowerCase()),""),
+          educationLevel: educationLevelIdxArr.reduce(
+            (prev, curr) => prev + ' ' + rowData[curr].toLowerCase(),
+            ''
+          ),
           stream: rowData[streamIdx],
-          subj: subjIdxArr.reduce((prev, curr) => (prev + ", "+rowData[curr].toLowerCase()),"")
+          subj: subjIdxArr.reduce(
+            (prev, curr) => prev + ', ' + rowData[curr].toLowerCase(),
+            ''
+          ),
         }
       })
       tuteeRawData.shift()
       window.tuteeRawData = tuteeRawData
-      alert("Tutee Data Loaded!")
-    })
+      alert('Tutee Data Loaded!')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const loadData = () => {
+    loadTutorData()
+    loadTuteeData()
   }
 
   const calculateMatches = () => {
     const tutorRawData = window.tutorRawData
     const tuteeRawData = window.tuteeRawData
-    if (!tuteeRawData || !tutorRawData){
-      alert("Data not loaded!")
+    if (!tuteeRawData || !tutorRawData) {
+      alert('Data not loaded!')
       return
     }
     const matchingList = []
     //for (let tutor of tutorRawData){
-    for (let tutee of tuteeRawData){
-      const tuteeMatches = {tutee:{}, tutorMatchingScores:[]}
+    for (let tutee of tuteeRawData) {
+      const tuteeMatches = { tutee: {}, tutorMatchingScores: [] }
       tuteeMatches.tutee = {
         index: tutee.index,
-        name: tutee.name
+        name: tutee.name,
       }
-      for (let tutor of tutorRawData){
+      for (let tutor of tutorRawData) {
         const tutorMatchingScoreObj = {
           index: tutor.index,
           contactNum: tutor.contactNum,
-          matchingScore: 0
+          matchingScore: 0,
         }
-        // gender match check 
-        if (tutee.noGenderPref.toLowerCase().includes("yes")){
-          tutorMatchingScoreObj.matchingScore += 1 
-        } else if ((tutee.noGenderPref == "")||(tutor.gender == "")){
-          tutorMatchingScoreObj.matchingScore += 0.5
-        } else if ((tutor.gender.includes("male")) && (!tutor.gender.includes("female")) && (tutee.noGenderPref.includes("male")) && (!tutee.noGenderPref.includes("female"))){
+        // gender match check
+        if (tutee.noGenderPref.toLowerCase().includes('yes')) {
           tutorMatchingScoreObj.matchingScore += 1
-        } else if ((tutor.gender.includes("female")) && (tutee.noGenderPref.includes("female"))){
+        } else if (tutee.noGenderPref == '' || tutor.gender == '') {
+          tutorMatchingScoreObj.matchingScore += 0.5
+        } else if (
+          tutor.gender.includes('male') &&
+          !tutor.gender.includes('female') &&
+          tutee.noGenderPref.includes('male') &&
+          !tutee.noGenderPref.includes('female')
+        ) {
+          tutorMatchingScoreObj.matchingScore += 1
+        } else if (
+          tutor.gender.includes('female') &&
+          tutee.noGenderPref.includes('female')
+        ) {
           tutorMatchingScoreObj.matchingScore += 1
         } else {
           tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
@@ -138,93 +252,114 @@ const DataLoadForm = () => {
         }
         // subjects & level check
         const tuteeSubjRegex = /(primary|secondary|jc|ib)/gi
-        if (!tutee.educationLevel.match(tuteeSubjRegex)){
+        if (!tutee.educationLevel.match(tuteeSubjRegex)) {
           tutorMatchingScoreObj.matchingScore += 0.5
-        } else if (tutee.educationLevel.includes("jc")){
-          if (!tutor.jcSubj.includes("not like to teach")){
-            const tuteeSubjArr = tutee.subj.split(",")
-            const tutorSubjArr = tutor.jcSubj.split(",")
-            for (let tutorSubj of tutorSubjArr){
-              if (tuteeSubjArr.some((subj)=>(subj == tutorSubj))){
+        } else if (tutee.educationLevel.includes('jc')) {
+          if (!tutor.jcSubj.includes('not like to teach')) {
+            const tuteeSubjArr = tutee.subj.split(',')
+            const tutorSubjArr = tutor.jcSubj.split(',')
+            for (let tutorSubj of tutorSubjArr) {
+              if (tuteeSubjArr.some((subj) => subj == tutorSubj)) {
                 tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
-        } else if (tutee.educationLevel.includes("ib")){
-          if (!tutor.ibSubj.includes("not like to teach")){
-            const tuteeSubjArr = tutee.subj.split(",")
-            const tutorSubjArr = tutor.ibSubj.split(",")
-            for (let tuteeSubj of tuteeSubjArr){
-              if (tutorSubjArr.some((subj)=>(subj == tuteeSubj))){
+        } else if (tutee.educationLevel.includes('ib')) {
+          if (!tutor.ibSubj.includes('not like to teach')) {
+            const tuteeSubjArr = tutee.subj.split(',')
+            const tutorSubjArr = tutor.ibSubj.split(',')
+            for (let tuteeSubj of tuteeSubjArr) {
+              if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
                 tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
-        } else if ((tutee.educationLevel.includes("secondary")) && (tutee.educationLevel.match(/(3|4)/gi))){
-          if (!tutor.upperSecSubj.includes("not like to teach")){
-            const tuteeSubjArr = tutee.subj.split(",")
-            const tutorSubjArr = tutor.upperSecSubj.split(",")
-            for (let tuteeSubj of tuteeSubjArr){
-              if (tutorSubjArr.some((subj)=>(subj == tuteeSubj))){
+        } else if (
+          tutee.educationLevel.includes('secondary') &&
+          tutee.educationLevel.match(/(3|4)/gi)
+        ) {
+          if (!tutor.upperSecSubj.includes('not like to teach')) {
+            const tuteeSubjArr = tutee.subj.split(',')
+            const tutorSubjArr = tutor.upperSecSubj.split(',')
+            for (let tuteeSubj of tuteeSubjArr) {
+              if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
                 tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
-        }else if ((tutee.educationLevel.includes("secondary")) && (tutee.educationLevel.match(/(1|2)/gi))){
-          if (!tutor.lowerSecSubj.includes("not like to teach")){
-            const tuteeSubjArr = tutee.subj.split(",")
-            const tutorSubjArr = tutor.lowerSecSubj.split(",")
-            for (let tuteeSubj of tuteeSubjArr){
-              if (tutorSubjArr.some((subj)=>(subj == tuteeSubj))){
+        } else if (
+          tutee.educationLevel.includes('secondary') &&
+          tutee.educationLevel.match(/(1|2)/gi)
+        ) {
+          if (!tutor.lowerSecSubj.includes('not like to teach')) {
+            const tuteeSubjArr = tutee.subj.split(',')
+            const tutorSubjArr = tutor.lowerSecSubj.split(',')
+            for (let tuteeSubj of tuteeSubjArr) {
+              if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
                 tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
-        }else if (tutee.educationLevel.includes("primary")){
-          if (!tutor.priSubj.includes("not like to teach")){
-            const tuteeSubjArr = tutee.subj.split(",")
-            const tutorSubjArr = tutor.priSubj.split(",")
-            for (let tuteeSubj of tuteeSubjArr){
-              if (tutorSubjArr.some((subj)=>(subj == tuteeSubj))){
+        } else if (tutee.educationLevel.includes('primary')) {
+          if (!tutor.priSubj.includes('not like to teach')) {
+            const tuteeSubjArr = tutee.subj.split(',')
+            const tutorSubjArr = tutor.priSubj.split(',')
+            for (let tuteeSubj of tuteeSubjArr) {
+              if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
                 tutorMatchingScoreObj.matchingScore += 1
               }
             }
           }
         }
-        if (tutorMatchingScoreObj.matchingScore === 0){
+        if (tutorMatchingScoreObj.matchingScore === 0) {
           tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
           continue
         }
 
         // probono match check
-        if ((tutor.probonoPref.includes("free")) || (tutor.probonoPref.includes("both")) || (tutee.financialAid.includes("yes"))){
+        if (
+          tutor.probonoPref.includes('free') ||
+          tutor.probonoPref.includes('both') ||
+          tutee.financialAid.includes('yes')
+        ) {
           tutorMatchingScoreObj.matchingScore += 1
-        } else if ((tutor.probonoPref == "") || (tutee.financialAid == "")){
+        } else if (tutor.probonoPref == '' || tutee.financialAid == '') {
           tutorMatchingScoreObj.matchingScore += 0.5
         }
         // finacial aid pref match check
-        if ((tutor.teachUnaided.includes("yes")) || (tutee.financialAid.includes("yes"))){
+        if (
+          tutor.teachUnaided.includes('yes') ||
+          tutee.financialAid.includes('yes')
+        ) {
           tutorMatchingScoreObj.matchingScore += 1
-        } else if ((tutor.teachUnaided == "")||(tutee.financialAid=="")){
+        } else if (tutor.teachUnaided == '' || tutee.financialAid == '') {
           tutorMatchingScoreObj.matchingScore += 0.5
         }
         // stream preference match check
-        if (!(tutee.educationLevel.includes("secondary") || (tutor.streamPref == "")) || (tutee.stream == "")){
+        if (
+          !(
+            tutee.educationLevel.includes('secondary') || tutor.streamPref == ''
+          ) ||
+          tutee.stream == ''
+        ) {
           tutorMatchingScoreObj.matchingScore += 0.5
-        } else if (tutor.streamPref.includes(tutee.stream)){
+        } else if (tutor.streamPref.includes(tutee.stream)) {
           tutorMatchingScoreObj.matchingScore += 1
         }
         tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
       }
-      tuteeMatches.tutorMatchingScores.sort((a,b)=>(b.matchingScore - a.matchingScore))
-      if (tuteeMatches.tutorMatchingScores.length > 51){
-        tuteeMatches.tutorMatchingScores = tuteeMatches.tutorMatchingScores.slice(0,50)
+      tuteeMatches.tutorMatchingScores.sort(
+        (a, b) => b.matchingScore - a.matchingScore
+      )
+      if (tuteeMatches.tutorMatchingScores.length > 51) {
+        tuteeMatches.tutorMatchingScores =
+          tuteeMatches.tutorMatchingScores.slice(0, 50)
       }
-      matchingList.push(tuteeMatches)      
+      matchingList.push(tuteeMatches)
     }
     window.matchingList = matchingList
     const matchesSummary = []
-    for (let matchingListItem of matchingList){
+    for (let matchingListItem of matchingList) {
       const matchesSummaryItem = {
         tutee: matchingListItem.tutee,
         tutor1: matchingListItem.tutorMatchingScores[0],
@@ -237,32 +372,62 @@ const DataLoadForm = () => {
     }
     dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary))
     console.log(matchingList)
-    navigate("/")
- }
+    navigate('/')
+  }
 
- const clearData = () => {
+  const clearData = () => {
     delete window.tutorRawData
     delete window.tuteeRawData
     delete window.matchingList
     dispatch(matchesSummaryActions.resetMatchesSummary())
     dispatch(unmatchedTuteesActions.resetUnmatchedTutees())
     dispatch(selectedTutorMatchesActions.resetSelectedTutorMatches())
-    navigate("/")
- }
+    navigate('/')
+  }
+
   return (
-    <Stack alignItems="center" justifyContent="center" sx={{w:100}}>
-    <Stack direction="row">
-      <Stack direction="column" alignItems="center" justifyContent="center" sx={{m:2}}>
-        <a href="https://docs.google.com/spreadsheets/d/1WFCDr9R4_A3wDRCeWcR6K8XK-_Rx30gqGGCgzF6Y65c/edit#gid=0" target="_blank" style={{margin:"1rem"}}>Tutor Database HyperLink</a>
-        <a href="https://docs.google.com/spreadsheets/d/1QyUr8axA_qb5kuddaL4dvOwNo7VT8k5o2POgLO9G84g/edit#gid=0" target="_blank" style={{margin:"1rem"}}>Tutee Database HyperLink</a>
-        <a href="https://docs.google.com/spreadsheets/d/1Xj0zkL2h0nyUR25NKtCIv3QVjZee6bLyWUdpbxVCVT0/edit?usp=sharing" target="_blank" style={{margin:"1rem"}}>Instructions for tool usage</a>
+    <Stack alignItems="center" justifyContent="center" sx={{ w: 100 }}>
+      <Stack direction="row">
+        <Stack
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          sx={{ m: 2 }}
+        >
+          <a
+            href="https://docs.google.com/spreadsheets/d/1WFCDr9R4_A3wDRCeWcR6K8XK-_Rx30gqGGCgzF6Y65c/edit#gid=0"
+            target="_blank"
+            style={{ margin: '1rem' }}
+          >
+            Tutor Database HyperLink
+          </a>
+          <a
+            href="https://docs.google.com/spreadsheets/d/1QyUr8axA_qb5kuddaL4dvOwNo7VT8k5o2POgLO9G84g/edit#gid=0"
+            target="_blank"
+            style={{ margin: '1rem' }}
+          >
+            Tutee Database HyperLink
+          </a>
+          <a
+            href="https://docs.google.com/spreadsheets/d/1Xj0zkL2h0nyUR25NKtCIv3QVjZee6bLyWUdpbxVCVT0/edit?usp=sharing"
+            target="_blank"
+            style={{ margin: '1rem' }}
+          >
+            Instructions for tool usage
+          </a>
+        </Stack>
+        <Stack direction="column">
+          <Button variant="contained" sx={{ m: 1 }} onClick={loadData}>
+            Load Data
+          </Button>
+          <Button variant="contained" sx={{ m: 1 }} onClick={clearData}>
+            Clear Data
+          </Button>
+          <Button variant="contained" sx={{ m: 1 }} onClick={calculateMatches}>
+            Match
+          </Button>
+        </Stack>
       </Stack>
-      <Stack direction="column">
-      <Button variant="contained" sx={{m:1}} onClick={loadData}>Load Data</Button>
-      <Button variant="contained" sx={{m:1}} onClick={clearData}>Clear Data</Button>
-      <Button variant="contained" sx={{m:1}} onClick={calculateMatches}>Match</Button>      
-      </Stack>
-    </Stack>
     </Stack>
   )
 }

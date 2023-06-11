@@ -7,6 +7,28 @@ export enum Gender {
 }
 
 /**
+ * Represents the education level.
+ */
+export enum GeneralLevel {
+  Primary,
+  LowerSecondary,
+  UpperSecondary,
+  JuniorCollege,
+  InternationalBaccalaureate,
+}
+
+/**
+ * Represents the stream for a secondary school level.
+ */
+export enum SecondaryStream {
+  InternationalBaccalaureate,
+  IntegratedProgramme,
+  Express,
+  NormalAcademic,
+  NormalTechnical,
+}
+
+/**
  * Contact details of the person.
  */
 export type Contact = {
@@ -19,7 +41,7 @@ export type Contact = {
    * Contact number.
    */
   phone: number
-  
+
   /**
    * Telegram handle.
    */
@@ -62,34 +84,56 @@ export type Tutor = {
 
   /**
    * Whether the tutor would like to teach on a pro-bono basis.
+   *
+   * Values are any of:
+   * - Free
+   * - Both
+   * - I would like to opt out and receive remuneration for tutoring
+   * - ''
+   *
+   * Assume `true` if value is 'Free', `false` if value has 'opt out', and
+   * `undefined` for all other cases.
    */
   isProBono?: boolean
 
   /**
+   * Whether the tutor would like to teach students not on financial aid.
+   *
+   * Values are any of:
+   * - Yes
+   * - No
+   * - ''
+   *
+   * Assume `true` if value is 'Yes', `false` if value is 'No' and `undefined`
+   * for all other cases.
+   */
+  isUnaided?: boolean
+
+  /**
+   * Preferred stream to teach.
+   * Applies only for subjects at secondary level.
+   */
+  secondaryStreams?: SecondaryStream[]
+
+  /**
    * Subjects tutor is willing to teach.
    */
-  subjects: Subject[]
+  subjects: TutorSubject[]
 }
 
 /**
  * Represents information about a subject.
  */
-export type Subject = {
+export type TutorSubject = {
   /**
    * Name of the subject.
    */
   name: string
 
   /**
-   * Level at which tutor can teach for the subject.
+   * General level at which tutor can teach for the subject.
    */
-  level: string
-
-  /**
-   * Streams for the subject.
-   * Applies only for subjects at secondary level.
-   */
-  stream?: string[]
+  generalLevel: GeneralLevel
 }
 
 /**
@@ -112,14 +156,19 @@ export type Tutee = {
   isOnFinancialAid?: boolean
 
   /**
-   * Education level.
+   * General level of education.
+   */
+  generalLevel: GeneralLevel
+
+  /**
+   * Sub-level of education.
    */
   level: string
 
   /**
    * Stream. Applicable for secondary level.
    */
-  stream?: string
+  secondaryStream?: SecondaryStream
 
   /**
    * Subjects tutee would like to get tution on.

@@ -1,5 +1,13 @@
 import { GSheetsResponse, GSheetsData } from '@/types/google-sheets'
-import { Tutee, Tutor, Subject, Gender } from '@/types/person'
+import {
+  Tutee,
+  Tutor,
+  TutorSubject,
+  Gender,
+  GeneralLevel,
+  SecondaryStream,
+} from '@/types/person'
+import { stringToArray } from '.'
 
 /**
  * Get data from GSheets. Optionally transform the data.
@@ -26,34 +34,66 @@ export const getGSheetsData = async <T = GSheetsData>(
 }
 
 /**
+ * Parses the list of subjects tutor can teach.
+ *
+ * @param level level at which tutor is able to teach
+ * @param rawSubjects string or comma-delimited list of subjects
+ * @param streams stream at which tutor is able to teach
+ * @returns list of subjects
+ */
+const parseSubjects = (
+  level: GeneralLevel,
+  rawSubjects: string
+): TutorSubject[] => {
+  const searchPhrase = 'I would not like to teach'
+  if (!rawSubjects || rawSubjects.includes(searchPhrase)) return []
+
+  return rawSubjects.split(',').map(
+    (subject: string): TutorSubject => ({
+      name: subject.trim(),
+      generalLevel: level,
+    })
+  )
+}
+
+/**
+ * Parses the secondary level stream.
+ *
+ * @param stream string representation of the stream
+ * @returns enum value of the stream
+ */
+const parseStream = (stream: string): SecondaryStream | undefined => {
+  if (!stream) return undefined
+  if (stream.includes('IB')) return SecondaryStream.InternationalBaccalaureate
+  if (stream.includes('IP')) return SecondaryStream.IntegratedProgramme
+  if (stream.includes('NA')) return SecondaryStream.NormalAcademic
+  if (stream.includes('NT')) return SecondaryStream.NormalTechnical
+  return SecondaryStream.Express
+}
+
+/**
  * Transform data from KindleSparks into `Tutor` compatible object.
  *
  * @param data raw data as obtained from GSheets
  * @returns `Tutor` object
  */
 export const transformKSTutorData = (data: GSheetsData): Tutor => {
-  const primarySubjects = parseSubjects('primary', data[10] as string)
-  const lowerSecondarySubjects = parseSubjects(
-    'lower-secondary',
-    data[12] as string,
-    data[11] as string
-  )
-  const upperSecondarySubjects = parseSubjects(
-    'upper-secondary',
-    data[13] as string,
-    data[11] as string
-  )
-  const jcSubjects = parseSubjects('jc', data[14] as string)
-  const ibSubjects = parseSubjects('ib', data[15] as string)
   const subjects = [
-    ...primarySubjects,
-    ...lowerSecondarySubjects,
-    ...upperSecondarySubjects,
-    ...jcSubjects,
-    ...ibSubjects,
+    ...parseSubjects(GeneralLevel.Primary, data[10] as string),
+    ...parseSubjects(GeneralLevel.LowerSecondary, data[12] as string),
+    ...parseSubjects(GeneralLevel.UpperSecondary, data[13] as string),
+    ...parseSubjects(GeneralLevel.JuniorCollege, data[14] as string),
+    ...parseSubjects(
+      GeneralLevel.InternationalBaccalaureate,
+      data[15] as string
+    ),
   ]
 
-  const proBono = data[8] as string
+  const proBono = data[7] as string
+  const unaided = data[8] as string
+  const streams = stringToArray(data[11] as string).map(
+    (stream: string): SecondaryStream => parseStream(stream) as SecondaryStream
+  )
 
   return {
     personalData: {
@@ -65,9 +105,27 @@ export const transformKSTutorData = (data: GSheetsData): Tutor => {
         phone: data[4] as number,
       },
     },
-    isProBono: proBono === '' ? undefined : proBono === 'Yes',
+    isProBono:
+      proBono === '' || proBono === 'Both' ? undefined : proBono === 'Free',
+    isUnaided: unaided === '' ? undefined : unaided === 'Yes',
+    secondaryStreams: streams,
     subjects: subjects,
   }
+}
+
+/**
+ *
+ * @param level
+ * @returns
+ */
+const parseKSTuteeGeneralLevel = (level: string): GeneralLevel => {
+  if (level.includes('IB')) return GeneralLevel.InternationalBaccalaureate
+  if (level.includes('JC')) return GeneralLevel.JuniorCollege
+  if (level.includes('Secondary') && level.match(/(3|4|5)/gi))
+    return GeneralLevel.UpperSecondary
+  if (level.includes('Secondary') && level.match(/(1|2)/gi))
+    return GeneralLevel.LowerSecondary
+  return GeneralLevel.Primary
 }
 
 /**
@@ -77,7 +135,7 @@ export const transformKSTutorData = (data: GSheetsData): Tutor => {
  * @returns `Tutee` object
  */
 export const transformKSTuteeData = (data: GSheetsData): Tutee => {
-  // console.log(data)
+  const level = data[9] as string
 
   return {
     personalData: {
@@ -91,12 +149,25 @@ export const transformKSTuteeData = (data: GSheetsData): Tutee => {
     },
     genderPreference: getGenderPreference(data[20] as string),
     isOnFinancialAid: (data[7] as string) === 'Yes',
-    level: data[9] as string,
-    stream: data[10] as string,
-    subjects: (data[12] as string)
-      .split(',')
-      .map((subject: string) => subject.trim()),
+    level: level,
+    generalLevel: parseKSTuteeGeneralLevel(level),
+    secondaryStream: parseStream(data[10] as string),
+    subjects: stringToArray(data[12] as string),
   }
+}
+
+/**
+ *
+ * @param level
+ * @returns
+ */
+const parseSSOTuteeGeneralLevel = (level: string): GeneralLevel => {
+  if (level.includes('JC')) return GeneralLevel.JuniorCollege
+  if (level.includes('S') && level.match(/(3|4|5)/gi))
+    return GeneralLevel.UpperSecondary
+  if (level.includes('S') && level.match(/(1|2)/gi))
+    return GeneralLevel.LowerSecondary
+  return GeneralLevel.Primary
 }
 
 /**
@@ -106,6 +177,19 @@ export const transformKSTuteeData = (data: GSheetsData): Tutee => {
  * @returns `Tutee` object
  */
 export const transformSSOTuteeData = (data: GSheetsData): Tutee => {
+  const level = data[4] as string
+  const subjects = [
+    data[10] as string,
+    data[11] as string,
+    data[12] as string,
+    data[14] as string,
+    data[15] as string,
+    data[16] as string,
+    data[17] as string,
+    data[18] as string,
+    data[19] as string,
+  ]
+
   return {
     personalData: {
       index: 0,
@@ -113,15 +197,16 @@ export const transformSSOTuteeData = (data: GSheetsData): Tutee => {
       gender: data[7] as (typeof Gender)[keyof typeof Gender],
       contact: {
         email: '',
-        phone: 90009000,
+        phone: 0,
         telegram: '',
       },
     },
     genderPreference: getGenderPreference(data[8] as string),
     isOnFinancialAid: false,
-    level: data[4] as string,
-    stream: '',
-    subjects: [],
+    level: level,
+    generalLevel: parseSSOTuteeGeneralLevel(level),
+    secondaryStream: parseStream(data[13] as string),
+    subjects: subjects,
   }
 }
 
@@ -137,30 +222,4 @@ const getGenderPreference = (
   if (rawGenderPreference.includes('female')) return Gender.Female
   if (rawGenderPreference.includes('male')) return Gender.Male
   return undefined
-}
-
-/**
- * Parses the list of subjects tutor can teach.
- *
- * @param level level at which tutor is able to teach
- * @param rawSubjects string or comma-delimited list of subjects
- * @param streams stream at which tutor is able to teach
- * @returns list of subjects
- */
-const parseSubjects = (
-  level: string,
-  rawSubjects: string,
-  streams?: string
-): Subject[] => {
-  const searchPhrase = 'I would not like to teach'
-  if (!rawSubjects || rawSubjects.includes(searchPhrase)) return []
-
-  const subjects = rawSubjects.split(',')
-  return subjects.map(
-    (subject: string): Subject => ({
-      name: subject.trim(),
-      level: level,
-      stream: streams?.split(','),
-    })
-  )
 }

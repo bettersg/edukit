@@ -136,6 +136,10 @@ export type TutorSubject = {
   generalLevel: GeneralLevel
 }
 
+export type TutorMatchScore = Tutor & {
+  score: number
+}
+
 /**
  * Represents information about a tutee.
  */
@@ -174,4 +178,8 @@ export type Tutee = {
    * Subjects tutee would like to get tution on.
    */
   subjects: string[]
+}
+
+export type TuteeMatches = Tutee & {
+  tutors: TutorMatchScore[]
 }

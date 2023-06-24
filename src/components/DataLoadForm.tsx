@@ -330,6 +330,7 @@ const DataLoadForm = () => {
         const tutorMatchingScoreObj = {
           index: tutor.index,
           contactNum: tutor.contactNum,
+          name: tutor.name,
           matchingScore: 0,
         }
         // gender match check

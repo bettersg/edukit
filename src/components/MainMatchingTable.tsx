@@ -58,7 +58,7 @@ const MainMatchingTable = () => {
         <h2>
         MainMatchingTable
         </h2>
-        <DataGrid  rows={rows} columns={columns} onRowClick={handleRowClick}/>
+        <DataGrid  sx={{cursor: 'pointer'}} rows={rows} columns={columns} onRowClick={handleRowClick}/>
         </Stack>
     </>
   )

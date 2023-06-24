@@ -1,16 +1,15 @@
-// @ts-nocheck
-import { useSelector } from 'react-redux'
-import {Stack} from '@mui/material'
-import MainMatchingTable from "../components/MainMatchingTable"
-import MissingTuteeTable from "../components/MissingTuteeTable"
+import { Stack } from '@mui/material'
+
+import MatchingTable from '@/components/MatchingTable'
+import MainMatchingTable from '../components/MainMatchingTable'
 import DownloadCSVButton from '../components/DownloadCSVButton'
 
 const OverviewPage = () => {
   return (
     <Stack direction="column" alignItems="center">
-     <MainMatchingTable/>
-     {/* <MissingTuteeTable/>  */}
-     <DownloadCSVButton/>
+      <MainMatchingTable />
+      <MatchingTable />
+      <DownloadCSVButton />
     </Stack>
   )
 }

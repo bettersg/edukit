@@ -1,4 +1,12 @@
 /**
+ * Represents the education level.
+ */
+export enum TuteeDataFormat {
+  KSGeneral = "KSGeneral",
+  KSSSO = "KSSSO"
+}
+
+/**
  * Represents the gender associated with the person.
  */
 export enum Gender {

@@ -1,7 +1,8 @@
 // @ts-nocheck
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { Stack, Button } from '@mui/material'
+import { Stack, Button, Select, MenuItem, InputLabel } from '@mui/material'
+import { TuteeDataFormat } from "../types/person"
 
 import { matchesSummaryActions } from '../store/matchesSummarySlice'
 import { unmatchedTuteesActions } from '../store/unmatchedTuteesSlice'
@@ -9,17 +10,18 @@ import { selectedTutorMatchesActions } from '../store/selectedTutorMatchesSlice'
 
 import { getGSheetsData } from '@/utils/api'
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/config'
+import { useState } from 'react'
 
 const DataLoadForm = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [selectedTuteeDataFormat, setSelectedTuteeDataFormat] = useState<TuteeDataFormat>("KSGeneral")
   let tutorRawData = []
   let tuteeRawData = []
 
   const loadTutorData = async () => {
     try {
       const data = await getGSheetsData(API_ENDPOINT_TUTOR, false)
-
       const colNames = data[0]
       const tutorIndexIdx = colNames.findIndex(
         (colName: string) =>
@@ -69,11 +71,11 @@ const DataLoadForm = () => {
       const contactNumIdx = colNames.findIndex((colName: string) =>
         colName.toLowerCase().includes('number')
       )
-      const hrsPerWeekIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('hours') &&
-          colName.toLowerCase().includes('week')
-      )
+      // const hrsPerWeekIdx = colNames.findIndex(
+      //   (colName: string) =>
+      //     colName.toLowerCase().includes('hours') &&
+      //     colName.toLowerCase().includes('week')
+      // )
       if (
         tutorIndexIdx < 0 ||
         tutorNameIdx < 0 ||
@@ -117,11 +119,9 @@ const DataLoadForm = () => {
     }
   }
 
-  const loadTuteeData = async () => {
-    try {
-      const data = await getGSheetsData(API_ENDPOINT_TUTEE, false)
 
-      const colNames: [] = data[0]
+  const findColIdxKSGeneral = (colNames : String[]) => {
+    // const colNames: string[] = colNames
       const tuteeIndexIdx = colNames.findIndex(
         (colName: string) =>
           colName.toLowerCase().includes('tutee') &&
@@ -165,6 +165,106 @@ const DataLoadForm = () => {
           subjIdxArr.push(idx)
         }
       })
+      return {tuteeIndexIdx, tuteeNameIdx, genderIdx, noGenderPrefIdx, financialAidIdx, educationLevelIdx, educationLevelIdxArr, streamIdx, subjIdx, subjIdxArr}
+  }
+
+  const findColIdxKSSSO = (colNames : String[]) => {
+    // const colNames: string[] = colNames
+      const tuteeIndexIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('tutee') &&
+          colName.toLowerCase().includes('index')
+      )
+      const tuteeNameIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('name') && 
+        colName.toLowerCase().includes('tutee')
+      )
+      const genderIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('gender') &&
+          !colName.toLowerCase().includes('tutee')
+      )
+      const noGenderPrefIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('gender') &&
+        colName.toLowerCase().includes("preference")
+      )
+      const financialAidIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('financial aid')
+      )
+      const educationLevelIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('level') &&
+          colName.toLowerCase().includes('education') 
+      )
+      const educationLevelIdxArr: number[] = []
+      colNames.forEach((colName: string, idx: number) => {
+        if (colName.toLowerCase().includes('level') && 
+        colName.toLowerCase().includes('education')) {
+          educationLevelIdxArr.push(idx)
+        }
+      })
+      const streamIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('stream')
+      )
+      const subjIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('subject')
+      )
+      const subjIdxArr: number[] = []
+      colNames.forEach((colName: string, idx: number) => {
+        if (colName.toLowerCase().includes('subject')) {
+          subjIdxArr.push(idx)
+        }
+      })
+      return {tuteeIndexIdx, tuteeNameIdx, genderIdx, noGenderPrefIdx, financialAidIdx, educationLevelIdx, educationLevelIdxArr, streamIdx, subjIdx, subjIdxArr}
+  }
+
+  const mapSSOToGenEducationLevel = (educationLevelSSOFormat) => {
+    const educationLevelMappingTable = {
+      P1: "Primary 1",
+      P2: "Primary 2",
+      P3: "Primary 3",
+      P4: "Primary 4",
+      P5: "Primary 5",
+      P6: "Primary 6",
+      S1: "Secondary 1",
+      S2: "Secondary 2",
+      S3: "Secondary 3",
+      S4: "Secondary 4",
+      JC1: "JC 1",
+      JC2: "JC 2"
+    }
+    return educationLevelMappingTable[educationLevelSSOFormat]
+  }
+
+  const loadTuteeData = async () => {
+    try {
+      let data = await getGSheetsData(API_ENDPOINT_TUTEE, false)
+
+      const colNames: string[] = data[0]
+      let colIdxObj = {}
+      switch (selectedTuteeDataFormat) {
+        case TuteeDataFormat.KSGeneral:
+          colIdxObj = findColIdxKSGeneral(colNames)
+          console.log(colIdxObj, colNames)
+          break
+        case TuteeDataFormat.KSSSO:
+          colNames.push("financial aid")
+          colIdxObj = findColIdxKSSSO(colNames)
+          data = data.map((rowData)=>{
+            rowData.push("yes")
+            const educationLevelSSOFormat = rowData[colIdxObj.educationLevelIdx]
+            const educationLevelGenFormat = mapSSOToGenEducationLevel(educationLevelSSOFormat)
+            rowData[colIdxObj.educationLevelIdx] = educationLevelGenFormat
+            console.log("edu level gen format", educationLevelGenFormat)
+            rowData[colIdxObj.educationLevelIdxArr] = educationLevelGenFormat
+            return rowData})            
+          // console.log(colIdxObj)
+          break
+        default:
+          alert("Invalid Tutee Data Format selected")
+          return
+      }
+      const {tuteeIndexIdx, tuteeNameIdx, genderIdx, noGenderPrefIdx, financialAidIdx, educationLevelIdx, educationLevelIdxArr, streamIdx, subjIdx, subjIdxArr} = colIdxObj
       if (
         tuteeIndexIdx < 0 ||
         tuteeNameIdx < 0 ||
@@ -177,6 +277,8 @@ const DataLoadForm = () => {
         alert('Tutee DB column name inaccurate! Tutee Data not loaded ')
         return
       }
+      data.shift()
+      // console.log("Raw data", data, educationLevelIdxArr)
       tuteeRawData = data.map((rowData) => {
         return {
           index: rowData[tuteeIndexIdx],
@@ -185,17 +287,18 @@ const DataLoadForm = () => {
           noGenderPref: rowData[noGenderPrefIdx].toLowerCase(),
           financialAid: rowData[financialAidIdx].toLowerCase(),
           educationLevel: educationLevelIdxArr.reduce(
-            (prev, curr) => prev + ' ' + rowData[curr].toLowerCase(),
+            (prev:String, curr:String) => {
+              // console.log("prev, curr : ",prev,curr, rowData)
+              return (prev + ' ' + rowData[curr].toLowerCase())},
             ''
           ),
           stream: rowData[streamIdx],
           subj: subjIdxArr.reduce(
-            (prev, curr) => prev + ', ' + rowData[curr].toLowerCase(),
+            (prev:String, curr:String) => prev + ', ' + rowData[curr]?.toLowerCase(),
             ''
           ),
         }
       })
-      tuteeRawData.shift()
       window.tuteeRawData = tuteeRawData
       alert('Tutee Data Loaded!')
     } catch (error) {
@@ -251,16 +354,15 @@ const DataLoadForm = () => {
           continue
         }
         // subjects & level check
-        const tuteeSubjRegex = /(primary|secondary|jc|ib)/gi
-        if (!tutee.educationLevel.match(tuteeSubjRegex)) {
-          tutorMatchingScoreObj.matchingScore += 0.5
-        } else if (tutee.educationLevel.includes('jc')) {
+        let subjectMatchScore = 0
+        // const tuteeSubjRegex = /(primary|secondary|jc|ib)/gi
+        if (tutee.educationLevel.includes('jc')) {
           if (!tutor.jcSubj.includes('not like to teach')) {
             const tuteeSubjArr = tutee.subj.split(',')
             const tutorSubjArr = tutor.jcSubj.split(',')
             for (let tutorSubj of tutorSubjArr) {
-              if (tuteeSubjArr.some((subj) => subj == tutorSubj)) {
-                tutorMatchingScoreObj.matchingScore += 1
+              if (tuteeSubjArr.some((subj : String) => (tutorSubj.includes(subj)))) {
+               subjectMatchScore += 1
               }
             }
           }
@@ -268,9 +370,10 @@ const DataLoadForm = () => {
           if (!tutor.ibSubj.includes('not like to teach')) {
             const tuteeSubjArr = tutee.subj.split(',')
             const tutorSubjArr = tutor.ibSubj.split(',')
-            for (let tuteeSubj of tuteeSubjArr) {
-              if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
-                tutorMatchingScoreObj.matchingScore += 1
+            for (let tutorSubj of tutorSubjArr) {
+              if (tuteeSubjArr.some((subj : String) => (tutorSubj.includes(subj)))) {
+              // if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
+               subjectMatchScore += 1
               }
             }
           }
@@ -281,9 +384,11 @@ const DataLoadForm = () => {
           if (!tutor.upperSecSubj.includes('not like to teach')) {
             const tuteeSubjArr = tutee.subj.split(',')
             const tutorSubjArr = tutor.upperSecSubj.split(',')
-            for (let tuteeSubj of tuteeSubjArr) {
-              if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
-                tutorMatchingScoreObj.matchingScore += 1
+            for (let tutorSubj of tutorSubjArr) {
+              if (tuteeSubjArr.some((subj : String) => (tutorSubj.includes(subj)))) {
+            // for (let tuteeSubj of tuteeSubjArr) {
+            //   if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
+               subjectMatchScore += 1
               }
             }
           }
@@ -294,9 +399,11 @@ const DataLoadForm = () => {
           if (!tutor.lowerSecSubj.includes('not like to teach')) {
             const tuteeSubjArr = tutee.subj.split(',')
             const tutorSubjArr = tutor.lowerSecSubj.split(',')
-            for (let tuteeSubj of tuteeSubjArr) {
-              if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
-                tutorMatchingScoreObj.matchingScore += 1
+            for (let tutorSubj of tutorSubjArr) {
+              if (tuteeSubjArr.some((subj : String) => (tutorSubj.includes(subj)))) {
+            // for (let tuteeSubj of tuteeSubjArr) {
+            //   if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
+               subjectMatchScore += 1
               }
             }
           }
@@ -304,18 +411,21 @@ const DataLoadForm = () => {
           if (!tutor.priSubj.includes('not like to teach')) {
             const tuteeSubjArr = tutee.subj.split(',')
             const tutorSubjArr = tutor.priSubj.split(',')
-            for (let tuteeSubj of tuteeSubjArr) {
-              if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
-                tutorMatchingScoreObj.matchingScore += 1
+            for (let tutorSubj of tutorSubjArr) {
+              if (tuteeSubjArr.some((subj : String) => (tutorSubj.includes(subj)))) {
+            // for (let tuteeSubj of tuteeSubjArr) {
+            //   if (tutorSubjArr.some((subj) => subj == tuteeSubj)) {
+               subjectMatchScore += 1
               }
             }
           }
         }
-        if (tutorMatchingScoreObj.matchingScore === 0) {
+        if (subjectMatchScore === 0) {
+          tutorMatchingScoreObj.matchingScore = 0
           tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
           continue
         }
-
+        tutorMatchingScoreObj.matchingScore += subjectMatchScore
         // probono match check
         if (
           tutor.probonoPref.includes('free') ||
@@ -371,7 +481,7 @@ const DataLoadForm = () => {
       matchesSummary.push(matchesSummaryItem)
     }
     dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary))
-    console.log(matchingList)
+    console.log("matching list", matchingList)
     navigate('/')
   }
 
@@ -385,9 +495,14 @@ const DataLoadForm = () => {
     navigate('/')
   }
 
+  const handleSelectorChange = (event: Select.SelectChangeEvent) => {
+    setSelectedTuteeDataFormat(()=>event.target.value)
+    // console.log(selectedTuteeDataFormat)    
+  }
+
   return (
     <Stack alignItems="center" justifyContent="center" sx={{ w: 100 }}>
-      <Stack direction="row">
+      <Stack direction="row" alignItems="center">
         <Stack
           direction="column"
           alignItems="center"
@@ -408,6 +523,18 @@ const DataLoadForm = () => {
           >
             Tutee Database HyperLink
           </a>
+          <InputLabel id="select-label">Tutee Data Format</InputLabel>
+          <Select
+          labelId="select-label"
+          id="simple-select"
+          value={selectedTuteeDataFormat}
+          label="Age"
+          onChange={handleSelectorChange}
+        >
+          <MenuItem value={"KSGeneral"}>KS General</MenuItem>
+          <MenuItem value={"KSSSO"}>KS SSO</MenuItem>
+          <MenuItem value={"KS_Test"}>KS Test</MenuItem>
+        </Select>
           <a
             href="https://docs.google.com/spreadsheets/d/1Xj0zkL2h0nyUR25NKtCIv3QVjZee6bLyWUdpbxVCVT0/edit?usp=sharing"
             target="_blank"

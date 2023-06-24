@@ -80,7 +80,6 @@ const MatchingTable = () => {
 
   return (
     <Stack alignItems="center" sx={{ width: '75%' }}>
-      Test
       {/* {matches && (
         <DataGrid
           columns={columns}

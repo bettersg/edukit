@@ -1,5 +1,6 @@
-import { Tutor, Tutee, TutorSubject, GeneralLevel } from '@/types/person'
+import { Tutor, Tutee, Subject, PreferedGender, } from '@/types/person'
 
+import { EducationLevel } from '@/types/educationSubjects'
 /**
  * Calculates the total matching score between tutor and tutee based on a
  * specific set of criteria between tutor and tutee.
@@ -35,8 +36,8 @@ export const sumScores = (tutor: Tutor, tutee: Tutee): number => {
  * @returns a score of either 0 or 1
  */
 const scoreGender = (tutor: Tutor, tutee: Tutee): number => {
-  if (!tutee.genderPreference) return 1
-  return tutor.personalData.gender === tutee.genderPreference ? 1 : 0
+  if (tutee.preferedGender === PreferedGender.None) return 1
+  return String(tutor.personalData.gender) == String(tutee.preferedGender) ? 1 : 0
 }
 
 /**
@@ -47,9 +48,9 @@ const scoreGender = (tutor: Tutor, tutee: Tutee): number => {
  */
 const scoreSubjectLevel = (tutor: Tutor, tutee: Tutee): number =>
   tutor.subjects.reduce<number>(
-    (cumulativeScore: number, tutorSubject: TutorSubject): number => {
+    (cumulativeScore: number, tutorSubject: Subject): number => {
       const isGeneralLevelSame =
-        tutorSubject.generalLevel === tutee.generalLevel
+        tutorSubject.educationLevel === tutee.educationLevel
       const hasSameSubjectCombination = tutee.subjects.includes(
         tutorSubject.name
       )
@@ -91,8 +92,8 @@ const scoreFinancialAid = (tutor: Tutor, tutee: Tutee): number => {
  */
 const scoreStream = (tutor: Tutor, tutee: Tutee): number => {
   const isSecondaryLevel =
-    tutee.generalLevel === GeneralLevel.LowerSecondary ||
-    tutee.generalLevel === GeneralLevel.UpperSecondary
+    tutee.educationLevel === EducationLevel.LowerSecondary ||
+    tutee.educationLevel === EducationLevel.UpperSecondary
   if (
     tutor.secondaryStreams === undefined ||
     tutee.secondaryStream === undefined

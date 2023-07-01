@@ -9,7 +9,8 @@ import { unmatchedTuteesActions } from '../store/unmatchedTuteesSlice'
 import { selectedTutorMatchesActions } from '../store/selectedTutorMatchesSlice'
 
 import { getGSheetsData } from '@/utils/api'
-import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/config'
+import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/api'
+import {transformKSTutorData} from '@/utils/parseKSTutorData'
 import { useState } from 'react'
 
 const DataLoadForm = () => {
@@ -71,11 +72,6 @@ const DataLoadForm = () => {
       const contactNumIdx = colNames.findIndex((colName: string) =>
         colName.toLowerCase().includes('number')
       )
-      // const hrsPerWeekIdx = colNames.findIndex(
-      //   (colName: string) =>
-      //     colName.toLowerCase().includes('hours') &&
-      //     colName.toLowerCase().includes('week')
-      // )
       if (
         tutorIndexIdx < 0 ||
         tutorNameIdx < 0 ||
@@ -500,7 +496,12 @@ const DataLoadForm = () => {
     setSelectedTuteeDataFormat(()=>event.target.value)
     // console.log(selectedTuteeDataFormat)    
   }
-
+  const handleTest = async () => {
+    const data = await getGSheetsData(API_ENDPOINT_TUTOR, false)
+    transformKSTutorData(data)
+    // const colNames = data[0]
+    // console.log(colNames)
+  }
   return (
     <Stack alignItems="center" justifyContent="center" sx={{ w: 100 }}>
       <Stack direction="row" alignItems="center">
@@ -553,6 +554,9 @@ const DataLoadForm = () => {
           </Button>
           <Button variant="contained" sx={{ m: 1 }} onClick={calculateMatches}>
             Match
+          </Button>
+          <Button variant="contained" sx={{ m: 1 }} onClick={handleTest}>
+            Test
           </Button>
         </Stack>
       </Stack>

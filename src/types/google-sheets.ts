@@ -8,4 +8,4 @@ export type GSheetsResponse = {
 /**
  * Raw data from GSheets.
  */
-export type GSheetsData = (string | number)[]
+export type GSheetsData = (string)[]

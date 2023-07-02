@@ -27,28 +27,29 @@ export type Contact = {
 }
 
 export type Person = {
-  index: number
-  name: string
-  gender: Gender
-  contact: Partial<Contact>
+  index?: number
+  name?: string
+  gender?: Gender
+  contact?: Partial<Contact>
 }
 
 export type Tutor = {
   personalData: Person
-  isProBonoOk?: boolean
-  isUnaidedOk?: boolean
-  acceptableSecondaryStreams?: SecondaryStream[]
+  isProBonoOk?: boolean | undefined
+  isUnaidedOk?: boolean | undefined
+  acceptableSecondaryStreams: SecondaryStream[]
   tutorSubjects: TutorSubjects
 }
 
 export type TutorSubjects = {
-  primary: PrimarySubjects[],
-  lowerSecondary: SecondarySubjects[],
-  upperSecondary: SecondarySubjects[],
-  jc: JCSubjects[],
-  ib: IBSubjects[]
+  primary?: Subject[],
+  lowerSecondary?: Subject[],
+  upperSecondary?: Subject[],
+  jc?: Subject[],
+  ib?: Subject[]
 }
 
+export type Subject = (PrimarySubjects | SecondarySubjects | JCSubjects | IBSubjects)
 export type Tutee = {
   personalData: Person
   preferedGender: PreferedGender

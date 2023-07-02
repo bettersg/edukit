@@ -10,29 +10,32 @@ export enum EducationLevel {
    * Represents the stream for a secondary school level.
    */
   export enum SecondaryStream {
-    InternationalBaccalaureate,
-    IntegratedProgramme,
-    Express,
-    NormalAcademic,
-    NormalTechnical,
+    InternationalBaccalaureate = "ib",
+    IntegratedProgramme = "ip",
+    Express = "exp",
+    NormalAcademic = "na",
+    NormalTechnical = "nt",
   }
   
   export enum PrimarySubjects {
-    English,
-    Math,
-    Science,
-    Chinese,
-    Malay,
-    Tamil,
+    English = "englishPri",
+    Math = "mathPri",
+    Science = "sciencePri",
+    Chinese = "chinesePri",
+    Malay = "malayPri",
+    Tamil = "tamilPri",
+    SocialStudies = "socialStudiesPri"
   }
   
   export enum SecondarySubjects {
     English,
+    EnglishLiterature,
     Chinese,
     Malay,
     Tamil,
     EMath,
     AMath,
+    Science,
     CombinedSciencePhysics,
     CombinedScienceChemistry,
     CombinedScienceBiology,
@@ -45,7 +48,8 @@ export enum EducationLevel {
     CombinedHumanitiesLiterature,
     Geography,
     History,
-    EnglishLiterature
+    SocialStudies,
+    Accounting
   }
   
   export enum JCSubjects {
@@ -75,12 +79,20 @@ export enum EducationLevel {
   export enum IBSubjects {
     English,
     Chinese,
-    EnglishLiterature,
-    History,
-    Geography,
-    Economics,
-    Physics,
-    Chemistry,
-    Biology,
-    Math
+    EnglishLiteratureSL,
+    HistorySL,
+    GeographySL,
+    EconomicsSL,
+    PhysicsSL,
+    ChemistrySL,
+    BiologySL,
+    MathSL,
+    EnglishLiteratureHL,
+    HistoryHL,
+    GeographyHL,
+    EconomicsHL,
+    PhysicsHL,
+    ChemistryHL,
+    BiologyHL,
+    MathHL
   }

@@ -498,7 +498,8 @@ const DataLoadForm = () => {
   }
   const handleTest = async () => {
     const data = await getGSheetsData(API_ENDPOINT_TUTOR, false)
-    transformKSTutorData(data)
+    const test = transformKSTutorData(data)
+    console.log("test", test)
     // const colNames = data[0]
     // console.log(colNames)
   }

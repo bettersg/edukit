@@ -1,207 +1,252 @@
 import { GSheetsResponse, GSheetsData } from '@/types/google-sheets'
 import {
     Tutee,
-    Tutor,
-    Subject,
     Gender,
-    PreferedGender
+    PreferedGender,
+    TutorSubjects,
+    Subject,
+    on
   } from '@/types/person'
   import {
     EducationLevel,
     SecondaryStream,
+    PrimarySubjects,
+    SecondarySubjects,
+    JCSubjects,
+    IBSubjects,
   } from '@/types/educationSubjects'
   import { stringToArray } from '.'
-  
-  /**
 
-/**
- * Parses the list of subjects tutor can teach.
- *
- * @param level level at which tutor is able to teach
- * @param rawSubjects string or comma-delimited list of subjects
- * @param streams stream at which tutor is able to teach
- * @returns list of subjects
- */
-const parseSubjects = (
-    level: EducationLevel,
-    rawSubjects: string
-  ): Subject[] => {
-    const searchPhrase = 'I would not like to teach'
-    if (!rawSubjects || rawSubjects.includes(searchPhrase)) return []
+  const primarySubjectTextToEnumMapping = {
+    "english language": PrimarySubjects.English,
+    "mathematics": PrimarySubjects.Math,
+    "science": PrimarySubjects.Science,
+    "chinese language": PrimarySubjects.Chinese,
+    "malay language": PrimarySubjects.Malay,
+    "tamil language": PrimarySubjects.Tamil,
+    "social studies": PrimarySubjects.SocialStudies
+  }
+
+  const secondarySubjectTextToEnumMapping = {
+    "english language": SecondarySubjects.English,
+    "chinese language": SecondarySubjects.Chinese,
+    "malay language": SecondarySubjects.Malay,
+    "tamil language": SecondarySubjects.Tamil,
+    "mathematics": SecondarySubjects.EMath,
+    "a-mathematics": SecondarySubjects.AMath,
+    "principle of accounting": SecondarySubjects.Accounting,
+    "physics": SecondarySubjects.Physics,
+    "biology": SecondarySubjects.Biology,
+    "chemistry": SecondarySubjects.Chemistry,
+    "combined science (biology)": SecondarySubjects.CombinedScienceBiology,
+    "combined science (chemistry)": SecondarySubjects.CombinedScienceChemistry,
+    "combined science (physics)": SecondarySubjects.CombinedSciencePhysics,
+    "geography": SecondarySubjects.Geography,
+    "history": SecondarySubjects.History,
+    "english literature": SecondarySubjects.EnglishLiterature,
+    "social studies": SecondarySubjects.SocialStudies,
+    "combined humanities (social studies)":SecondarySubjects.CombinedHumanitiesSocialStudies,
+    "combined humanities (geography)":SecondarySubjects.CombinedHumanitiesGeography,
+    "combined humanities (history)":SecondarySubjects.CombinedHumanitiesHistory,
+    "combined humanities (literature)":SecondarySubjects.CombinedHumanitiesLiterature,
+  }
   
-    return rawSubjects.split(',').map(
-      (subject: string): Subject => ({
-        name: subject.trim(),
-        educationLevel: level,
+  const jcSubjectTextToEnumMapping = {
+    "general paper (gp)": JCSubjects.GeneralPaper,
+    "knowledge & inquiry (ki)": JCSubjects.KnowledgeAndInquiry,
+    "chinese language": JCSubjects.Chinese,
+    "malay language": JCSubjects.Malay,
+    "tamil language": JCSubjects.Tamil,
+    "h1 mathematics": JCSubjects.H1Math,
+    "h2 mathematics": JCSubjects.H2Math,
+    "h1 physics": JCSubjects.H1Physics,
+    "h2 physics": JCSubjects.H2Physics,
+    "h1 chemistry": JCSubjects.H1Chemistry,
+    "h2 chemistry": JCSubjects.H2Chemistry,
+    "h1 biology": JCSubjects.H1Biology,
+    "h2 biology": JCSubjects.H2Biology,
+    "h1 geography": JCSubjects.H1Geography,
+    "h2 geography": JCSubjects.H2Geography,
+    "h1 history": JCSubjects.H1History,
+    "h2 history": JCSubjects.H2History,
+    "h1 english literature": JCSubjects.H1EnglishLiterature,
+    "h2 english literature": JCSubjects.H2EnglishLiterature,
+    "h1 economics": JCSubjects.H1Econs,
+    "h2 economics": JCSubjects.H2Econs,
+  }
+
+  const ibSubjectTextToEnumMapping = {
+    "english language": IBSubjects.English,
+    "chinese language": IBSubjects.Chinese,
+    "mathematics (sl)": IBSubjects.MathSL,
+    "geography (sl)": IBSubjects.GeographySL,
+    "history (sl)": IBSubjects.HistorySL,
+    "english literature (sl)": IBSubjects.EnglishLiteratureSL,
+    "economics (sl)":IBSubjects.EconomicsSL,
+    "biology (sl)": IBSubjects.BiologySL,
+    "physics (sl)": IBSubjects.PhysicsSL,
+    "chemistry (sl)": IBSubjects.ChemistrySL,
+    "mathematics (hl)": IBSubjects.MathSL,
+    "geography (hl)": IBSubjects.GeographySL,
+    "history (hl)": IBSubjects.HistorySL,
+    "english literature (hl)": IBSubjects.EnglishLiteratureSL,
+    "economics (hl)": IBSubjects.EconomicsSL,
+    "biology (hl)": IBSubjects.BiologySL,
+    "physics (hl)": IBSubjects.PhysicsSL,
+    "chemistry (hl)": IBSubjects.ChemistryHL
+  }
+
+const findIdxKSGeneralTutee = (colNames : string[]) => {
+    const tuteeIndexIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('tutee') &&
+          colName.toLowerCase().includes('index')
+      )
+      const tuteeNameIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('name')
+      )
+      const contactNumIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('phone')
+      )
+      const genderIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('gender') &&
+          !colName.toLowerCase().includes('?')
+      )
+      const genderPrefIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('gender?')
+      )
+      const financialAidIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('financial aid')
+      )
+      const educationLevelIdx = colNames.findIndex(
+        (colName: string) =>
+          colName.toLowerCase().includes('level') &&
+          colName.toLowerCase().includes('education') &&
+          colName.toLowerCase().includes('2023')
+      )
+      const educationLevelIdxArr: number[] = []
+      colNames.forEach((colName: string, idx: number) => {
+        if (colName.toLowerCase().includes('level of education')) {
+          educationLevelIdxArr.push(idx)
+        }
       })
-    )
-  }
-  
-  /**
-   * Parses the secondary level stream.
-   *
-   * @param stream string representation of the stream
-   * @returns enum value of the stream
-   */
-  const parseStream = (stream: string): SecondaryStream | undefined => {
-    if (!stream) return undefined
-    if (stream.includes('IB')) return SecondaryStream.InternationalBaccalaureate
-    if (stream.includes('IP')) return SecondaryStream.IntegratedProgramme
-    if (stream.includes('NA')) return SecondaryStream.NormalAcademic
-    if (stream.includes('NT')) return SecondaryStream.NormalTechnical
-    return SecondaryStream.Express
-  }
-  
-  /**
-   * Transform data from KindleSparks into `Tutor` compatible object.
-   *
-   * @param data raw data as obtained from GSheets
-   * @returns `Tutor` object
-   */
-  export const transformKSTutorData = (data: GSheetsData): Tutor => {
-    const subjects = [
-      ...parseSubjects(EducationLevel.Primary, data[10] as string),
-      ...parseSubjects(EducationLevel.LowerSecondary, data[12] as string),
-      ...parseSubjects(EducationLevel.UpperSecondary, data[13] as string),
-      ...parseSubjects(EducationLevel.JuniorCollege, data[14] as string),
-      ...parseSubjects(
-        EducationLevel.InternationalBaccalaureate,
-        data[15] as string
-      ),
-    ]
-  
-    const proBono = data[7] as string
-    const unaided = data[8] as string
-    const streams = stringToArray(data[11] as string).map(
-      (stream: string): SecondaryStream => parseStream(stream) as SecondaryStream
-    )
-  
-    return {
-      personalData: {
-        index: data[0] as number,
-        name: data[2] as string,
-        gender: data[3] as (typeof Gender)[keyof typeof Gender],
-        contact: {
-          email: data[1] as string,
-          phone: data[4] as number,
-        },
-      },
-      isProBono:
-        proBono === '' || proBono === 'Both' ? undefined : proBono === 'Free',
-      isUnaided: unaided === '' ? undefined : unaided === 'Yes',
-      secondaryStreams: streams,
-      subjects: subjects,
+      const streamIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('stream')
+      )
+      const subjIdx = colNames.findIndex((colName: string) =>
+        colName.toLowerCase().includes('subject')
+      )
+      const subjIdxArr: number[] = []
+      colNames.forEach((colName: string, idx: number) => {
+        if (colName.toLowerCase().includes('subject')) {
+          subjIdxArr.push(idx)
+        }
+      })     
+
+    if (
+        tuteeIndexIdx < 0 ||
+        tuteeNameIdx < 0 ||
+        genderIdx < 0 ||
+        genderPrefIdx < 0 ||
+        educationLevelIdx < 0 ||
+        streamIdx < 0 ||
+        subjIdx < 0
+    ) {
+        alert('Tutee DB column name inaccurate! Tutee Data not loaded ')
+        return
     }
+        return {
+            personalData: {
+                index: tuteeIndexIdx,
+                name: tuteeNameIdx,
+                gender: genderIdx,
+                contact: {
+                    phone:contactNumIdx
+                }
+            },
+            PreferedGender: genderPrefIdx,
+            isOnFinancialAid: financialAidIdx,
+            EducationLevel: educationLevelIdx,
+            secondaryStream: streamIdx,
+            subjects:subjIdxArr        
+       }
+}
+const parseGender = (gender: string) : Gender | undefined => {
+    gender = gender.toLowerCase()
+    if (gender.includes("male")) return Gender.Male
+    if (gender.includes("female")) return Gender.Female
+    return undefined
   }
-  
-  /**
-   *
-   * @param level
-   * @returns
-   */
-  const parseKSTuteeGeneralLevel = (level: string): EducationLevel => {
-    if (level.includes('IB')) return EducationLevel.InternationalBaccalaureate
-    if (level.includes('JC')) return EducationLevel.JuniorCollege
-    if (level.includes('Secondary') && level.match(/(3|4|5)/gi))
-      return EducationLevel.UpperSecondary
-    if (level.includes('Secondary') && level.match(/(1|2)/gi))
-      return EducationLevel.LowerSecondary
-    return EducationLevel.Primary
-  }
-  
-  /**
-   * Transforms data from KindleSparks into a `Tutee` compatible object.
-   *
-   * @param data raw data as obtained from GSheets
-   * @returns `Tutee` object
-   */
-  export const transformKSTuteeData = (data: GSheetsData): Tutee => {
-    const level = data[9] as string
-  
-    return {
-      personalData: {
-        index: data[0] as number,
-        name: data[3] as string,
-        gender: data[26] as (typeof Gender)[keyof typeof Gender],
-        contact: {
-          email: data[2] as string,
-          phone: data[6] as number,
-        },
-      },
-      preferedGender: getGenderPreference(data[20] as string),
-      isOnFinancialAid: (data[7] as string) === 'Yes',
-      // level: EducationLevel,
-      educationLevel: parseKSTuteeGeneralLevel(level),
-      secondaryStream: parseStream(data[10] as string),
-      subjects: stringToArray(data[12] as string),
-    }
-  }
-  
-  /**
-   *
-   * @param level
-   * @returns
-   */
-  const parseSSOTuteeGeneralLevel = (level: string): EducationLevel => {
-    if (level.includes('JC')) return EducationLevel.JuniorCollege
-    if (level.includes('S') && level.match(/(3|4|5)/gi))
-      return EducationLevel.UpperSecondary
-    if (level.includes('S') && level.match(/(1|2)/gi))
-      return EducationLevel.LowerSecondary
-    return EducationLevel.Primary
-  }
-  
-  /**
-   * Transforms data from SSO into a `Tutee` compatible object.
-   *
-   * @param data raw data as obtained from GSheets
-   * @returns `Tutee` object
-   */
-  export const transformSSOTuteeData = (data: GSheetsData): Tutee => {
-    const level = data[4] as string
-    const subjects = [
-      data[10] as string,
-      data[11] as string,
-      data[12] as string,
-      data[14] as string,
-      data[15] as string,
-      data[16] as string,
-      data[17] as string,
-      data[18] as string,
-      data[19] as string,
-    ]
-  
-    return {
-      personalData: {
-        index: 0,
-        name: data[1] as string,
-        gender: data[7] as (typeof Gender)[keyof typeof Gender],
-        contact: {
-          email: '',
-          phone: 0,
-          telegram: '',
-        },
-      },
-      preferedGender: getGenderPreference(data[8] as string),
-      isOnFinancialAid: false,
-      // level: level,
-      educationLevel: parseSSOTuteeGeneralLevel(level),
-      secondaryStream: parseStream(data[13] as string),
-      subjects: subjects,
-    }
-  }
-  
-  /**
-   * Gets the tutee's gender preference.
-   *
-   * @param rawGenderPreference original input of gender preference
-   * @returns cleaned gender preference
-   */
-  const getGenderPreference = (
+
+const parsetGenderPreference = (
     rawGenderPreference: string
-  ): Tutee['preferedGender'] => {
+  ): PreferedGender => {
     if (rawGenderPreference.includes('female')) return PreferedGender.Female
     if (rawGenderPreference.includes('male')) return PreferedGender.Male
     return PreferedGender.None
   }
+
+  const parseStream = (stream: string): SecondaryStream => {
+    stream = stream.toLowerCase()
+    const streamArr: SecondaryStream = SecondaryStream.Express
+    return streamArr
+  }
+
+  const parseFinancialAidStatus = (onFinAid: string): boolean=> {
+
+    return false
+  }
+
+  const parseEducationLevel = (level: string): EducationLevel => {
+
+  }
+
+const parseSubjects = (
+    level: EducationLevel,
+    rawSubjects: string[]
+  ): Subject[] => {
+    const subjectsArr: Subject[] = []
+    return subjectsArr
+  }
+  
+
+  
+  
+  
+
+
+export const transformKSTutorData = (data: GSheetsData[]): Tutee[] => {
+    const parsedTuteeData : Tutee[] = []
+    const colIdx = findIdxKSGeneralTutee(data[0])
+    if (!colIdx) return parsedTuteeData
+    // console.log(colIdx)
+    data.shift()
+    for (let rowData of data){
+        const tutee: Tutee = {
+            personalData: {},
+            subjects: []
+          }
+        tutee.personalData = {
+            index: parseInt(rowData[colIdx.personalData.index]),
+            name: rowData[colIdx.personalData.name],
+            gender: parseGender(rowData[colIdx.personalData.gender]),
+            contact: {
+                phone: parseInt(rowData[colIdx.personalData.contact.phone])
+            }
+        }
+        tutee.preferedGender = parsetGenderPreference(rowData[colIdx.PreferedGender])
+        tutee.isOnFinancialAid = parseFinancialAidStatus(rowData[colIdx.isOnFinancialAid])
+        tutee.educationLevel = parseEducationLevel(rowData[colIdx.EducationLevel])
+        tutee.secondaryStream = parseStream(rowData[colIdx.secondaryStream])
+        const subjArr = colIdx.subjects.map((idx)=>rowData[idx])
+        tutee.subjects = parseSubjects(tutee.educationLevel, subjArr)
+
+           
+        parsedTuteeData.push(tutee)
+    }
+    return parsedTuteeData
+  }
+  
+
   

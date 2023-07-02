@@ -52,10 +52,10 @@ export type TutorSubjects = {
 export type Subject = (PrimarySubjects | SecondarySubjects | JCSubjects | IBSubjects)
 export type Tutee = {
   personalData: Person
-  preferedGender: PreferedGender
+  preferedGender?: PreferedGender
   // genderPreference?: keyof typeof Gender
   isOnFinancialAid?: boolean
-  educationLevel: EducationLevel
+  educationLevel?: EducationLevel
   secondaryStream?: SecondaryStream
   subjects: (PrimarySubjects|SecondarySubjects|JCSubjects|IBSubjects)[]
 }

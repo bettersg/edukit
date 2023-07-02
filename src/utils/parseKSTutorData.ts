@@ -43,7 +43,11 @@ import {
     "geography": SecondarySubjects.Geography,
     "history": SecondarySubjects.History,
     "english literature": SecondarySubjects.EnglishLiterature,
-    "social studies": SecondarySubjects.SocialStudies
+    "social studies": SecondarySubjects.SocialStudies,
+    "combined humanities (social studies)":SecondarySubjects.CombinedHumanitiesSocialStudies,
+    "combined humanities (geography)":SecondarySubjects.CombinedHumanitiesGeography,
+    "combined humanities (history)":SecondarySubjects.CombinedHumanitiesHistory,
+    "combined humanities (literature)":SecondarySubjects.CombinedHumanitiesLiterature,
   }
   
   const jcSubjectTextToEnumMapping = {
@@ -235,8 +239,8 @@ const parseSubjects = (
   
   const parseGender = (gender: string) : Gender | undefined => {
     gender = gender.toLowerCase()
-    if (gender.includes("male")) return Gender.Male
     if (gender.includes("female")) return Gender.Female
+    if (gender.includes("male")) return Gender.Male
     return undefined
   }
 // const getGenderPreference = (

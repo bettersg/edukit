@@ -214,8 +214,6 @@ const parseGenderPreference = (
     return PreferedGender.None
   }
 
-
-
   const parseFinancialAidStatus = (onFinAid: string): boolean|undefined=> {
     onFinAid = onFinAid.toLowerCase()
     if (onFinAid.includes("yes")) return true
@@ -244,7 +242,7 @@ const parseSubjects = (
     // let parsedSubjectsArr: Subject[] = []
     const rawSubjectsCombined = rawSubjectsArr.reduce((prev, curr)=>(prev+", "+curr+","),"")
     const rawSubjectsCombinedArr = rawSubjectsCombined.split(",").map((subj)=>subj.trim().toLowerCase())
-    console.log(rawSubjectsCombinedArr)
+    // console.log(rawSubjectsCombinedArr)
     switch (level){
         case EducationLevel.JuniorCollege:
             return rawSubjectsCombinedArr.map((subj)=>jcSubjectTextToEnumMapping[subj])

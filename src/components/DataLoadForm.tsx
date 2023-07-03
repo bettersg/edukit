@@ -12,6 +12,7 @@ import { getGSheetsData } from '@/utils/api'
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/api'
 import {transformKSTutorData} from '@/utils/parseKSTutorData'
 import {transformKSGeneralTuteeData} from "@/utils/parseKSGeneraTuteeData"
+import {getMatchScore} from '@/utils/score'
 import {transformKSSSOTuteeData} from '@/utils/parseKSSSOTuteeData'
 import { useState } from 'react'
 
@@ -499,11 +500,15 @@ const DataLoadForm = () => {
     // console.log(selectedTuteeDataFormat)    
   }
   const handleTest = async () => {
-    const data = await getGSheetsData(API_ENDPOINT_TUTEE, false)
-    // const test = transformKSTutorData(data)
-    // const test = transformKSGeneralTuteeData(data)
-    const test = transformKSSSOTuteeData(data)
-    console.log("test", test)
+    const data1 = await getGSheetsData(API_ENDPOINT_TUTOR, false)
+    const data2 = await getGSheetsData(API_ENDPOINT_TUTEE, false)
+    const KSTutorData = transformKSTutorData(data1)
+    const KSGeneralTuteeData = transformKSGeneralTuteeData(data2)
+    // const SSOTuteeData = transformKSSSOTuteeData(data)
+    // console.log("test", test)
+    KSTutorData.forEach((tutor)=>{
+      console.log("Score: ", getMatchScore(tutor, KSGeneralTuteeData[0]))
+    })
     // const colNames = data[0]
     // console.log(colNames)
   }

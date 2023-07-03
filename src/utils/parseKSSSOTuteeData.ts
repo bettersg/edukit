@@ -170,7 +170,7 @@ const findIdxKSSSOTutee = (colNames : string[]) => {
             secondaryStream: streamIdx,
             subjects:subjIdxArr        
        }
-}
+  }
 const parseGender = (gender: string) : Gender | undefined => {
     gender = gender.toLowerCase()
     if (gender.includes("female")) return Gender.Female
@@ -207,7 +207,7 @@ const parseSubjects = (
     // let parsedSubjectsArr: Subject[] = []
     const rawSubjectsCombined = rawSubjectsArr.reduce((prev, curr)=>(prev+", "+curr+","),"")
     const rawSubjectsCombinedArr = rawSubjectsCombined.split(",").map((subj)=>subj.trim().toLowerCase())
-    console.log(rawSubjectsCombinedArr)
+    // console.log(rawSubjectsCombinedArr)
     switch (level){
         case EducationLevel.JuniorCollege:
             return rawSubjectsCombinedArr.map((subj)=>jcSubjectTextToEnumMapping[subj])
@@ -221,14 +221,13 @@ const parseSubjects = (
             return rawSubjectsCombinedArr.map((subj)=>primarySubjectTextToEnumMapping[subj])
     }
     return []
-  }
-  
+  }  
   
 export const transformKSSSOTuteeData = (data: GSheetsData[]): Tutee[] => {
     const parsedTuteeData : Tutee[] = []
     const colIdx = findIdxKSSSOTutee(data[0])
     if (!colIdx) return parsedTuteeData
-    console.log(colIdx)
+    // console.log(colIdx)
     data.shift()
     for (let rowData of data){
         const tutee: Tutee = {

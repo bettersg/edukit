@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GSheetsResponse, GSheetsData } from '@/types/google-sheets'
 import {
     Tutee,
@@ -13,7 +14,6 @@ import {
     JCSubjects,
     IBSubjects,
   } from '@/types/educationSubjects'
-  import { stringToArray } from '.'
 
   const primarySubjectTextToEnumMapping = {
     "english":PrimarySubjects.English,
@@ -114,9 +114,6 @@ const findIdxKSSSOTutee = (colNames : string[]) => {
         colName.toLowerCase().includes('gender') && 
         colName.toLowerCase().includes('preference')
       )
-    //   const financialAidIdx = colNames.findIndex((colName: string) =>
-    //     colName.toLowerCase().includes('financial aid')
-    //   )
       const educationLevelIdx = colNames.findIndex(
         (colName: string) =>
           colName.toLowerCase().includes('level') &&

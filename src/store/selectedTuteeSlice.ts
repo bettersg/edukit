@@ -1,8 +1,9 @@
 // @ts-nocheck
 import {createSlice} from "@reduxjs/toolkit"
 
-const initialState = {index:101, gender:"male",tutorgenderPref:"none", educationLevel:"Secondary 4", acadStream:"Express", subjects:["Mathematicss","Science"]}
+// const initialState = {index:101, gender:"male",tutorgenderPref:"none", educationLevel:"Secondary 4", acadStream:"Express", subjects:["Mathematicss","Science"]}
 
+const initialState = {}
 const selectedTutorSlice = createSlice({
     name: "selectedTutee",
     initialState,

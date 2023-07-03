@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GSheetsResponse, GSheetsData } from '@/types/google-sheets'
 import {
     Tutor,
@@ -179,8 +180,7 @@ const findIdxKSTutor = (colNames : string[]) => {
             upperSecondary: upperSecSubjIdx,
             jc: jcSubjIdx,
             ib: ibSubjIdx
-        }      
-        
+        }              
        }
 }
 
@@ -220,11 +220,10 @@ const parseSubjects = (
             }
         break;
         }
-    console.log(rawSubjectArr, "parsed : ", subjectsArr)
+    // console.log(rawSubjectArr, "parsed : ", subjectsArr)
     return subjectsArr
   }
   
-
   const parseStream = (stream: string): SecondaryStream[] => {
     stream = stream.toLowerCase()
     const streamArr: SecondaryStream[] = []
@@ -243,13 +242,7 @@ const parseSubjects = (
     if (gender.includes("male")) return Gender.Male
     return undefined
   }
-// const getGenderPreference = (
-//     rawGenderPreference: string
-//   ): Tutee['preferedGender'] => {
-//     if (rawGenderPreference.includes('female')) return PreferedGender.Female
-//     if (rawGenderPreference.includes('male')) return PreferedGender.Male
-//     return PreferedGender.None
-//   }
+
   const parseProBonoPreference = (proBonoPref: string):boolean | undefined => {
     proBonoPref = proBonoPref.toLowerCase()
     if (proBonoPref.includes("free") || proBonoPref.includes("both")) return true
@@ -262,11 +255,11 @@ const parseSubjects = (
     if (unaidedPref.includes("no")) return false
     return undefined
   }
+
 export const transformKSTutorData = (data: GSheetsData[]): Tutor[] => {
     const parsedTutorData : Tutor[] = []
     const colIdx = findIdxKSTutor(data[0])
     if (!colIdx) return parsedTutorData
-    // console.log(colIdx)
     data.shift()
     for (let rowData of data){
         const tutor: Tutor = {

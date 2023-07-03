@@ -1,6 +1,7 @@
 // @ts-nocheck
 import {useNavigate} from 'react-router-dom'
 import {useSelector, useDispatch } from 'react-redux';
+import { Tutee, Tutor } from '@/types/person';
 import {selectedTutorMatchesActions} from "../store/selectedTutorMatchesSlice"
 import { selectedTuteeMatchesActions } from '../store/selectedTuteeMatchesSlice'; 
 import {Stack} from '@mui/material'
@@ -28,18 +29,19 @@ const MainMatchingTable = () => {
       // })
       const handleRowClick : GridEventListener = (params, event, details) => {
         const tuteeIndex = parseInt(params.row.Tutee.split("-")[1])
-        const tutee = window.tuteeRawData.find((row)=>(parseInt(row.index) === tuteeIndex))
+        const tutee = window.tuteeParsedData.find((row:Tutee)=>(parseInt(row.personalData.index) === tuteeIndex))
         const tuteeMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutee.index==tuteeIndex))
         console.log(tuteeMatchSummary)
-        let tutor1 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor1)))
+        const tutorParsedData: Tutor[] = window.tutorParsedData
+        let tutor1 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor1)))
         tutor1 = {...tutor1, matchingScore:(tuteeMatchSummary.tutor1.matchingScore)} 
-        let tutor2 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor2)))
+        let tutor2 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor2)))
         tutor2 = {...tutor2, matchingScore:tuteeMatchSummary.tutor2.matchingScore}
-        let tutor3 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor3)))
+        let tutor3 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor3)))
         tutor3 = {...tutor3, matchingScore:tuteeMatchSummary.tutor3.matchingScore}
-        let tutor4 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor4)))
+        let tutor4 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor4)))
         tutor4 = {...tutor4, matchingScore:tuteeMatchSummary.tutor4.matchingScore}
-        let tutor5 = window.tutorRawData.find((row)=>(parseInt(row.index) === parseInt(params.row.Tutor5)))
+        let tutor5 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor5)))
         tutor5 = {...tutor5, matchingScore:tuteeMatchSummary.tutor5.matchingScore}
         const tutorInfo = [tutor1, tutor2, tutor3, tutor4, tutor5]
         // not updated this state yet - Berwyn

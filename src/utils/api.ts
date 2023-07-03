@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { GSheetsResponse, GSheetsData } from '@/types/google-sheets'
 
 export const API_ENDPOINT_TUTOR =

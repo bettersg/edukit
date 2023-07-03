@@ -3,9 +3,7 @@ import {
     Tutee,
     Gender,
     PreferedGender,
-    TutorSubjects,
     Subject,
-    on
   } from '@/types/person'
   import {
     EducationLevel,
@@ -26,7 +24,6 @@ import {
     "tamil language": PrimarySubjects.Tamil,
     "social studies": PrimarySubjects.SocialStudies
   }
-
   const secondarySubjectTextToEnumMapping = {
     "english language": SecondarySubjects.English,
     "chinese language": SecondarySubjects.Chinese,
@@ -50,7 +47,6 @@ import {
     "combined humanities (history)":SecondarySubjects.CombinedHumanitiesHistory,
     "combined humanities (literature)":SecondarySubjects.CombinedHumanitiesLiterature,
   }
-  
   const jcSubjectTextToEnumMapping = {
     "general paper (gp)": JCSubjects.GeneralPaper,
     "knowledge & inquiry (ki)": JCSubjects.KnowledgeAndInquiry,
@@ -74,10 +70,17 @@ import {
     "h1 economics": JCSubjects.H1Econs,
     "h2 economics": JCSubjects.H2Econs,
   }
-
   const ibSubjectTextToEnumMapping = {
     "english language": IBSubjects.English,
     "chinese language": IBSubjects.Chinese,
+    "mathematics": IBSubjects.MathSL,
+    "geography": IBSubjects.GeographySL,
+    "history": IBSubjects.HistorySL,
+    "english literature": IBSubjects.EnglishLiteratureSL,
+    "economics":IBSubjects.EconomicsSL,
+    "biology": IBSubjects.BiologySL,
+    "physics": IBSubjects.PhysicsSL,
+    "chemistry": IBSubjects.ChemistrySL,
     "mathematics (sl)": IBSubjects.MathSL,
     "geography (sl)": IBSubjects.GeographySL,
     "history (sl)": IBSubjects.HistorySL,
@@ -94,6 +97,30 @@ import {
     "biology (hl)": IBSubjects.BiologySL,
     "physics (hl)": IBSubjects.PhysicsSL,
     "chemistry (hl)": IBSubjects.ChemistryHL
+  }
+  const educationLevelMapping = {
+    "primary 1":EducationLevel.Primary,
+    "primary 2":EducationLevel.Primary,
+    "primary 3":EducationLevel.Primary,
+    "primary 4":EducationLevel.Primary,
+    "primary 5":EducationLevel.Primary,
+    "primary 6":EducationLevel.Primary,
+    "secondary 1": EducationLevel.LowerSecondary,
+    "secondary 2": EducationLevel.LowerSecondary,
+    "secondary 3": EducationLevel.LowerSecondary,
+    "secondary 4": EducationLevel.UpperSecondary,
+    "secondary 5": EducationLevel.UpperSecondary,
+    "junior college (jc) 1": EducationLevel.JuniorCollege,
+    "junior college (jc) 2": EducationLevel.JuniorCollege,
+    "international baccalaureate (ib) grade 11": EducationLevel.InternationalBaccalaureate,
+    "international baccalaureate (ib) grade 12": EducationLevel.InternationalBaccalaureate,
+  }
+  const streamMapping = {
+    "express": SecondaryStream.Express,
+    "normal academic (na)": SecondaryStream.NormalAcademic,
+    "normal technical (nt)": SecondaryStream.NormalTechnical,
+    "integrated program (ip)": SecondaryStream.IntegratedProgramme,
+    "international baccalaureate (ib)": SecondaryStream.InternationalBaccalaureate
   }
 
 const findIdxKSGeneralTutee = (colNames : string[]) => {
@@ -167,19 +194,19 @@ const findIdxKSGeneralTutee = (colNames : string[]) => {
             },
             PreferedGender: genderPrefIdx,
             isOnFinancialAid: financialAidIdx,
-            EducationLevel: educationLevelIdx,
+            EducationLevel: educationLevelIdxArr,
             secondaryStream: streamIdx,
             subjects:subjIdxArr        
        }
 }
 const parseGender = (gender: string) : Gender | undefined => {
     gender = gender.toLowerCase()
-    if (gender.includes("male")) return Gender.Male
     if (gender.includes("female")) return Gender.Female
+    if (gender.includes("male")) return Gender.Male
     return undefined
   }
 
-const parsetGenderPreference = (
+const parseGenderPreference = (
     rawGenderPreference: string
   ): PreferedGender => {
     if (rawGenderPreference.includes('female')) return PreferedGender.Female
@@ -187,40 +214,58 @@ const parsetGenderPreference = (
     return PreferedGender.None
   }
 
+
+
+  const parseFinancialAidStatus = (onFinAid: string): boolean|undefined=> {
+    onFinAid = onFinAid.toLowerCase()
+    if (onFinAid.includes("yes")) return true
+    if (onFinAid.includes("no")) return false
+    return undefined
+  }
+
+  const parseEducationLevel = (levelArr: string[]): EducationLevel => {
+    const parsedEducationLevelArr = levelArr.map((level)=>educationLevelMapping[level.trim().toLowerCase()])
+    if (parsedEducationLevelArr.includes(EducationLevel.JuniorCollege)) return EducationLevel.JuniorCollege
+    if (parsedEducationLevelArr.includes(EducationLevel.InternationalBaccalaureate)) return EducationLevel.InternationalBaccalaureate
+    if (parsedEducationLevelArr.includes(EducationLevel.UpperSecondary)) return EducationLevel.UpperSecondary
+    if (parsedEducationLevelArr.includes(EducationLevel.LowerSecondary)) return EducationLevel.LowerSecondary
+    if (parsedEducationLevelArr.includes(EducationLevel.Primary)) return EducationLevel.Primary
+    return EducationLevel.undefined
+  }
   const parseStream = (stream: string): SecondaryStream => {
     stream = stream.toLowerCase()
-    const streamArr: SecondaryStream = SecondaryStream.Express
-    return streamArr
+    if (streamMapping[stream]) return streamMapping[stream]
+    return SecondaryStream.undefined
   }
-
-  const parseFinancialAidStatus = (onFinAid: string): boolean=> {
-
-    return false
-  }
-
-  const parseEducationLevel = (level: string): EducationLevel => {
-
-  }
-
 const parseSubjects = (
     level: EducationLevel,
-    rawSubjects: string[]
+    rawSubjectsArr: string[]
   ): Subject[] => {
-    const subjectsArr: Subject[] = []
-    return subjectsArr
+    // let parsedSubjectsArr: Subject[] = []
+    const rawSubjectsCombined = rawSubjectsArr.reduce((prev, curr)=>(prev+", "+curr+","),"")
+    const rawSubjectsCombinedArr = rawSubjectsCombined.split(",").map((subj)=>subj.trim().toLowerCase())
+    console.log(rawSubjectsCombinedArr)
+    switch (level){
+        case EducationLevel.JuniorCollege:
+            return rawSubjectsCombinedArr.map((subj)=>jcSubjectTextToEnumMapping[subj])
+        case EducationLevel.InternationalBaccalaureate:
+            return rawSubjectsCombinedArr.map((subj)=>ibSubjectTextToEnumMapping[subj])
+        case EducationLevel.UpperSecondary:
+            return rawSubjectsCombinedArr.map((subj)=>secondarySubjectTextToEnumMapping[subj])
+        case EducationLevel.LowerSecondary:
+            return rawSubjectsCombinedArr.map((subj)=>secondarySubjectTextToEnumMapping[subj])
+        case EducationLevel.Primary:
+            return rawSubjectsCombinedArr.map((subj)=>primarySubjectTextToEnumMapping[subj])
+    }
+    return []
   }
   
-
   
-  
-  
-
-
-export const transformKSTutorData = (data: GSheetsData[]): Tutee[] => {
+export const transformKSGeneralTuteeData = (data: GSheetsData[]): Tutee[] => {
     const parsedTuteeData : Tutee[] = []
     const colIdx = findIdxKSGeneralTutee(data[0])
     if (!colIdx) return parsedTuteeData
-    // console.log(colIdx)
+    console.log(colIdx)
     data.shift()
     for (let rowData of data){
         const tutee: Tutee = {
@@ -235,14 +280,13 @@ export const transformKSTutorData = (data: GSheetsData[]): Tutee[] => {
                 phone: parseInt(rowData[colIdx.personalData.contact.phone])
             }
         }
-        tutee.preferedGender = parsetGenderPreference(rowData[colIdx.PreferedGender])
+        tutee.preferedGender = parseGenderPreference(rowData[colIdx.PreferedGender])
         tutee.isOnFinancialAid = parseFinancialAidStatus(rowData[colIdx.isOnFinancialAid])
-        tutee.educationLevel = parseEducationLevel(rowData[colIdx.EducationLevel])
+        const educationLevelArr = colIdx.EducationLevel.map((idx)=>rowData[idx])
+        tutee.educationLevel = parseEducationLevel(educationLevelArr)
         tutee.secondaryStream = parseStream(rowData[colIdx.secondaryStream])
         const subjArr = colIdx.subjects.map((idx)=>rowData[idx])
-        tutee.subjects = parseSubjects(tutee.educationLevel, subjArr)
-
-           
+        tutee.subjects = parseSubjects(tutee.educationLevel, subjArr)           
         parsedTuteeData.push(tutee)
     }
     return parsedTuteeData

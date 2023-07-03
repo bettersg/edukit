@@ -11,6 +11,8 @@ import { selectedTutorMatchesActions } from '../store/selectedTutorMatchesSlice'
 import { getGSheetsData } from '@/utils/api'
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/api'
 import {transformKSTutorData} from '@/utils/parseKSTutorData'
+import {transformKSGeneralTuteeData} from "@/utils/parseKSGeneraTuteeData"
+import {transformKSSSOTuteeData} from '@/utils/parseKSSSOTuteeData'
 import { useState } from 'react'
 
 const DataLoadForm = () => {
@@ -497,8 +499,10 @@ const DataLoadForm = () => {
     // console.log(selectedTuteeDataFormat)    
   }
   const handleTest = async () => {
-    const data = await getGSheetsData(API_ENDPOINT_TUTOR, false)
-    const test = transformKSTutorData(data)
+    const data = await getGSheetsData(API_ENDPOINT_TUTEE, false)
+    // const test = transformKSTutorData(data)
+    // const test = transformKSGeneralTuteeData(data)
+    const test = transformKSSSOTuteeData(data)
     console.log("test", test)
     // const colNames = data[0]
     // console.log(colNames)

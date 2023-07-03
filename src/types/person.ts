@@ -54,7 +54,7 @@ export type Tutee = {
   personalData: Person
   preferedGender?: PreferedGender
   // genderPreference?: keyof typeof Gender
-  isOnFinancialAid?: boolean
+  isOnFinancialAid?: boolean|undefined
   educationLevel?: EducationLevel
   secondaryStream?: SecondaryStream
   subjects: (PrimarySubjects|SecondarySubjects|JCSubjects|IBSubjects)[]

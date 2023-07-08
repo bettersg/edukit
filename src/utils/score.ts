@@ -12,6 +12,7 @@ import { EducationLevel, SecondaryStream } from '@/types/educationSubjects'
 export const getMatchScore = (tutor: Tutor, tutee: Tutee): number => {
   const genderMatchScore = scoreGender(tutor, tutee)
   const subjectScore = scoreSubjectLevel(tutor, tutee)
+  // console.log("score - gender", scoreGender(tutor, tutee), "subj-" ,scoreSubjectLevel(tutor, tutee),"probono" ,scoreProBono(tutor, tutee), "finAid-" ,scoreFinancialAid(tutor, tutee), "stream-",  scoreStream(tutor, tutee))
   if ((genderMatchScore === 0)||
   (subjectScore === 0)) return 0
   return (
@@ -70,16 +71,20 @@ const scoreSubjectLevel = (tutor: Tutor, tutee: Tutee): number => {
       break
     case EducationLevel.JuniorCollege:
       relevantTutorSubjects = tutor.tutorSubjects.jc
+      break
     case EducationLevel.InternationalBaccalaureate:
       relevantTutorSubjects = tutor.tutorSubjects.ib
       break
+    default:
+      return 0
   }
   if ((!relevantTutorSubjects) || (relevantTutorSubjects?.length==0)){
     return 0
   }
+  // console.log("Rel-TutorSubj - ", relevantTutorSubjects, tutee.subjects)
   return relevantTutorSubjects?.reduce<number>(
     (cumulativeScore: number, tutorSubject: Subject): number => {
-      const score = (tutee.subjects.includes(tutorSubject)) ? 1 : 0
+      const score = (tutee.subjects.includes(tutorSubject) && !(tutorSubject === undefined)) ? 1 : 0
       return cumulativeScore + score
     },
     0)

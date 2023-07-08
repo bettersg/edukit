@@ -30,18 +30,20 @@ const MatchDetailsPage = () => {
     Index: tutor?.personalData?.index,
     Name: tutor?.personalData?.name,
     Gender_GenderPref: (tutor?.personalData?.gender),
-    SubjectsEduLevel: ("PRIMARY: " + String(tutor?.tutorSubjects?.primary) + ";   LOWERSEC: " + String(tutor?.tutorSubjects?.lowerSecondary)+ "-   UPPERSEC: " + String(tutor?.tutorSubjects?.upperSecondary)+ "   JC: " + String(tutor?.tutorSubjects?.jc)+ "   IB: " + String(tutor?.tutorSubjects?.ib)), 
-    ProbonoPref_FinAid: (String(tutor?.isProBonoOk) + "  +  " + String(tutor?.isUnaidedOk)),
+    SubjectsEduLevel: ("PRIMARY: "+ String(tutor?.tutorSubjects?.primary) + ";   LOWERSEC: "+ String(tutor?.tutorSubjects?.lowerSecondary)+ "-   UPPERSEC: " + String(tutor?.tutorSubjects?.upperSecondary)+ "   JC: " + String(tutor?.tutorSubjects?.jc)+ "   IB: " + String(tutor?.tutorSubjects?.ib)), 
+    // IsProbonoOk_IsFinAidOk: "Test",
+    IsProbonoOk_IsFinAidOk: (String(tutor?.isProBonoOk) + "  +  " + String(tutor?.isUnaidedOk)),
     MatchingScore: (tutor?.matchingScore)
   }})
+  console.log(selectedTuteeMatches)
   const rows = [
     {id: 0, 
       Entity: "Tutee", 
       Index:selectedTuteeMatches.tutee.personalData?.index, 
       Name:selectedTuteeMatches.tutee.personalData?.name, 
       Gender_GenderPref: (selectedTuteeMatches.tutee.personalData?.gender + " - " + selectedTuteeMatches.tutee.preferedGender), 
-      SubjectsEduLevel:  (selectedTuteeMatches.tutee.educationLevel +" - " +String(selectedTuteeMatches.tutee.subjects)), 
-      ProbonoPref_FinAid: String(selectedTuteeMatches.tutee.isOnFinancialAid)},
+      SubjectsEduLevel:  (selectedTuteeMatches.tutee.educationLevel +" - " + String(selectedTuteeMatches.tutee.subjects)), 
+      IsProbonoOk_IsFinAidOk: (selectedTuteeMatches.tutee.isOnFinancialAid)},
     ...rowsTutors
   ]
   return (

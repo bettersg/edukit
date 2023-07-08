@@ -22,8 +22,8 @@ const MainMatchingTable = () => {
       const rows = matchingTable.map((tuteeDetail, idx)=>{
         return {id:idx, Tutee:(tuteeDetail.tutee.name + " - "+String(tuteeDetail.tutee.index)), Tutor1: tuteeDetail.tutor1.index, Tutor2: tuteeDetail.tutor2.index, Tutor3: tuteeDetail.tutor3.index, Tutor4: tuteeDetail.tutor4.index, Tutor5: tuteeDetail.tutor5.index}
       })
-      console.log("Matched data:")
-      console.log(rows)
+      // console.log("Matched data:")
+      // console.log(rows)
       // const rows = matchingTable.map((tutorDetail, idx)=>{
       //   return {id:idx, Tutor:(tutorDetail.tutor.name + " - "+String(tutorDetail.tutor.index)), Tutee1: tutorDetail.tutee1.index, Tutee2: tutorDetail.tutee2.index, Tutee3: tutorDetail.tutee3.index, Tutee4: tutorDetail.tutee4.index, Tutee5: tutorDetail.tutee5.index}
       // })
@@ -31,7 +31,7 @@ const MainMatchingTable = () => {
         const tuteeIndex = parseInt(params.row.Tutee.split("-")[1])
         const tutee = window.tuteeParsedData.find((row:Tutee)=>(parseInt(row.personalData.index) === tuteeIndex))
         const tuteeMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutee.index==tuteeIndex))
-        console.log(tuteeMatchSummary)
+        // console.log(tuteeMatchSummary)
         const tutorParsedData: Tutor[] = window.tutorParsedData
         let tutor1 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor1)))
         tutor1 = {...tutor1, matchingScore:(tuteeMatchSummary.tutor1.matchingScore)} 
@@ -44,7 +44,7 @@ const MainMatchingTable = () => {
         let tutor5 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor5)))
         tutor5 = {...tutor5, matchingScore:tuteeMatchSummary.tutor5.matchingScore}
         const tutorInfo = [tutor1, tutor2, tutor3, tutor4, tutor5]
-        // not updated this state yet - Berwyn
+        console.log("Tutor-Parsed-Data", window.tutorParsedData)
         const selectedTuteeMatchesState = {
           tutee,
           tutorInfo

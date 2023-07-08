@@ -264,7 +264,7 @@ export const transformKSGeneralTuteeData = (data: GSheetsData[]): Tutee[] => {
     const parsedTuteeData : Tutee[] = []
     const colIdx = findIdxKSGeneralTutee(data[0])
     if (!colIdx) return parsedTuteeData
-    console.log(colIdx)
+    // console.log(colIdx)
     data.shift()
     for (let rowData of data){
         const tutee: Tutee = {

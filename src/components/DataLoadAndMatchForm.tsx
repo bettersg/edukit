@@ -6,8 +6,8 @@ import { Tutee, TuteeDataFormat, Tutor } from "../types/person"
 import { MatchingList } from '@/types/globalVariables'
 
 import { matchesSummaryActions } from '../store/matchesSummarySlice'
-import { unmatchedTuteesActions } from '../store/unmatchedTuteesSlice'
-import { selectedTutorMatchesActions } from '../store/selectedTutorMatchesSlice'
+// import { unmatchedTuteesActions } from '../store/unmatchedTuteesSlice'
+// import { selectedTutorMatchesActions } from '../store/selectedTutorMatchesSlice'
 
 import { getGSheetsData } from '@/utils/api'
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/api'
@@ -37,10 +37,9 @@ const DataLoadAndMatchForm = () => {
                 tuteeParsedData = transformKSSSOTuteeData(tuteeRawData)
                 break
         }
-        console.log(tutorParsedData, tuteeParsedData)
         if ((tutorParsedData.length > 0)
         && (tuteeParsedData.length>0)){
-            window.tutorParsedData = tutorParsedData
+            window.tutorParsedData = tutorParsedData.reverse()
             window.tuteeParsedData = tuteeParsedData
         }
     } catch(error){
@@ -50,7 +49,7 @@ const DataLoadAndMatchForm = () => {
   const calculateMatches = () => {
     const tutorParsedData:Tutor[] = window.tutorParsedData
     const tuteeParsedData:Tutee[] = window.tuteeParsedData
-    console.log(tutorParsedData, tuteeParsedData)
+    console.log("Tutor - ", tutorParsedData, "Tutee - ", tuteeParsedData)
     if (!tutorParsedData || !tuteeParsedData) {
       alert('Data not loaded!')
       return
@@ -94,7 +93,7 @@ const DataLoadAndMatchForm = () => {
       matchesSummary.push(matchesSummaryItem)
     }
     dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary))
-    console.log("matching list", matchingList)
+    // console.log("matching list", matchingList)
     navigate('/')
   }
 

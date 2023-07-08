@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { Stack, Button, Select, MenuItem, InputLabel } from '@mui/material'
 
 import { Tutee, TuteeDataFormat, Tutor } from "../types/person"
-import { MatchingList } from '@/types/globalVariables'
+import { MatchingList, TuteeSummary, TutorMatchSummary } from '@/types/globalVariables'
 
 import { matchesSummaryActions } from '../store/matchesSummarySlice'
 import { selectedTuteeMatchesActions } from '@/store/selectedTuteeMatchesSlice'
@@ -57,7 +57,10 @@ const DataLoadAndMatchForm = () => {
     }
     const matchingList:MatchingList = []
     for (let tutee of tuteeParsedData) {
-      const tuteeMatches = { tutee: {}, tutorMatchingScores: [] }
+      const tuteeMatches : {
+        tutee: TuteeSummary,
+        tutorMatches: TutorMatchSummary[]
+      } = { tutee: {}, tutorMatches: [] }
       tuteeMatches.tutee = {
         index: tutee.personalData.index,
         name: tutee.personalData.name,
@@ -65,18 +68,18 @@ const DataLoadAndMatchForm = () => {
       for (let tutor of tutorParsedData) {
         const tutorMatchingScoreObj = {
           index: tutor.personalData.index,
-          contactNum: tutor.personalData.contact,
+          contactNum: tutor.personalData.contact?.phone,
           name: tutor.personalData.name,
           matchingScore: getMatchScore(tutor, tutee),
         }
-        tuteeMatches.tutorMatchingScores.push(tutorMatchingScoreObj)
+        tuteeMatches.tutorMatches.push(tutorMatchingScoreObj)
       }
-      tuteeMatches.tutorMatchingScores.sort(
+      tuteeMatches.tutorMatches.sort(
         (a, b) => b.matchingScore - a.matchingScore
       )
-      if (tuteeMatches.tutorMatchingScores.length > 51) {
-        tuteeMatches.tutorMatchingScores =
-          tuteeMatches.tutorMatchingScores.slice(0, 50)
+      if (tuteeMatches.tutorMatches.length > 51) {
+        tuteeMatches.tutorMatches =
+          tuteeMatches.tutorMatches.slice(0, 50)
       }
       matchingList.push(tuteeMatches)
     }
@@ -85,11 +88,11 @@ const DataLoadAndMatchForm = () => {
     for (let matchingListItem of matchingList) {
       const matchesSummaryItem = {
         tutee: matchingListItem.tutee,
-        tutor1: matchingListItem.tutorMatchingScores[0],
-        tutor2: matchingListItem.tutorMatchingScores[1],
-        tutor3: matchingListItem.tutorMatchingScores[2],
-        tutor4: matchingListItem.tutorMatchingScores[3],
-        tutor5: matchingListItem.tutorMatchingScores[4],
+        tutor1: matchingListItem.tutorMatches[0],
+        tutor2: matchingListItem.tutorMatches[1],
+        tutor3: matchingListItem.tutorMatches[2],
+        tutor4: matchingListItem.tutorMatches[3],
+        tutor5: matchingListItem.tutorMatches[4],
       }
       matchesSummary.push(matchesSummaryItem)
     }

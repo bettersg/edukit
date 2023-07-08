@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Tutor, Tutee, Subject, PreferedGender, } from '@/types/person'
 
 import { EducationLevel, SecondaryStream } from '@/types/educationSubjects'

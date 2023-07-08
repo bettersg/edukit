@@ -5,12 +5,38 @@ import {selectedTuteeSlice} from '@/types/stateSlice'
 import {Stack} from '@mui/material'
 import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@mui/x-data-grid'
 import { useEffect } from 'react'
+import { EducationLevel } from '@/types/educationSubjects'
+import { Subject, Tutor, TutorSubjects } from '@/types/person'
 
 
 const MatchDetailsPage = () => {
   const navigate = useNavigate()
   const selectedTuteeMatches: selectedTuteeSlice = useSelector((state,action)=>state.selectedTuteeMatches)
   // console.log(selectedTuteeMatches)
+  const getRelevantSubjects = (eduLevel: EducationLevel, tutorSubjects:TutorSubjects)=>{
+    let relevantSubjects: Subject[]
+    switch (eduLevel) {
+      case EducationLevel.Primary:
+        relevantSubjects = tutorSubjects.Primary
+        break;
+      case EducationLevel.LowerSecondary:
+        relevantSubjects = tutorSubjects.lowerSecondary
+        break;
+      case EducationLevel.UpperSecondary:
+        relevantSubjects = tutorSubjects.upperSecondary
+        break;
+      case EducationLevel.JuniorCollege:
+        relevantSubjects = tutorSubjects.jc
+        break;
+      case EducationLevel.InternationalBaccalaureate:
+        relevantSubjects = tutorSubjects.ib
+        break;
+      default:
+        break;
+    }
+    return relevantSubjects?.reduce((prev,curr)=>(prev + " , "+curr),"")
+  }
+  
   useEffect(()=>{
     if (!selectedTuteeMatches) {navigate("/")}
   },[])
@@ -18,9 +44,11 @@ const MatchDetailsPage = () => {
     { field: 'Entity', headerName: 'Entity', width: 90 },
     { field: 'Index', headerName: 'Index', width: 20, type: 'number'},
     { field: 'Name', headerName: 'Name', width: 120, type: 'string'},
-    { field: 'Gender_GenderPref', headerName: 'Gender_NoGenderPref', width: 170, type: 'string'},
+    { field: 'Gender_GenderPref', headerName: 'Gender_GenderPref', width: 170, type: 'string'},
     { field: 'SubjectsEduLevel', headerName: 'Subjects_EduLevel', width: 370, type: 'string'},
-    { field: 'IsProbonoOk_IsFinAidOk', headerName: 'IsProbonoOk_IsFinAidOk', width: 170, type: 'string'},
+    { field: 'IsProbonoOk', headerName: 'IsProbonoOk?', width: 110, type: 'string'},
+    { field: 'IsNoFinAidOk', headerName: 'IsNoFinAidOk?', width: 110, type: 'string'},
+    { field: 'SecStreams', headerName: 'SecStreams', width: 110, type: 'string'},
     { field: 'MatchingScore', headerName: 'M-Score', width: 90, type: 'number'},
   ];
   const rowsTutors = selectedTuteeMatches.tutorInfo.map((tutor, idx)=>{
@@ -30,9 +58,10 @@ const MatchDetailsPage = () => {
     Index: tutor?.personalData?.index,
     Name: tutor?.personalData?.name,
     Gender_GenderPref: (tutor?.personalData?.gender),
-    SubjectsEduLevel: ("PRIMARY: "+ String(tutor?.tutorSubjects?.primary) + ";   LOWERSEC: "+ String(tutor?.tutorSubjects?.lowerSecondary)+ "-   UPPERSEC: " + String(tutor?.tutorSubjects?.upperSecondary)+ "   JC: " + String(tutor?.tutorSubjects?.jc)+ "   IB: " + String(tutor?.tutorSubjects?.ib)), 
-    // IsProbonoOk_IsFinAidOk: "Test",
-    IsProbonoOk_IsFinAidOk: (String(tutor?.isProBonoOk) + "  +  " + String(tutor?.isUnaidedOk)),
+    SubjectsEduLevel: getRelevantSubjects(selectedTuteeMatches.tutee.educationLevel, tutor.tutorSubjects),
+    IsProbonoOk: String(tutor.isProBonoOk),
+    IsNoFinAidOk: String(tutor.isUnaidedOk),
+    SecStreams: String(tutor.acceptableSecondaryStreams),
     MatchingScore: (tutor?.matchingScore)
   }})
   console.log(selectedTuteeMatches)
@@ -42,9 +71,10 @@ const MatchDetailsPage = () => {
       Index:selectedTuteeMatches.tutee.personalData?.index, 
       Name:selectedTuteeMatches.tutee.personalData?.name, 
       Gender_GenderPref: (selectedTuteeMatches.tutee.personalData?.gender + " - " + selectedTuteeMatches.tutee.preferedGender), 
-      SubjectsEduLevel:  (selectedTuteeMatches.tutee.educationLevel +" - " + String(selectedTuteeMatches.tutee.subjects)), 
-      IsProbonoOk_IsFinAidOk: (selectedTuteeMatches.tutee.isOnFinancialAid)},
-    ...rowsTutors
+      SubjectsEduLevel:  (selectedTuteeMatches.tutee.educationLevel +" - " + selectedTuteeMatches.tutee.subjects?.reduce((prev,curr)=>(curr? (prev+" , "+curr) : prev),"")), 
+      IsNoFinAidOk: (selectedTuteeMatches.tutee.isOnFinancialAid),
+      SecStreams: (selectedTuteeMatches.tutee.secondaryStream)},
+    ...rowsTutors,
   ]
   return (
     <Stack alignItems="center">

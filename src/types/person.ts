@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {EducationLevel, SecondaryStream, PrimarySubjects, SecondarySubjects, JCSubjects, IBSubjects} from "./educationSubjects"
 
 export enum TuteeDataFormat {
@@ -42,7 +43,7 @@ export type Tutor = {
 }
 
 export type TutorSubjects = {
-  primary?: Subject[],
+  Primary: Subject[],
   lowerSecondary?: Subject[],
   upperSecondary?: Subject[],
   jc?: Subject[],

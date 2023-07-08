@@ -31,7 +31,6 @@ const MainMatchingTable = () => {
         const tuteeIndex = parseInt(params.row.Tutee.split("-")[1])
         const tutee = window.tuteeParsedData.find((row:Tutee)=>(parseInt(row.personalData.index) === tuteeIndex))
         const tuteeMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutee.index==tuteeIndex))
-        // console.log(tuteeMatchSummary)
         const tutorParsedData: Tutor[] = window.tutorParsedData
         let tutor1 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor1)))
         tutor1 = {...tutor1, matchingScore:(tuteeMatchSummary.tutor1.matchingScore)} 
@@ -49,7 +48,7 @@ const MainMatchingTable = () => {
           tutee,
           tutorInfo
         }
-        // dispatch(selectedTutorMatchesActions.updateSelectedTutorMatches(selectedTutorMatchesState))
+        console.log("tutpr parsed :", tutorParsedData, "state", selectedTuteeMatchesState)
         dispatch(selectedTuteeMatchesActions.updateSelectedTuteeMatches(selectedTuteeMatchesState))
         navigate("/details")
       }

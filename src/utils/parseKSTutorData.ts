@@ -97,11 +97,6 @@ import {
   }
 
 const findIdxKSTutor = (colNames : string[]) => {
-    // const tutorIndexIdx = colNames.findIndex(
-    //     (colName: string) =>
-    //       colName.toLowerCase().includes('tutor') &&
-    //       colName.toLowerCase().includes('index')
-    //   )
       const tutorNameIdx = colNames.findIndex((colName: string) =>
         colName.toLowerCase().includes('name')
       )

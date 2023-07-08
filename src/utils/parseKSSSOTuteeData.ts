@@ -93,11 +93,6 @@ import {
   }
 
 const findIdxKSSSOTutee = (colNames : string[]) => {
-    const tuteeIndexIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('tutee') &&
-          colName.toLowerCase().includes('index')
-      )
       const tuteeNameIdx = colNames.findIndex((colName: string) =>
         colName.toLowerCase().includes('name') &&
         colName.toLowerCase().includes("tutee")
@@ -140,7 +135,6 @@ const findIdxKSSSOTutee = (colNames : string[]) => {
       })     
 
     if (
-        tuteeIndexIdx < 0 ||
         tuteeNameIdx < 0 ||
         genderIdx < 0 ||
         genderPrefIdx < 0 ||
@@ -149,12 +143,11 @@ const findIdxKSSSOTutee = (colNames : string[]) => {
         subjIdx < 0
     ) {
         alert('Tutee DB column name inaccurate! Tutee Data not loaded ')
-        console.log(tuteeIndexIdx, tuteeNameIdx, genderIdx, genderPrefIdx, streamIdx, subjIdx)
+        console.log(tuteeNameIdx, genderIdx, genderPrefIdx, streamIdx, subjIdx)
         return
     }
         return {
             personalData: {
-                index: tuteeIndexIdx,
                 name: tuteeNameIdx,
                 gender: genderIdx,
                 contact: {
@@ -224,15 +217,15 @@ export const transformKSSSOTuteeData = (data: GSheetsData[]): Tutee[] => {
     const parsedTuteeData : Tutee[] = []
     const colIdx = findIdxKSSSOTutee(data[0])
     if (!colIdx) return parsedTuteeData
-    // console.log(colIdx)
     data.shift()
-    for (let rowData of data){
+    for (let rowDataIdx in data){
+        const rowData = data[rowDataIdx]
         const tutee: Tutee = {
             personalData: {},
             subjects: []
           }
         tutee.personalData = {
-            index: parseInt(rowData[colIdx.personalData.index]),
+            index: parseInt(rowDataIdx)+2,
             name: rowData[colIdx.personalData.name],
             gender: parseGender(rowData[colIdx.personalData.gender]),
             contact: {

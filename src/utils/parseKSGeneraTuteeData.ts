@@ -125,11 +125,11 @@ import {
   }
 
 const findIdxKSGeneralTutee = (colNames : string[]) => {
-    const tuteeIndexIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('tutee') &&
-          colName.toLowerCase().includes('index')
-      )
+    // const tuteeIndexIdx = colNames.findIndex(
+    //     (colName: string) =>
+    //       colName.toLowerCase().includes('tutee') &&
+    //       colName.toLowerCase().includes('index')
+    //   )
       const tuteeNameIdx = colNames.findIndex((colName: string) =>
         colName.toLowerCase().includes('name')
       )
@@ -173,7 +173,7 @@ const findIdxKSGeneralTutee = (colNames : string[]) => {
       })     
 
     if (
-        tuteeIndexIdx < 0 ||
+        // tuteeIndexIdx < 0 ||
         tuteeNameIdx < 0 ||
         genderIdx < 0 ||
         genderPrefIdx < 0 ||
@@ -186,7 +186,7 @@ const findIdxKSGeneralTutee = (colNames : string[]) => {
     }
         return {
             personalData: {
-                index: tuteeIndexIdx,
+                // index: tuteeIndexIdx,
                 name: tuteeNameIdx,
                 gender: genderIdx,
                 contact: {
@@ -266,13 +266,14 @@ export const transformKSGeneralTuteeData = (data: GSheetsData[]): Tutee[] => {
     if (!colIdx) return parsedTuteeData
     // console.log(colIdx)
     data.shift()
-    for (let rowData of data){
+    for (let rowDataIdx in data){
+        const rowData = data[rowDataIdx]
         const tutee: Tutee = {
             personalData: {},
             subjects: []
           }
         tutee.personalData = {
-            index: parseInt(rowData[colIdx.personalData.index]),
+            index: parseInt(rowDataIdx)+2,
             name: rowData[colIdx.personalData.name],
             gender: parseGender(rowData[colIdx.personalData.gender]),
             contact: {

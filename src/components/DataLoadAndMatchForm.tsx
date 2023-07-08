@@ -1,21 +1,22 @@
 // @ts-nocheck
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { Stack, Button, Select, MenuItem, InputLabel } from '@mui/material'
+
 import { Tutee, TuteeDataFormat, Tutor } from "../types/person"
 import { MatchingList } from '@/types/globalVariables'
 
 import { matchesSummaryActions } from '../store/matchesSummarySlice'
-// import { unmatchedTuteesActions } from '../store/unmatchedTuteesSlice'
-// import { selectedTutorMatchesActions } from '../store/selectedTutorMatchesSlice'
+import { selectedTuteeMatchesActions } from '@/store/selectedTuteeMatchesSlice'
 
 import { getGSheetsData } from '@/utils/api'
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/api'
+
 import {transformKSTutorData} from '@/utils/parseKSTutorData'
 import {transformKSGeneralTuteeData} from "@/utils/parseKSGeneraTuteeData"
-import {getMatchScore} from '@/utils/score'
 import {transformKSSSOTuteeData} from '@/utils/parseKSSSOTuteeData'
-import { useState } from 'react'
+import {getMatchScore} from '@/utils/score'
 
 const DataLoadAndMatchForm = () => {
   const navigate = useNavigate()
@@ -102,8 +103,9 @@ const DataLoadAndMatchForm = () => {
     delete window.tuteeParsedData
     delete window.matchingList
     dispatch(matchesSummaryActions.resetMatchesSummary())
-    dispatch(unmatchedTuteesActions.resetUnmatchedTutees())
-    dispatch(selectedTutorMatchesActions.resetSelectedTutorMatches())
+    dispatch(selectedTuteeMatchesActions.resetSelectedTuteeMatches())
+    // dispatch(unmatchedTuteesActions.resetUnmatchedTutees())
+    // dispatch(selectedTutorMatchesActions.resetSelectedTutorMatches())
     navigate('/')
   }
 

@@ -97,11 +97,11 @@ import {
   }
 
 const findIdxKSTutor = (colNames : string[]) => {
-    const tutorIndexIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('tutor') &&
-          colName.toLowerCase().includes('index')
-      )
+    // const tutorIndexIdx = colNames.findIndex(
+    //     (colName: string) =>
+    //       colName.toLowerCase().includes('tutor') &&
+    //       colName.toLowerCase().includes('index')
+    //   )
       const tutorNameIdx = colNames.findIndex((colName: string) =>
         colName.toLowerCase().includes('name')
       )
@@ -146,7 +146,7 @@ const findIdxKSTutor = (colNames : string[]) => {
         colName.toLowerCase().includes('number')
       )
       if (
-        tutorIndexIdx < 0 ||
+        // tutorIndexIdx < 0 ||
         tutorNameIdx < 0 ||
         genderIdx < 0 ||
         probonoPrefIdx < 0 ||
@@ -164,7 +164,6 @@ const findIdxKSTutor = (colNames : string[]) => {
       }
       return {
         personalData: {
-            index: tutorIndexIdx,
             name: tutorNameIdx,
             gender: genderIdx,
             contact: {
@@ -261,14 +260,16 @@ export const transformKSTutorData = (data: GSheetsData[]): Tutor[] => {
     const colIdx = findIdxKSTutor(data[0])
     if (!colIdx) return parsedTutorData
     data.shift()
-    for (let rowData of data){
+    for (let rowDataIdx in data){
+        const rowData = data[rowDataIdx]
         const tutor: Tutor = {
             personalData: {},
             acceptableSecondaryStreams: [],
             tutorSubjects: {}
           }
         tutor.personalData = {
-            index: parseInt(rowData[colIdx.personalData.index]),
+            // index: parseInt(rowData[colIdx.personalData.index]),
+            index: (parseInt(rowDataIdx)+2),
             name: rowData[colIdx.personalData.name],
             gender: parseGender(rowData[colIdx.personalData.gender]),
             contact: {

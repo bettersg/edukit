@@ -28,7 +28,6 @@ const DataLoadAndMatchForm = () => {
         const tutorRawData = await getGSheetsData(API_ENDPOINT_TUTOR, false)
         const tutorParsedData = transformKSTutorData(tutorRawData)
         const tuteeRawData = await getGSheetsData(API_ENDPOINT_TUTEE, false)
-        alert("Tutor & Tutee Data Loaded")
         let tuteeParsedData : Tutee[] = []
         switch (selectedTuteeDataFormat){
             case TuteeDataFormat.KSGeneral:
@@ -42,6 +41,9 @@ const DataLoadAndMatchForm = () => {
         && (tuteeParsedData.length>0)){
             window.tutorParsedData = tutorParsedData.reverse()
             window.tuteeParsedData = tuteeParsedData
+            alert ('Tutor & Tutee Data Loaded')
+        }else {
+            alert ('Data not Loaded')
         }
     } catch(error){
         console.log(error)

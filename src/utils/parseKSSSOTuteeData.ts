@@ -14,152 +14,76 @@ import {
     JCSubjects,
     IBSubjects,
   } from '@/types/educationSubjects'
-
-  const primarySubjectTextToEnumMapping = {
-    "english":PrimarySubjects.English,
-    "math":PrimarySubjects.Math,
-    "science":PrimarySubjects.Science,
-    "chinese":PrimarySubjects.Chinese,
-    "malay":PrimarySubjects.Malay,
-    "tamil":PrimarySubjects.Tamil
+  import {primarySubjectTextToEnumMapping, secondarySubjectTextToEnumMapping, jcSubjectTextToEnumMapping, ibSubjectTextToEnumMapping, educationLevelMapping,streamMapping, colIdentifierContentMapping} from '@/utils/mappingData/KSSSOTutee'
+  
+  // Keep all identifiers below in lower case
+  const colIdentifierContentMapping = {
+    personalData: {
+        name: ['name', 'tutee'],
+        gender: ['gender', 'tutee'],
+        contact: {
+            phone:['contact number']
+        }
+    },
+    PreferedGender: ['gender', 'preference'],
+    isOnFinancialAid: ['financial aid'],
+    EducationLevel: ['level','education'],
+    secondaryStream: ['stream'], //not used
+    subjects:['subject']
+    }                 
+  
+const findColIdx = (colNames:string[], colIdentifierArr:string[]) => {
+  const colIdx = colNames.findIndex((colName) => 
+    colIdentifierArr.every((colIdentifierText)=>
+    (colName.toLowerCase().includes(colIdentifierText))))
+  return colIdx
 }
-  const secondarySubjectTextToEnumMapping = {
-    "english":SecondarySubjects.English,
-    "chinese":SecondarySubjects.Chinese,
-    "malay":SecondarySubjects.Malay,
-    "tamil":SecondarySubjects.Tamil,
-    "e-math":SecondarySubjects.EMath,
-    "a-math":SecondarySubjects.AMath,
-    "combined science (physics)":SecondarySubjects.CombinedSciencePhysics,
-    "combined science (chemistry)":SecondarySubjects.CombinedScienceChemistry,
-    "combined science (biology)":SecondarySubjects.CombinedScienceBiology,
-    "physics":SecondarySubjects.Physics,
-    "chemistry":SecondarySubjects.Chemistry,
-    "biology":SecondarySubjects.Biology,
-    "combined humanities (social studies)":SecondarySubjects.CombinedHumanitiesSocialStudies,
-    "combined humanities (geography)":SecondarySubjects.CombinedHumanitiesGeography,
-    "combined humanities (history)":SecondarySubjects.CombinedHumanitiesHistory,
-    "combined humanities (literature)":SecondarySubjects.CombinedHumanitiesLiterature,
-    "geography":SecondarySubjects.Geography,
-    "history":SecondarySubjects.History,
-    "english literature":SecondarySubjects.EnglishLiterature
-  }
-  const jcSubjectTextToEnumMapping = {
-    "general paper (gp)":JCSubjects.GeneralPaper,
-    "knowledge & inquiry (ki)":JCSubjects.KnowledgeAndInquiry,
-    "chinese":JCSubjects.Chinese,
-    "malay":JCSubjects.Malay,
-    "tamil":JCSubjects.Tamil,
-    "h1 math":JCSubjects.H1Math,
-    "h2 math":JCSubjects.H2Math,
-    "h1 physics":JCSubjects.H1Physics,
-    "h2 physics":JCSubjects.H2Physics,
-    "h1 chemistry":JCSubjects.H1Chemistry,
-    "h2 chemistry":JCSubjects.H2Chemistry,
-    "h1 biology":JCSubjects.H1Biology,
-    "h2 biology":JCSubjects.H2Biology,
-    "h1 geography":JCSubjects.H1Geography,
-    "h2 geography":JCSubjects.H2Geography,
-    "h1 history":JCSubjects.H1History,
-    "h2 history":JCSubjects.H2History,
-    "h1 english literature":JCSubjects.H1EnglishLiterature,
-    "h2 english literature":JCSubjects.H2EnglishLiterature,
-    "h1 econs":JCSubjects.H1Econs,
-    "h2 econs":JCSubjects.H2Econs,
-  }
-  const ibSubjectTextToEnumMapping = {
-  }
-  const educationLevelMapping = {
-    "p1":EducationLevel.Primary,
-    "p2":EducationLevel.Primary,
-    "p3":EducationLevel.Primary,
-    "p4":EducationLevel.Primary,
-    "p5":EducationLevel.Primary,
-    "p6":EducationLevel.Primary,
-    "s1":EducationLevel.LowerSecondary,
-    "s2":EducationLevel.LowerSecondary,
-    "s3":EducationLevel.LowerSecondary,
-    "s4":EducationLevel.UpperSecondary,
-    "s5":EducationLevel.UpperSecondary,
-    "jc1":EducationLevel.JuniorCollege,
-    "jc2":EducationLevel.JuniorCollege,
-  }
-  const streamMapping = {
-    "express": SecondaryStream.Express,
-    "normal academic (na)": SecondaryStream.NormalAcademic,
-    "normal technical (nt)": SecondaryStream.NormalTechnical,
-    "integrated program (ip)": SecondaryStream.IntegratedProgramme,
-    "international baccalaureate (ib)": SecondaryStream.InternationalBaccalaureate
-  }
 
-const findIdxKSSSOTutee = (colNames : string[]) => {
-      const tuteeNameIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('name') &&
-        colName.toLowerCase().includes("tutee")
-      )
-      const contactNumIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('contact number')
-      )
-      const genderIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('gender') &&
-          !colName.toLowerCase().includes('tutee')
-      )
-      const genderPrefIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('gender') && 
-        colName.toLowerCase().includes('preference')
-      )
-      const educationLevelIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('level') &&
-          colName.toLowerCase().includes('education') 
-      )
-      const educationLevelIdxArr: number[] = []
-      colNames.forEach((colName: string, idx: number) => {
-        if (colName.toLowerCase().includes('education level')) {
-          educationLevelIdxArr.push(idx)
-        }
-      })
+const findColIdxArr = (colNames:string[], colIdentifierArr:string[]) => {
+  const colIdxArr = []
+  colNames.forEach((colName, idx) => 
+    {if (colIdentifierArr.every((colIdentifierText)=>
+    (colName.toLowerCase().includes(colIdentifierText)))){
+      colIdxArr.push(idx)
+    }})
+  return colIdxArr
+}
+const findIdxKSSSOTutee = (colNames : string[]) => {      
       const streamIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('secondary level') && 
-        (!(colName.toLowerCase().includes("subject")))
+      colName.toLowerCase().includes('secondary level') && 
+      (!(colName.toLowerCase().includes("subject")))
       )
-      const subjIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('subject')
-      )
-      const subjIdxArr: number[] = []
-      colNames.forEach((colName: string, idx: number) => {
-        if (colName.toLowerCase().includes('subject')) {
-          subjIdxArr.push(idx)
+      const colIdx = {
+        personalData: {
+            name: findColIdx(colNames, colIdentifierContentMapping.personalData.name),
+            gender: findColIdx(colNames, colIdentifierContentMapping.personalData.gender),
+            contact: {
+                phone:findColIdx(colNames, colIdentifierContentMapping.personalData.contact.phone)
+            }
+        },
+        PreferedGender: findColIdx(colNames, colIdentifierContentMapping.PreferedGender),
+        EducationLevel: findColIdxArr(colNames, colIdentifierContentMapping.EducationLevel),
+        secondaryStream: streamIdx,
+        subjects:findColIdxArr(colNames, colIdentifierContentMapping.subjects)
+      }
+      console.log(colIdx)
+      // const invalidIdx = [-1, []]
+      const outerColFound = Object.keys(colIdx).every((col)=>
+      (colIdx[col] !== -1))
+      const personalDataColFound = Object.keys(colIdx.personalData).every((col)=>
+      (colIdx.personalData[col] !== -1))
+      const contactDataColFound = Object.keys(colIdx.personalData.contact).every((col)=>
+      (colIdx.personalData.contact[col] !== -1))
+      console.log(colIdx, outerColFound, personalDataColFound, contactDataColFound, Object.keys(colIdx.personalData.contact))
+      if (!(outerColFound &&
+        personalDataColFound &&
+        contactDataColFound)){
+          alert("Inaccurate Data format ")
+          console.log("Index of columns :", colIdx)
+          return
         }
-      })     
-
-    if (
-        tuteeNameIdx < 0 ||
-        genderIdx < 0 ||
-        genderPrefIdx < 0 ||
-        educationLevelIdx < 0 ||
-        streamIdx < 0 ||
-        subjIdx < 0
-    ) {
-        alert('Tutee DB column name inaccurate! Tutee Data not loaded ')
-        console.log(tuteeNameIdx, genderIdx, genderPrefIdx, streamIdx, subjIdx)
-        return
-    }
-        return {
-            personalData: {
-                name: tuteeNameIdx,
-                gender: genderIdx,
-                contact: {
-                    phone:contactNumIdx
-                }
-            },
-            PreferedGender: genderPrefIdx,
-            isOnFinancialAid: true,
-            EducationLevel: educationLevelIdxArr,
-            secondaryStream: streamIdx,
-            subjects:subjIdxArr        
-       }
+      return colIdx      
+      
   }
 const parseGender = (gender: string) : Gender | undefined => {
     gender = gender.toLowerCase()

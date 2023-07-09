@@ -1,4 +1,4 @@
-// @ts-nocheck
+// {@ts-nochec}
 import { GSheetsResponse, GSheetsData } from '@/types/google-sheets'
 import {
     Tutor,
@@ -96,86 +96,194 @@ import {
     "chemistry (hl)": IBSubjects.ChemistryHL
   }
 
+  // Keep all identifiers below in lower case
+  const colIdentifierContentMapping = {
+    personalData: {
+        name: ['name'],
+        gender: ['gender'],
+        contact: {
+            phone:['number']
+        }
+    },
+    isProBonoOk: ['pro-bono'],
+    isUnaidedOk: ['financial aid'],
+    acceptableSecondaryStreams: ['stream'],
+    tutorSubjects: {
+        primary:  ['primary', 'subject'],
+        lowerSecondary: ['lower secondary', 'subject'],
+        upperSecondary: ['upper secondary', 'subject'],
+        jc: ['jc', 'subject'],
+        ib: ['international baccalaureate', 'subject']
+    }              
+   }
+
+const findIdx = (colNames, colIdentifierContentMapping) => {
+  const colIdx = {}
+  for (let col of Object.keys(colIdentifierContentMapping)){
+    const colIdentifierArr : string[] = colIdentifierContentMapping[col]
+    if (Array.isArray(colIdentifierArr)){
+      colIdx[col] = colNames.findIndex((colName: string) => (
+        colIdentifierArr.every((colIdentifierText)=>(colName.toLowerCase().includes(colIdentifierText)))
+      ))
+      if (colIdx[col] === -1) {
+        alert("Inaccurate Data format - "+col)
+        return}
+    }
+  }
+  return colIdx
+}
+
 const findIdxKSTutor = (colNames : string[]) => {
-      const tutorNameIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('name')
-      )
-      const genderIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('gender')
-      )
-      const probonoPrefIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('pro-bono')
-      )
-      const teachUnaidedIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('financial aid')
-      )
-      const streamPrefIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('stream')
-      )
-      const priSubjIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('primary') &&
-          colName.toLowerCase().includes('subject')
-      )
-      const lowerSecSubjIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('lower secondary') &&
-          colName.toLowerCase().includes('subject')
-      )
-      const upperSecSubjIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('upper secondary') &&
-          colName.toLowerCase().includes('subject')
-      )
-      const jcSubjIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('jc') &&
-          colName.toLowerCase().includes('subject')
-      )
-      const ibSubjIdx = colNames.findIndex(
-        (colName: string) =>
-          colName.toLowerCase().includes('international baccalaureate') &&
-          colName.toLowerCase().includes('subject')
-      )
-      const contactNumIdx = colNames.findIndex((colName: string) =>
-        colName.toLowerCase().includes('number')
-      )
-      if (
-        // tutorIndexIdx < 0 ||
-        tutorNameIdx < 0 ||
-        genderIdx < 0 ||
-        probonoPrefIdx < 0 ||
-        teachUnaidedIdx < 0 ||
-        streamPrefIdx < 0 ||
-        priSubjIdx < 0 ||
-        lowerSecSubjIdx < 0 ||
-        upperSecSubjIdx < 0 ||
-        jcSubjIdx < 0 ||
-        ibSubjIdx < 0 ||
-        contactNumIdx < 0
-      ) {
-        alert('Tutor DB column name inaccurate! Tutor Data not loaded ')
-        return null
-      }
-      return {
+      let colIdx = {
         personalData: {
-            name: tutorNameIdx,
-            gender: genderIdx,
+            name: -2,
+            gender: -2,
             contact: {
-                phone:contactNumIdx
+                phone:-2
             }
         },
-        isProBonoOk: probonoPrefIdx,
-        isUnaidedOk: teachUnaidedIdx,
-        acceptableSecondaryStreams: streamPrefIdx,
+        isProBonoOk: -1,
+        isUnaidedOk: -1,
+        acceptableSecondaryStreams: -1,
         tutorSubjects: {
-            primary:  priSubjIdx,
-            lowerSecondary: lowerSecSubjIdx,
-            upperSecondary: upperSecSubjIdx,
-            jc: jcSubjIdx,
-            ib: ibSubjIdx
+            primary:  -2,
+            lowerSecondary: -2,
+            upperSecondary: -2,
+            jc: -2,
+            ib: -2
         }              
        }
+      // for (let col of Object.keys(colIdentifierContentMapping)){
+      //   const colIdentifierArr : string[] = colIdentifierContentMapping[col]
+      //   if (Array.isArray(colIdentifierArr)){
+      //     colIdx[col] = colNames.findIndex((colName: string) => (
+      //       colIdentifierArr.every((colIdentifierText)=>(colName.toLowerCase().includes(colIdentifierText)))
+      //     ))
+      //   }
+      // }
+      const outerColIdx = findIdx(colNames, colIdentifierContentMapping)
+      const personalDataColIdx = findIdx(colNames, colIdentifierContentMapping.personalData)
+      const contactDataColIdx = findIdx(colNames, colIdentifierContentMapping.personalData.contact)
+      const tutorSubjectsColIdx = findIdx(colNames, colIdentifierContentMapping.tutorSubjects)
+      if (!(outerColIdx && personalDataColIdx && contactDataColIdx && tutorSubjectsColIdx)) return
+      colIdx = {...colIdx, ...outerColIdx}
+      colIdx.personalData = {...colIdx.personalData, ...personalDataColIdx}
+      colIdx.personalData.contact = {...colIdx.personalData.contact, ...contactDataColIdx}
+      colIdx.tutorSubjects = {...colIdx.tutorSubjects, ...tutorSubjectsColIdx}
+      // for (let col of Object.keys(colIdentifierContentMapping.personalData)){
+      //   const personalDataColIdentifierArr : string[] = colIdentifierContentMapping.personalData[col]
+      //   console.log("pd-id", personalDataColIdentifierArr, col, Array.isArray(personalDataColIdentifierArr))
+      //   if (Array.isArray(personalDataColIdentifierArr)){
+      //     colIdx.personalData[col] = colNames.findIndex((colName: string) => (
+      //       personalDataColIdentifierArr.every((colIdentifierText)=>(colName.toLowerCase().includes(colIdentifierText)))
+      //     ))
+      //   }
+      // }
+
+      // colIdx.personalData = {...colIdx.personalData, ...(findIdx(colNames, colIdentifierContentMapping.personalData))}
+      // colIdx.personalData.contact = {...colIdx.personalData.contact, ...(findIdx(colNames, colIdentifierContentMapping.personalData.contact))}
+      
+      // for (let col of Object.keys(colIdentifierContentMapping.personalData.contact)){
+      //   const contactDataColIdentifierArr : string[] = colIdentifierContentMapping.personalData.contact[col]
+      //   if (Array.isArray(contactDataColIdentifierArr)){
+      //     colIdx.personalData.contact[col] = colNames.findIndex((colName: string) => (
+      //       contactDataColIdentifierArr.every((colIdentifierText)=>(colName.toLowerCase().includes(colIdentifierText)))
+      //     ))
+      //   }
+      // }
+      
+      // colIdx.tutorSubjects = {...colIdx.tutorSubjects, ...(findIdx(colNames, colIdentifierContentMapping.tutorSubjects))}
+      
+      // for (let col of Object.keys(colIdentifierContentMapping.tutorSubjects)){
+      //   const tutorSubjectsColIdentifierArr : string[] = colIdentifierContentMapping.tutorSubjects[col]
+      //   console.log("ts-id", tutorSubjectsColIdentifierArr, col, Array.isArray(tutorSubjectsColIdentifierArr))
+      //   if (Array.isArray(tutorSubjectsColIdentifierArr)){
+      //     colIdx.tutorSubjects[col] = colNames.findIndex((colName: string) => (
+      //       tutorSubjectsColIdentifierArr.every((colIdentifierText)=>(colName.toLowerCase().includes(colIdentifierText)))
+      //     ))
+      //   }
+      // }
+      console.log(colIdx)
+
+      // const tutorNameIdx = colNames.findIndex((colName: string) =>
+      //   colName.toLowerCase().includes('name')
+      // )
+      // const genderIdx = colNames.findIndex((colName: string) =>
+      //   colName.toLowerCase().includes('gender')
+      // )
+      // const probonoPrefIdx = colNames.findIndex((colName: string) =>
+      //   colName.toLowerCase().includes('pro-bono')
+      // )
+      // const teachUnaidedIdx = colNames.findIndex((colName: string) =>
+      //   colName.toLowerCase().includes('financial aid')
+      // )
+      // const streamPrefIdx = colNames.findIndex((colName: string) =>
+      //   colName.toLowerCase().includes('stream')
+      // )
+      // const priSubjIdx = colNames.findIndex(
+      //   (colName: string) =>
+      //     colName.toLowerCase().includes('primary') &&
+      //     colName.toLowerCase().includes('subject')
+      // )
+      // const lowerSecSubjIdx = colNames.findIndex(
+      //   (colName: string) =>
+      //     colName.toLowerCase().includes('lower secondary') &&
+      //     colName.toLowerCase().includes('subject')
+      // )
+      // const upperSecSubjIdx = colNames.findIndex(
+      //   (colName: string) =>
+      //     colName.toLowerCase().includes('upper secondary') &&
+      //     colName.toLowerCase().includes('subject')
+      // )
+      // const jcSubjIdx = colNames.findIndex(
+      //   (colName: string) =>
+      //     colName.toLowerCase().includes('jc') &&
+      //     colName.toLowerCase().includes('subject')
+      // )
+      // const ibSubjIdx = colNames.findIndex(
+      //   (colName: string) =>
+      //     colName.toLowerCase().includes('international baccalaureate') &&
+      //     colName.toLowerCase().includes('subject')
+      // )
+      // const contactNumIdx = colNames.findIndex((colName: string) =>
+      //   colName.toLowerCase().includes('number')
+      // )
+      // if (
+      //   tutorNameIdx < 0 ||
+      //   genderIdx < 0 ||
+      //   probonoPrefIdx < 0 ||
+      //   teachUnaidedIdx < 0 ||
+      //   streamPrefIdx < 0 ||
+      //   priSubjIdx < 0 ||
+      //   lowerSecSubjIdx < 0 ||
+      //   upperSecSubjIdx < 0 ||
+      //   jcSubjIdx < 0 ||
+      //   ibSubjIdx < 0 ||
+      //   contactNumIdx < 0
+      // ) {
+      //   alert('Tutor DB column name inaccurate! Tutor Data not loaded ')
+      //   return null
+      // }
+      return colIdx
+      // return {
+      //   personalData: {
+      //       name: tutorNameIdx,
+      //       gender: genderIdx,
+      //       contact: {
+      //           phone:contactNumIdx
+      //       }
+      //   },
+      //   isProBonoOk: probonoPrefIdx,
+      //   isUnaidedOk: teachUnaidedIdx,
+      //   acceptableSecondaryStreams: streamPrefIdx,
+      //   tutorSubjects: {
+      //       primary:  priSubjIdx,
+      //       lowerSecondary: lowerSecSubjIdx,
+      //       upperSecondary: upperSecSubjIdx,
+      //       jc: jcSubjIdx,
+      //       ib: ibSubjIdx
+      //   }              
+      //  }
 }
 
 const parseSubjects = (

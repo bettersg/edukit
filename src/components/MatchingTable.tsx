@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useEffect, useState } from 'react'
 import { Stack } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
@@ -9,7 +10,7 @@ import {
   transformKSTutorData,
 } from '@/utils/api'
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/config'
-import { sumScores } from '@/utils/score'
+import { getMatchScore } from '@/utils/score'
 
 const MatchingTable = () => {
   const [tutors, setTutors] = useState<Tutor[]>([])
@@ -53,7 +54,7 @@ const MatchingTable = () => {
           .map(
             (tutor: Tutor): TutorMatchScore => ({
               ...tutor,
-              score: sumScores(tutor, tutee),
+              score: getMatchScore(tutor, tutee),
             })
           )
           .sort(

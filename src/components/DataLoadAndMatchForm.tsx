@@ -2,7 +2,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { Stack, Button, Select, MenuItem, InputLabel } from '@mui/material'
+import { Stack, Button, Select, MenuItem, InputLabel, Divider, Chip } from '@mui/material'
+// import {} from '@mui'
 
 import { Tutee, TuteeDataFormat, Tutor } from "../types/person"
 import { MatchingList, TuteeSummary, TutorMatchSummary } from '@/types/globalVariables'
@@ -128,19 +129,21 @@ const DataLoadAndMatchForm = () => {
           justifyContent="center"
           sx={{ m: 2 }}
         >
+          <h2 style={{ margin: 5 }}>Step 1 : Tutor Data</h2>
           <a
             href="https://docs.google.com/spreadsheets/d/1WFCDr9R4_A3wDRCeWcR6K8XK-_Rx30gqGGCgzF6Y65c/edit#gid=0"
             target="_blank"
             style={{ margin: '1rem' }}
           >
-            Tutor Database HyperLink
+            Insert tutor data here
           </a>
+          <h2 style={{ margin: 1 }}>Step 2 : Tutee Data</h2>
           <a
             href="https://docs.google.com/spreadsheets/d/1QyUr8axA_qb5kuddaL4dvOwNo7VT8k5o2POgLO9G84g/edit#gid=0"
             target="_blank"
             style={{ margin: '1rem' }}
           >
-            Tutee Database HyperLink
+            Insert tutee data here
           </a>
           <InputLabel id="select-label">Tutee Data Format</InputLabel>
           <Select
@@ -152,28 +155,31 @@ const DataLoadAndMatchForm = () => {
         >
           <MenuItem value={TuteeDataFormat.KSGeneral}>KS General</MenuItem>
           <MenuItem value={TuteeDataFormat.KSSSO}>KS SSO</MenuItem>
-          <MenuItem value={"KS_Test"}>KS Test</MenuItem>
         </Select>
+        <p style={{ margin: 5 }}></p>
+        <h2 style={{ margin: 5 }}>Step 3 : Matching </h2>
+        <Stack direction="row">
+          <Button variant="contained" sx={{ m: 1 }} onClick={loadData}>
+            Load
+          </Button>
+          <Button variant="contained" sx={{ m: 1 }} onClick={calculateMatches}>
+            Match
+          </Button>
+          <Button color="secondary" sx={{ m: 1 }} onClick={clearData}>
+            Clear
+          </Button>
+        </Stack>
           <a
             href="https://docs.google.com/spreadsheets/d/1Xj0zkL2h0nyUR25NKtCIv3QVjZee6bLyWUdpbxVCVT0/edit?usp=sharing"
             target="_blank"
             style={{ margin: '1rem' }}
           >
-            Instructions for tool usage
+            Reference info (How Tool Works)
           </a>
         </Stack>
-        <Stack direction="column">
-          <Button variant="contained" sx={{ m: 1 }} onClick={loadData}>
-            Load Data
-          </Button>
-          <Button variant="contained" sx={{ m: 1 }} onClick={clearData}>
-            Clear Data
-          </Button>
-          <Button variant="contained" sx={{ m: 1 }} onClick={calculateMatches}>
-            Match
-          </Button>
-        </Stack>
+        
       </Stack>
+      <a>-------------------------------------------------------------------------</a>
     </Stack>
   )
 }

@@ -18,6 +18,7 @@ import {transformKSTutorData} from '@/utils/parseKSTutorData'
 import {transformKSGeneralTuteeData} from "@/utils/parseKSGeneraTuteeData"
 import {transformKSSSOTuteeData} from '@/utils/parseKSSSOTuteeData'
 import {getMatchScore} from '@/utils/score'
+import KSSSOTuteeFormat from '@/utils/data/KSSSOTuteeFormat';
 
 const DataLoadAndMatchForm = () => {
   const navigate = useNavigate()
@@ -26,16 +27,20 @@ const DataLoadAndMatchForm = () => {
 
   const loadData = async () => {
     try {
+        console.log("loading")
         const tutorRawData = await getGSheetsData(API_ENDPOINT_TUTOR, false)
         const tutorParsedData = transformKSTutorData(tutorRawData)
         const tuteeRawData = await getGSheetsData(API_ENDPOINT_TUTEE, false)
-        let tuteeParsedData : Tutee[] = []
+        let tuteeParsedData : Tutee[] = [];
         switch (selectedTuteeDataFormat){
             case TuteeDataFormat.KSGeneral:
                 tuteeParsedData = transformKSGeneralTuteeData(tuteeRawData)
                 break
             case TuteeDataFormat.KSSSO:
-                tuteeParsedData = transformKSSSOTuteeData(tuteeRawData)
+                console.log("Using new formatter");
+                const formatter = new KSSSOTuteeFormat(tuteeRawData)
+                tuteeParsedData = formatter.fromGSheetsData();
+                console.log("Tutee parsed data", tuteeParsedData)
                 break
         }
         if ((tutorParsedData.length > 0)

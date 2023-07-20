@@ -62,20 +62,29 @@ export const secondarySubjectTextToEnumMapping = {
   export const ibSubjectTextToEnumMapping = {
   }
   export const educationLevelMapping = {
-    "p1":EducationLevel.Primary,
-    "p2":EducationLevel.Primary,
-    "p3":EducationLevel.Primary,
-    "p4":EducationLevel.Primary,
-    "p5":EducationLevel.Primary,
-    "p6":EducationLevel.Primary,
-    "s1":EducationLevel.LowerSecondary,
-    "s2":EducationLevel.LowerSecondary,
-    "s3":EducationLevel.LowerSecondary,
-    "s4":EducationLevel.UpperSecondary,
-    "s5":EducationLevel.UpperSecondary,
-    "jc1":EducationLevel.JuniorCollege,
     "jc2":EducationLevel.JuniorCollege,
+    "jc1":EducationLevel.JuniorCollege,
+    "s5":EducationLevel.UpperSecondary,
+    "s4":EducationLevel.UpperSecondary,
+    "s3":EducationLevel.LowerSecondary,
+    "s2":EducationLevel.LowerSecondary,
+    "s1":EducationLevel.LowerSecondary,
+    "p6":EducationLevel.Primary,
+    "p5":EducationLevel.Primary,
+    "p4":EducationLevel.Primary,
+    "p3":EducationLevel.Primary,
+    "p2":EducationLevel.Primary,
+    "p1":EducationLevel.Primary,
   }
+
+  export const educationLevelSubjectMappingMapping = {
+    [EducationLevel.JuniorCollege]: jcSubjectTextToEnumMapping,
+    [EducationLevel.InternationalBaccalaureate]: ibSubjectTextToEnumMapping,
+    [EducationLevel.UpperSecondary]: secondarySubjectTextToEnumMapping,
+    [EducationLevel.LowerSecondary]: secondarySubjectTextToEnumMapping,
+    [EducationLevel.Primary]: primarySubjectTextToEnumMapping,
+  }
+
   export const streamMapping = {
     "express": SecondaryStream.Express,
     "normal academic (na)": SecondaryStream.NormalAcademic,
@@ -84,6 +93,8 @@ export const secondarySubjectTextToEnumMapping = {
     "international baccalaureate (ib)": SecondaryStream.InternationalBaccalaureate
   }
   
+  
+
   // Keep all identifiers below in lower case
   export const colIdentifierContentMapping = {
     personalData: {

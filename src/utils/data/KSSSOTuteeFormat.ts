@@ -40,7 +40,7 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
                 getterType: "cell_value",
                 columnKeywords: ["gender", "preference"],
                 filter: {
-                    params: [PreferedGender.Female, PreferedGender.Male],
+                    params: [PreferedGender.Female, PreferedGender.Male] as string[],
                     noMatchValue: PreferedGender.None,
                 }
             },

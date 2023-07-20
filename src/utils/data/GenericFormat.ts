@@ -205,6 +205,15 @@ export type DataFormat = (
             type: "csv",
             getterType: "cell_value",
             columnIndex?: number,
+            /**
+             * Uses .findIndex on the headers row to find the column index of the column with the given name (case-insensitive). If the column name is not found, an error will be thrown.
+             * 
+             * If there are multiple items in the array, it acts as a boolean AND operator. If an item in the array starts with a `!`, it will act as a boolean NOT operator.
+             * 
+             * ## Examples
+             * 
+             * `["tutor", "money", "!tutee"]` -> Finds a column with a name containing "tutor" AND "money" AND NOT "tutee"
+             */
             columnKeywords: string[],
             /**
              * Get an aggregate of multiple columns. If set to true, the output will be an array of an array of strings, with each array in the array being the value of the corresponding column.
@@ -227,6 +236,15 @@ export type DataFormat = (
             type: "csv",
             getterType: "cell_value",
             columnIndex?: number[],
+            /**
+             * Uses .findIndex on the headers row to find the column index of the column with the given name (case-insensitive). If the column name is not found, an error will be thrown.
+             * 
+             * If there are multiple items in the array, it acts as a boolean AND operator. If an item in the array starts with a `!`, it will act as a boolean NOT operator.
+             * 
+             * ## Examples
+             * 
+             * `["tutor", "money", "!tutee"]` -> Finds a column with a name containing "tutor" AND "money" AND NOT "tutee"
+             */
             columnKeywords: string[],
             /**
              * Get an aggregate of multiple columns. If set to true, the output will be an array of an array of strings, with each array in the array being the value of the corresponding column.

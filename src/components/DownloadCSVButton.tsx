@@ -22,7 +22,7 @@ const DownloadCSVButton = () => {
     },[matchesSummary])
 
   return (
-    <Button variant="contained" sx={{w:1, m:1}}>{csvData && <CSVLink data={csvData} style={{color:"white", "textDecoration": "none"}}>CSV Download</CSVLink>}</Button>
+    <Button variant="contained" sx={{w:1, m:1}}>{csvData && <CSVLink data={csvData} style={{color:"white", "textDecoration": "none"}}>Download CSV</CSVLink>}</Button>
   )
 }
 

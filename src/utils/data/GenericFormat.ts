@@ -253,10 +253,42 @@ export type DataFormat = (
              */
             multipleColumns: true,
             /**
-             * Acts similar to the filter with object. All array items that match exactly (case-sensitive) with the keys of the mapping 
+             * Acts similar to the filter with object. All array items that are contained (case-insensitive) within the keys of the mapping 
              * object are added to the final output array as the corresponding value of the mapping object.
              */
             mapping?: Record<string, string> | Record<string, string>[]
+        } | {
+            type: "boolean",
+            getterType: "cell_value",
+            columnIndex?: number,
+            /**
+             * Uses .findIndex on the headers row to find the column index of the column with the given name (case-insensitive). If the column name is not found, an error will be thrown.
+             * 
+             * If there are multiple items in the array, it acts as a boolean AND operator. If an item in the array starts with a `!`, it will act as a boolean NOT operator.
+             * 
+             * ## Examples
+             * 
+             * `["tutor", "money", "!tutee"]` -> Finds a column with a name containing "tutor" AND "money" AND NOT "tutee"
+             */
+            columnKeywords: string[],
+            
+            filter: {
+                /**
+                 * boolParams has a different name than filter.params because in this case the key is the output and the value is the keyword. However, the searching acts the same as filter.params.
+                 * 
+                 * If an array of strings are used, it acts as a string of boolean AND operators unless an item in the array starts with a `|`, which will act as a boolean OR operator, but just for that item.
+                 */
+                boolParams: {
+                    true: string | string[],
+                    false: string | string[]
+                },
+                /**
+                 * If no matches are found with the filter params, this value will be returned.
+                 * 
+                 * @default false
+                 */
+                noMatchValue?: any
+            }
         }
     )
 )[];
@@ -358,7 +390,7 @@ class GenericFormat {
                     if (formatRule.type !== "number") {
                         throw new TypeError("Row index can only be used in a number field", { cause: { code: "ROW_INDEX_NOT_NUMBER" } });
                     }
-                    dataRow[formatRule.fieldName] = i + 1;
+                    dataRow[formatRule.fieldName] = i + 2;
                 }
                 else if (formatRule.getterType == "cell_value") {
                     if (formatRule.type == "number") {
@@ -492,32 +524,27 @@ class GenericFormat {
                                     let mapped: (string|number)[][] = [];
                                     for (let arr of raw) {
                                         for (let item of arr) {
-                                            let toPush: (string|number)[] = []
-                                            if (item.trim() in formatRule.mapping!) {
-                                                toPush.push(formatRule.mapping![item.trim()]);
-                                            }
+                                            let toPush: (string|number)[] = Object.keys(formatRule.mapping!)
+                                                .filter(key => item.toLowerCase().trim().includes(key.toLowerCase()))
+                                                .map(key => (formatRule as Extract<DataFormat[number], {type: "csv"}>).mapping![key]);
                                             mapped.push(toPush);
                                         }
                                     }
-                                    dataRow[formatRule.fieldName] = mapped;
+                                    dataRow[formatRule.fieldName] = mapped ?? [];
                                 } else {
                                     let mapped: (string|number)[][] = [];
                                     for (let [i, arr] of raw.entries()) {
                                         for (let item of arr) {
-                                            let toPush: (string|number)[] = []
-                                            if (item.trim() in formatRule.mapping![i]) {
-                                                toPush.push(formatRule.mapping![i][item.trim()]);
-                                            }
-
+                                            let toPush: (string|number)[] = Object.keys(formatRule.mapping![i]).filter(key => key.toLowerCase().includes(item.toLowerCase().trim())).map(key => (formatRule as Extract<DataFormat[number], {type: "csv"}>).mapping![i][key]);
                                             mapped.push(toPush);
                                         }
                                         
                                     }
-                                    dataRow[formatRule.fieldName] = mapped;
+                                    dataRow[formatRule.fieldName] = mapped ?? [];
                                 }
                                 
                             } else {
-                                dataRow[formatRule.fieldName] = raw;
+                                dataRow[formatRule.fieldName] = raw ?? [];
                             }
                         } else {
                             let raw: string[] = String(row[formatRule.columnIndex!]).split(", ");
@@ -525,14 +552,62 @@ class GenericFormat {
                             if ("mapping" in formatRule) {
                                 let mapped: (string|number)[] = [];
                                 for (let item of raw) {
-                                    if (item.trim() in formatRule.mapping!) {
-                                        mapped.push(formatRule.mapping![item.trim()]);
+                                    for (let key in formatRule.mapping!) {
+                                        if (item.toLowerCase().trim().includes(key.toLowerCase())) {
+                                            mapped.push((formatRule as Extract<DataFormat[number], {type: "csv"}>).mapping![key]);
+                                            break; // Possibly remove this break
+                                        }
                                     }
                                 }
-                                dataRow[formatRule.fieldName] = mapped;
+                                dataRow[formatRule.fieldName] = mapped ?? [];
                             } else {
-                                dataRow[formatRule.fieldName] = raw;
+                                dataRow[formatRule.fieldName] = raw ?? [];
                             }
+                        }
+                    }
+                    else if (formatRule.type == "boolean") {
+                        let raw: string = String(row[formatRule.columnIndex!]);
+                        const string2bool = {
+                            "true": true,
+                            "false": false
+                        }
+                        if ("filter" in formatRule) {
+                            let matched = false;
+                            Object.keys(formatRule.filter!.boolParams).every((item) => {
+                                let value = (formatRule as Extract<DataFormat[number], {type: "boolean"}>).filter!.boolParams[item as "true" | "false"];
+                                let key = string2bool[item as "true" | "false"];
+
+                                if (value instanceof Array) {
+                                    let found = true;
+                                    for (let filterItem of value) {
+                                        
+                                        if (filterItem.startsWith("|")) {
+                                            found = found || raw.toLowerCase().trim().includes(filterItem.slice(1).toLowerCase());
+                                        } else {
+                                            found = found && raw.toLowerCase().trim().includes(filterItem.toLowerCase());
+                                        }
+                                    }
+                                    if (found) {
+                                        dataRow[formatRule.fieldName] = key;
+                                        matched = true;
+
+                                        return false;
+                                    }
+                                } else {
+                                    if (raw.toLowerCase().trim().includes(value.toLowerCase())) {
+                                        dataRow[formatRule.fieldName] = key;
+                                        matched = true;
+                                        return false;
+                                    }
+                                }   
+                                return true;
+                            });
+                            if (!matched) {
+                                if (raw !== "" && this.DEBUG) console.log("no match", raw, formatRule.fieldName, formatRule.filter!.boolParams);
+                                dataRow[formatRule.fieldName] = formatRule.filter!.noMatchValue ?? false;
+                            }
+                        } else {
+                            throw new TypeError(`Boolean type requires a filter at ${(formatRule as DataFormat[number]).fieldName}`, { cause: { code: "BOOLEAN_NO_FILTER" } });
                         }
                     }
                 }

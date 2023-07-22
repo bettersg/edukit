@@ -39,11 +39,12 @@ export type Tutor = {
   isProBonoOk?: boolean | undefined
   isUnaidedOk?: boolean | undefined
   acceptableSecondaryStreams: SecondaryStream[]
-  tutorSubjects: TutorSubjects
+  tutorSubjects: TutorSubjects,
+  commitStr: string
 }
 
 export type TutorSubjects = {
-  Primary: Subject[],
+  primary?: Subject[],
   lowerSecondary?: Subject[],
   upperSecondary?: Subject[],
   jc?: Subject[],

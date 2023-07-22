@@ -75,7 +75,7 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
         super(data, format)
     }
 
-    public fromGSheetsData(): Tutee[] {
+    public fromGSheetsData() {
         const rawData = super.rawFromGSheets();
         console.log("rawData", rawData, "format", this.format)
         return rawData.map((tutee) => (
@@ -95,10 +95,8 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
                 subjects: ((tutee["subjects"] as string[][]).map(col => 
                     col.map(subject => educationLevelSubjectMappingMapping[tutee["educationLevel"] as EducationLevel][subject.toLowerCase()])) )
                     .flat(1)
-                    .filter(subject => subject !== undefined)
+                    .filter(subject => subject !== undefined),
             }
         ))
     }
 } 
-
-// as (PrimarySubjects | SecondarySubjects | JCSubjects | IBSubjects)[][]

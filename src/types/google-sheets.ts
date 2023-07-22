@@ -2,10 +2,10 @@
  * Response type from GSheets.
  */
 export type GSheetsResponse = {
-  content: GSheetsData[]
+  content: MatrixData[]
 }
 
 /**
- * Raw data from GSheets.
+ * 2D array of strings and numbers, format that most data is given in.
  */
-export type GSheetsData = (string)[]
+export type MatrixData = (string | number)[]

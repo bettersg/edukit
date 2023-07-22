@@ -6,7 +6,7 @@ import DownloadCSVButton from '../components/DownloadCSVButton'
 
 const OverviewPage = () => {
   return (
-    <Stack direction="column" alignItems="center">
+    <Stack direction="column" alignItems="center" gap={2}>
       <MainMatchingTable />
       {/* <MatchingTable /> */}
       <DownloadCSVButton />

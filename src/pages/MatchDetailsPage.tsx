@@ -2,12 +2,25 @@
 import { useNavigate } from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {selectedTuteeSlice} from '@/types/stateSlice'
-import {Stack} from '@mui/material'
+import {Stack, Typography} from '@mui/material'
 import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@mui/x-data-grid'
 import { useEffect } from 'react'
-import { EducationLevel } from '@/types/educationSubjects'
+import { EducationLevel, SecondaryStream, fancyPrimarySubjects, fancySecondarySubjects, fancyJcSubjects, fancyIbSubjects } from '@/types/educationSubjects'
 import { Subject, Tutor, TutorSubjects } from '@/types/person'
 
+const mapception = {
+  "primary": fancyPrimarySubjects,
+  "lowerSecondary": fancySecondarySubjects,
+  "upperSecondary": fancySecondarySubjects,
+  "jc": fancyJcSubjects,
+  "ib": fancyIbSubjects
+}
+
+const booleanMap = {
+  "true": "Yes",
+  "false": "No",
+  "null": "Null"
+}
 
 const MatchDetailsPage = () => {
   const navigate = useNavigate()
@@ -17,52 +30,71 @@ const MatchDetailsPage = () => {
     let relevantSubjects: Subject[]
     switch (eduLevel) {
       case EducationLevel.Primary:
-        relevantSubjects = tutorSubjects.Primary
+        relevantSubjects = tutorSubjects.primary.map((subject) => fancyPrimarySubjects[subject])
         break;
       case EducationLevel.LowerSecondary:
-        relevantSubjects = tutorSubjects.lowerSecondary
+        relevantSubjects = tutorSubjects.lowerSecondary.map((subject) => fancySecondarySubjects[subject])
         break;
       case EducationLevel.UpperSecondary:
-        relevantSubjects = tutorSubjects.upperSecondary
+        relevantSubjects = tutorSubjects.upperSecondary.map((subject) => fancySecondarySubjects[subject])
         break;
       case EducationLevel.JuniorCollege:
-        relevantSubjects = tutorSubjects.jc
+        relevantSubjects = tutorSubjects.jc.map((subject) => fancyJcSubjects[subject])
         break;
       case EducationLevel.InternationalBaccalaureate:
-        relevantSubjects = tutorSubjects.ib
+        relevantSubjects = tutorSubjects.ib.map((subject) => fancyIbSubjects[subject])
         break;
       default:
         break;
     }
-    return relevantSubjects?.reduce((prev,curr)=>(prev + " , "+curr),"")
+    return relevantSubjects?.join(", ")
   }
   
   useEffect(()=>{
     if (!selectedTuteeMatches) {navigate("/")}
   },[])
+
+  const streamMapping = {
+    "na": "N(A)",
+    "nt": "N(T)",
+    "exp": "Exp",
+    "ip": "IP",
+    "ib": "IB"
+  }
+
+  const levelMapping = {
+    "primary": "Primary",
+    "lowerSecondary": "Lower Secondary",
+    "upperSecondary": "Upper Secondary",
+    "jc": "JC",
+    "ib": "IB"
+  }
+
   const columns: GridColDef[] = [
     { field: 'Entity', headerName: 'Entity', width: 90 },
-    { field: 'Index', headerName: 'Index', width: 20, type: 'number'},
+    { field: 'Index', headerName: 'Row', width: 20, type: 'number'},
     { field: 'Name', headerName: 'Name', width: 120, type: 'string'},
-    { field: 'Gender_GenderPref', headerName: 'Gender_GenderPref', width: 170, type: 'string'},
-    { field: 'SubjectsEduLevel', headerName: 'Subjects_EduLevel', width: 370, type: 'string'},
-    { field: 'IsProbonoOk', headerName: 'IsProbonoOk?', width: 110, type: 'string'},
-    { field: 'IsNoFinAidOk', headerName: 'IsNoFinAidOk?', width: 110, type: 'string'},
-    { field: 'SecStreams', headerName: 'SecStreams', width: 110, type: 'string'},
+    { field: 'Gender_GenderPref', headerName: 'Gender — Gender Pref', width: 170, type: 'string'},
+    { field: 'SubjectsEduLevel', headerName: 'Edu Level — Subjects', width: 370, type: 'string'},
+    { field: 'IsProbonoOk', headerName: 'Probono Ok?', width: 110, type: 'string'},
+    { field: 'IsNoFinAidOk', headerName: 'No Aid Ok?', width: 110, type: 'string'},
+    { field: 'SecStreams', headerName: 'Sec Streams', width: 110, type: 'string'},
+    { field: 'Commit', headerName: 'hrs/wk — thru year?', width: 150, type: 'string'},
     { field: 'MatchingScore', headerName: 'M-Score', width: 90, type: 'number'},
   ];
   const rowsTutors = selectedTuteeMatches.tutorInfo.map((tutor, idx)=>{
     return {
     id: (idx+1),
-    Entity: ("Tutor"+String(idx+1)),
+    Entity: ("Tutor " + String(idx + 1)),
     Index: tutor?.personalData?.index,
     Name: tutor?.personalData?.name,
     Gender_GenderPref: (tutor?.personalData?.gender),
     SubjectsEduLevel: getRelevantSubjects(selectedTuteeMatches.tutee.educationLevel, tutor.tutorSubjects),
-    IsProbonoOk: String(tutor.isProBonoOk),
-    IsNoFinAidOk: String(tutor.isUnaidedOk),
-    SecStreams: String(tutor.acceptableSecondaryStreams),
-    MatchingScore: (tutor?.matchingScore)
+    IsProbonoOk: booleanMap[String(tutor.isProBonoOk)],
+    IsNoFinAidOk: booleanMap[String(tutor.isUnaidedOk)],
+    SecStreams: tutor.acceptableSecondaryStreams.map((stream) => streamMapping[stream]).join(", "),
+    MatchingScore: (tutor?.matchingScore),
+    Commit: (tutor?.commitStr)
   }})
   console.log(selectedTuteeMatches)
   const rows = [
@@ -70,16 +102,16 @@ const MatchDetailsPage = () => {
       Entity: "Tutee", 
       Index:selectedTuteeMatches.tutee.personalData?.index, 
       Name:selectedTuteeMatches.tutee.personalData?.name, 
-      Gender_GenderPref: (selectedTuteeMatches.tutee.personalData?.gender + " - " + selectedTuteeMatches.tutee.preferedGender), 
-      SubjectsEduLevel:  (selectedTuteeMatches.tutee.educationLevel +" - " + selectedTuteeMatches.tutee.subjects?.reduce((prev,curr)=>(curr? (prev+" , "+curr) : prev),"")), 
-      IsNoFinAidOk: (selectedTuteeMatches.tutee.isOnFinancialAid),
-      SecStreams: (selectedTuteeMatches.tutee.secondaryStream)},
+      Gender_GenderPref: (selectedTuteeMatches.tutee.personalData?.gender + " — " + selectedTuteeMatches.tutee.preferedGender), 
+      SubjectsEduLevel: (levelMapping[selectedTuteeMatches.tutee.educationLevel] + " — " + selectedTuteeMatches.tutee.subjects?.map((subject) => mapception[selectedTuteeMatches.tutee.educationLevel][subject]).join(", ")), 
+      IsNoFinAidOk: booleanMap[(selectedTuteeMatches.tutee.isOnFinancialAid)],
+      SecStreams: (selectedTuteeMatches.tutee.secondaryStream) == SecondaryStream.undefined ? "" : (selectedTuteeMatches.tutee.secondaryStream)},
     ...rowsTutors,
   ]
   return (
     <Stack alignItems="center">
-      <h3>MatchDetailsPage</h3>
-      <DataGrid getRowHeight={() => 'auto'} rows={rows} columns={columns}/>
+      <Typography variant="h2" sx={{my: 2}}>Match Details</Typography>
+      <DataGrid getRowHeight={() => 'auto'} sx={{maxWidth: "100%"}} rows={rows} columns={columns}/>
     </Stack>
   )
 }

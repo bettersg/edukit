@@ -4,7 +4,7 @@ import {useSelector, useDispatch } from 'react-redux';
 import { Tutee, Tutor } from '@/types/person';
 import {selectedTutorMatchesActions} from "../store/selectedTutorMatchesSlice"
 import { selectedTuteeMatchesActions } from '../store/selectedTuteeMatchesSlice'; 
-import {Stack} from '@mui/material'
+import {Stack, Typography, Box} from '@mui/material'
 import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@mui/x-data-grid'
 
 const MainMatchingTable = () => {
@@ -12,12 +12,12 @@ const MainMatchingTable = () => {
     const dispatch = useDispatch()
     const matchingTable = useSelector((state)=>state.matchesSummary)
     const columns: GridColDef[] = [
-        { field: 'Tutee', headerName: 'Tutee_Name+Id', width: 170 },
-        { field: 'Tutor1', headerName: 'Tutor-1', width: 70, type: 'number'},
-        { field: 'Tutor2', headerName: 'Tutor-2', width: 70, type: 'number'},
-        { field: 'Tutor3', headerName: 'Tutor-3', width: 70, type: 'number'},
-        { field: 'Tutor4', headerName: 'Tutor-4', width: 70, type: 'number'},
-        { field: 'Tutor5', headerName: 'Tutor-5', width: 70, type: 'number'},
+        { field: 'Tutee', headerName: 'Tutee Name — Row', width: 170 },
+        { field: 'Tutor1', headerName: 'Tutor 1', width: 70, type: 'number'},
+        { field: 'Tutor2', headerName: 'Tutor 2', width: 70, type: 'number'},
+        { field: 'Tutor3', headerName: 'Tutor 3', width: 70, type: 'number'},
+        { field: 'Tutor4', headerName: 'Tutor 4', width: 70, type: 'number'},
+        { field: 'Tutor5', headerName: 'Tutor 5', width: 70, type: 'number'},
       ];
       const rows = matchingTable.map((tuteeDetail, idx)=>{
         return {id:idx, Tutee:(tuteeDetail.tutee.name + " - "+String(tuteeDetail.tutee.index)), Tutor1: tuteeDetail.tutor1.index, Tutor2: tuteeDetail.tutor2.index, Tutor3: tuteeDetail.tutor3.index, Tutor4: tuteeDetail.tutor4.index, Tutor5: tuteeDetail.tutor5.index}
@@ -55,11 +55,13 @@ const MainMatchingTable = () => {
 
   return (
     <>
-        <Stack alignItems="center">
-        <h2>
-        MainMatchingTable
-        </h2>
-        <DataGrid  sx={{cursor: 'pointer'}} rows={rows} columns={columns} onRowClick={handleRowClick}/>
+        <Stack alignItems="center" sx={{maxWidth: "100%"}}>
+          <Typography variant="h2" sx={{my: 2}}> 
+            Overview
+          </Typography>
+
+          <DataGrid sx={{cursor: 'pointer', width: "100%"}} rows={rows} columns={columns} onRowClick={handleRowClick}/>
+
         </Stack>
     </>
   )

@@ -1,12 +1,12 @@
 import { Gender, PreferedGender, Tutee } from "@/types/person";
 import GenericFormat, { DataFormat } from "./GenericFormat";
-import { GSheetsData } from "@/types/google-sheets";
+import { MatrixData } from "@/types/google-sheets";
 import { EducationLevel, IBSubjects, JCSubjects, PrimarySubjects, SecondaryStream, SecondarySubjects } from "@/types/educationSubjects";
 import { DataFormatter } from './GenericFormat';
 import { educationLevelMapping, educationLevelSubjectMappingMapping, streamMapping } from "../mappingData/KSSSOTutee";
 
 export default class KSSSOTuteeFormat extends GenericFormat implements DataFormatter<Tutee> {
-    constructor(data: GSheetsData[]) {
+    constructor(data: MatrixData[]) {
         const format: DataFormat = [
             {
                 fieldName: "index",
@@ -75,7 +75,7 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
         super(data, format)
     }
 
-    public fromGSheetsData() {
+    public fromDataMatrix() {
         const rawData = super.rawFromGSheets();
         console.log("rawData", rawData, "format", this.format)
         return rawData.map((tutee) => (

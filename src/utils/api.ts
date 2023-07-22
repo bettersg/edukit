@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { GSheetsResponse, GSheetsData } from '@/types/google-sheets'
+import { GSheetsResponse, MatrixData } from '@/types/google-sheets'
 
 export const API_ENDPOINT_TUTOR =
   'https://script.google.com/macros/s/AKfycbypZfVGYR5yZGYKWGLf5xCDKraFlHM1auz9hsJpW2V5NVQ_RUWahVI-exb70AUDIZ_X/exec'
@@ -18,11 +18,12 @@ export const API_ENDPOINT_TUTEE =
  * @param transformFn function to transform the data
  * @returns array of data
  */
-export const getGSheetsData = async <T = GSheetsData>(
+export const getGSheetsData = async <T = MatrixData>(
   sheetsURL: string,
   dropHeaderRow = true,
-  transformFn?: (data: GSheetsData) => T
+  transformFn?: (data: MatrixData) => T
 ): Promise<T[]> => {
+  console.log("Fetching data from GSheets");
   const response = await fetch(sheetsURL)
   if (!response.ok) return []
 

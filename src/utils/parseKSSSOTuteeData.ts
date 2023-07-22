@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { GSheetsResponse, GSheetsData } from '@/types/google-sheets'
+import { GSheetsResponse, MatrixData } from '@/types/google-sheets'
 import {
     Tutee,
     Gender,
@@ -137,7 +137,7 @@ const parseSubjects = (
     return []
   }  
   
-export const transformKSSSOTuteeData = (data: GSheetsData[]): Tutee[] => {
+export const transformKSSSOTuteeData = (data: MatrixData[]): Tutee[] => {
     const parsedTuteeData : Tutee[] = []
     const colIdx = findIdxKSSSOTutee(data[0])
     if (!colIdx) return parsedTuteeData

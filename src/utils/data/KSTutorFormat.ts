@@ -1,6 +1,6 @@
 import { Gender, Tutor } from "@/types/person";
 import GenericFormat, { DataFormat } from "./GenericFormat";
-import { GSheetsData } from "@/types/google-sheets";
+import { MatrixData } from "@/types/google-sheets";
 import { EducationLevel, IBSubjects, JCSubjects, PrimarySubjects, SecondaryStream, SecondarySubjects } from "@/types/educationSubjects";
 import { DataFormatter } from './GenericFormat';
 import { ibSubjectTextToEnumMapping, jcSubjectTextToEnumMapping, primarySubjectTextToEnumMapping, secondarySubjectTextToEnumMapping } from "../mappingData/KSTutor";
@@ -8,7 +8,7 @@ import { ibSubjectTextToEnumMapping, jcSubjectTextToEnumMapping, primarySubjectT
 
 
 export default class KSTutorFormat extends GenericFormat implements DataFormatter<Tutor> {
-    constructor(data: GSheetsData[]) {
+    constructor(data: MatrixData[]) {
         const format: DataFormat = [
             {
                 fieldName: "index",
@@ -126,7 +126,7 @@ export default class KSTutorFormat extends GenericFormat implements DataFormatte
         super(data, format)
     }
 
-    public fromGSheetsData() {
+    public fromDataMatrix() {
         const rawData = super.rawFromGSheets();
         console.log("rawData", rawData, "format", this.format)
         return rawData.map((tutor) => (

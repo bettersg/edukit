@@ -1,4 +1,4 @@
-import { GSheetsData } from "@/types/google-sheets";
+import { MatrixData } from "@/types/google-sheets";
 
 
 
@@ -296,7 +296,7 @@ export type DataFormat = (
 export type GenericRawOutputFormat = Record<string, string | string[] | number | boolean | (string|number)[] | (string|number)[][] | undefined>[];
 
 export interface DataFormatter<OutputType extends Record<string, unknown>> {
-    fromGSheetsData(): OutputType[];
+    fromDataMatrix(): OutputType[];
 }
 
 /**
@@ -306,12 +306,12 @@ export interface DataFormatter<OutputType extends Record<string, unknown>> {
 
 class GenericFormat {
     public format: DataFormat;
-    public data: GSheetsData[];
+    public data: MatrixData[];
     private columnsCompiled: boolean = false;
     private DEBUG: boolean = false;
  
 
-    constructor (data: GSheetsData[], format: DataFormat) {
+    constructor (data: MatrixData[], format: DataFormat) {
         this.data = data;
 
         this.format = format;

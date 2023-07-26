@@ -1,12 +1,11 @@
 // @ts-nocheck
 import { useNavigate } from 'react-router-dom'
-import {useSelector} from 'react-redux'
-import {selectedTuteeSlice} from '@/types/stateSlice'
-import {Stack, Typography} from '@mui/material'
-import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@mui/x-data-grid'
+import { useSelector } from 'react-redux'
+import { selectedTuteeSlice } from '@/types/stateSlice'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { useEffect } from 'react'
 import { EducationLevel, SecondaryStream, fancyPrimarySubjects, fancySecondarySubjects, fancyJcSubjects, fancyIbSubjects } from '@/types/educationSubjects'
-import { Subject, Tutor, TutorSubjects } from '@/types/person'
+import { Subject, TutorSubjects } from '@/types/person'
 
 const mapception = {
   "primary": fancyPrimarySubjects,
@@ -109,10 +108,10 @@ const MatchDetailsPage = () => {
     ...rowsTutors,
   ]
   return (
-    <Stack alignItems="center">
-      <Typography variant="h2" sx={{my: 2}}>Match Details</Typography>
+    <div class="flex flex-col items-center">
+      <h2 className="h2 my-4">Match Details</h2>
       <DataGrid getRowHeight={() => 'auto'} sx={{maxWidth: "100%"}} rows={rows} columns={columns}/>
-    </Stack>
+    </div>
   )
 }
 

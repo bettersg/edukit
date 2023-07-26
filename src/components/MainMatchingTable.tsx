@@ -2,9 +2,8 @@
 import {useNavigate} from 'react-router-dom'
 import {useSelector, useDispatch } from 'react-redux';
 import { Tutee, Tutor } from '@/types/person';
-import {selectedTutorMatchesActions} from "../store/selectedTutorMatchesSlice"
+
 import { selectedTuteeMatchesActions } from '../store/selectedTuteeMatchesSlice'; 
-import {Stack, Typography, Box} from '@mui/material'
 import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@mui/x-data-grid'
 
 const MainMatchingTable = () => {
@@ -55,14 +54,12 @@ const MainMatchingTable = () => {
 
   return (
     <>
-        <Stack alignItems="center" sx={{maxWidth: "100%"}}>
-          <Typography variant="h2" sx={{my: 2}}> 
-            Overview
-          </Typography>
+        <div class="flex flex-col items-center">
+          <h2 className="h2 my-4">Overview</h2>
 
           <DataGrid sx={{cursor: 'pointer', width: "100%"}} rows={rows} columns={columns} onRowClick={handleRowClick}/>
 
-        </Stack>
+        </div>
     </>
   )
 }

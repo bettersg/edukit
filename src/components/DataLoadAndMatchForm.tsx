@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 
 import Link from './utility/Link';
 
-import { Tutee, TuteeDataFormat, Tutor } from "../types/person"
+import { Tutee, TuteeDataFormat, Tutor } from '../types/person';
 import { MatchingList, TuteeSummary, TutorMatchSummary } from '@/types/globalVariables'
 import { MatrixData } from '@/types/google-sheets';
 
@@ -28,7 +28,7 @@ import { parse } from 'papaparse';
 const DataLoadAndMatchForm = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const [selectedTuteeDataFormat, setSelectedTuteeDataFormat] = useState<TuteeDataFormat>('KSSSO')
+  const [selectedTuteeDataFormat, setSelectedTuteeDataFormat] = useState<TuteeDataFormat>(TuteeDataFormat.KSGeneral)
   const [useCsvTutor, setUseCsvTutor] = useState<boolean>(false);
   const [useCsvTutee, setUseCsvTutee] = useState<boolean>(false);
   const [csvTutorData, setCsvTutorData] = useState<MatrixData[]>();
@@ -77,7 +77,9 @@ const DataLoadAndMatchForm = () => {
             alert ('Data not Loaded')
         }
     } catch(error){
-        console.log(error)
+        console.error(error);
+        alert("Data not loaded, make sure your data is of the correct format. More information in dev console.")
+        
     }
 }  
   const calculateMatches = () => {
@@ -247,11 +249,13 @@ const DataLoadAndMatchForm = () => {
             <Select
               id="format-type"
               color="primary"
+              onChange={handleSelectorChange}
+              value={selectedTuteeDataFormat}
             >
-              <option selected>
-                KS SSO (default)
+              <option value={TuteeDataFormat.KSSSO}>
+                KS SSO
               </option>
-              <option>
+              <option value={TuteeDataFormat.KSGeneral}>
                 KS General
               </option>
             </Select>

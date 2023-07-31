@@ -22,6 +22,10 @@
     .card-buttons {
         @apply flex flex-row flex-grow items-end gap-2;
     }
+
+    tbody {
+        @apply divide-y;
+    }
 }
 
 .MuiCard-root {

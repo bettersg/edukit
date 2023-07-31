@@ -12,20 +12,17 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@fontsource/roboto": "^5.0.5",
-    "@mui/icons-material": "^5.14.1",
-    "@mui/material": "^5.12.1",
-    "@mui/x-data-grid": "^6.2.1",
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/react-table": "^8.9.3",
     "flowbite": "^1.7.0",
     "flowbite-react": "^0.5.0",
     "papaparse": "^5.4.1",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-csv": "^2.2.2",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
-    "react-router-dom": "^6.10.0",
-    "xlsx": "^0.18.5"
+    "react-router-dom": "^6.10.0"
   },
   "devDependencies": {
     "@types/node": "^20.2.5",

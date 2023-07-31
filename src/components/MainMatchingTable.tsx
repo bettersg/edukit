@@ -4,9 +4,10 @@ import {useSelector, useDispatch } from 'react-redux';
 import { Tutee, Tutor } from '@/types/person';
 
 import { selectedTuteeMatchesActions } from '../store/selectedTuteeMatchesSlice'; 
-import { createColumnHelper, getCoreRowModel, useReactTable, flexRender } from '@tanstack/react-table';
-import { Table } from 'flowbite-react';
+import { createColumnHelper, getCoreRowModel, useReactTable, flexRender, getPaginationRowModel } from '@tanstack/react-table';
+import { Table, Pagination, Select } from 'flowbite-react';
 import React, { useMemo } from 'react';
+import { MatchingList } from '@/types/globalVariables';
 
 interface MatchingTableData {
   tutee: string,
@@ -37,11 +38,10 @@ const MainMatchingTable = () => {
     const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
       const tuteeParsedData: Tutee[] = window.tuteeParsedData;
       const tutorParsedData: Tutor[] = window.tutorParsedData;
+      const matchingTable: MatchingList = window.matchingList;
+      const row = matchingTable[Number(e.currentTarget.dataset.row)];
 
-      const row = rows[Number(e.currentTarget.dataset.row)];
-      const rawRow = matchingTable[Number(e.currentTarget.dataset.row)];
-
-      const tuteeIndex = parseInt(row.tutee.split("-")[1])
+      const tuteeIndex = row.tutee.index;
       const tutee = tuteeParsedData.find((row) => row.personalData.index === tuteeIndex);
 
       let tutorInfo: {
@@ -54,13 +54,14 @@ const MainMatchingTable = () => {
         commitStr?: string | undefined;
       }[] = [];
 
-      for (let i = 1; i < Object.keys(row).length; i++) {
-        const tutorIndex = parseInt(row[Object.keys(row)[i]])
+      for (let i = 0; i < row.tutorMatches.length; i++) {
+        const tutorIndex = row.tutorMatches[i].index;
         let tutorRaw = tutorParsedData.find((row) => row.personalData.index === tutorIndex);
-        let tutor = {...tutorRaw, matchingScore: rawRow["tutor" + String(i)].matchingScore}
+        let tutor = {...tutorRaw, matchingScore: row.tutorMatches[i].matchingScore}
 
         tutorInfo.push(tutor)
       }
+      tutorInfo = tutorInfo.filter((tutor) => tutor.matchingScore > 0);
       const selectedTuteeMatchesState = {
         tutee,
         tutorInfo
@@ -97,41 +98,71 @@ const MainMatchingTable = () => {
       data: rows,
       columns,
       getCoreRowModel: getCoreRowModel(),
-      autoResetAll: false
+      autoResetAll: false,
+      getPaginationRowModel: getPaginationRowModel(),
     })
   return (
     <>
         <div class="flex flex-col items-center gap-4">
           <h2 className="h2">Overview</h2>
-          <Table hoverable>
-            <Table.Head>
-              {table.getHeaderGroups().map(headerGroup => (
-                <React.Fragment key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <Table.HeadCell key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </Table.HeadCell>
-                  ))}
-                </React.Fragment>
-              ))}
-            </Table.Head>
-            <Table.Body>
-            {table.getRowModel().rows.map((row, i) => (
-              <Table.Row key={i} data-row={i} onClick={handleRowClick} className="cursor-pointer">
-                {row.getVisibleCells().map(cell => (
-                  <Table.Cell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </Table.Cell>
+          <div className="flex gap-2 flex-col">
+            <Table hoverable>
+              <Table.Head>
+                {table.getHeaderGroups().map(headerGroup => (
+                  <React.Fragment key={headerGroup.id}>
+                    {headerGroup.headers.map(header => (
+                      <Table.HeadCell key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </Table.HeadCell>
+                    ))}
+                  </React.Fragment>
                 ))}
-              </Table.Row>
-            ))}
-            </Table.Body>
-          </Table>
+              </Table.Head>
+              <Table.Body>
+              {table.getRowModel().rows.map((row, i) => (
+                <Table.Row key={i} data-row={i} onClick={handleRowClick} className="cursor-pointer">
+                  {row.getVisibleCells().map(cell => (
+                    <Table.Cell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
+              ))}
+              </Table.Body>
+            </Table>
+            {
+              table.getPageCount() > 1 ? (
+                <div className="flex flex-row justify-between items-center">
+                  <Pagination
+                    layout="pagination"
+                    currentPage={table.getState().pagination.pageIndex + 1}
+                    showIcons
+                    totalPages={table.getPageCount()}
+                    onPageChange={(p) => table.setPageIndex(p - 1)}
+                  />
+                  <div>
+                    <Select 
+                      value={table.getState().pagination.pageSize}
+                      onChange={e => {
+                        table.setPageSize(Number(e.target.value))
+                      }}
+                    >
+                      {[10, 20, 30, 40, 50].map(pageSize => (
+                        <option key={pageSize} value={pageSize}>
+                          Show {pageSize} entries
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                </div>
+              ) : (<></>)
+            }
+          </div>
         </div>
     </>
   )

@@ -268,7 +268,8 @@ export const transformKSGeneralTuteeData = (data: MatrixData[]): Tutee[] => {
     const parsedTuteeData : Tutee[] = []
     const colIdx = findIdxKSGeneralTutee(data[0])
     if (!colIdx) return parsedTuteeData
-    data.shift()
+
+    data = data.slice(1);
     for (let rowDataIdx in data){
         const rowData = data[rowDataIdx]
         const tutee: Tutee = {
@@ -289,7 +290,7 @@ export const transformKSGeneralTuteeData = (data: MatrixData[]): Tutee[] => {
         tutee.educationLevel = parseEducationLevel(educationLevelArr)
         tutee.secondaryStream = parseStream(rowData[colIdx.secondaryStream])
         const subjArr = colIdx.subjects.map((idx)=>rowData[idx])
-        tutee.subjects = parseSubjects(tutee.educationLevel, subjArr)           
+        tutee.subjects = parseSubjects(tutee.educationLevel, subjArr).filter((v) => v !== undefined)
         parsedTuteeData.push(tutee)
     }
     return parsedTuteeData

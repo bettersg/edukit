@@ -23,8 +23,20 @@ const DownloadCSVButton = () => {
     },[matchesSummary])
 
   return (
-    <Button color="primary">{csvData && <CSVLink data={csvData} className="flex flex-row justify-center gap-2 text-white" style={{"textDecoration": "none"}}><svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 19">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15h.01M4 12H2a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-3M9.5 1v10.93m4-3.93-4 4-4-4"/>
+    <Button color="primary">{csvData && <CSVLink data={csvData} className="flex flex-row justify-center gap-2 text-white" style={{"textDecoration": "none"}}><svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    aria-hidden="true"
+    className="w-4 h-4"
+    viewBox="0 0 20 19"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M15 15h.01M4 12H2a1 1 0 00-1 1v4a1 1 0 001 1h16a1 1 0 001-1v-4a1 1 0 00-1-1h-3M9.5 1v10.93m4-3.93l-4 4-4-4"
+    ></path>
   </svg> Download CSV</CSVLink>}</Button>
   )
 }

@@ -32,6 +32,16 @@ export const FlowbiteTheme: CustomFlowbiteTheme = {
         }
       }
     }
+  },
+  pagination: {
+    pages: {
+      base: "inline-flex items-center -space-x-px"
+    }
+  },
+  table: {
+    root: {
+      wrapper: "relative",
+    }
   }
 };
 

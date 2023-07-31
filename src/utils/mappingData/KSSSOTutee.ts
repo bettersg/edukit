@@ -66,7 +66,7 @@ export const secondarySubjectTextToEnumMapping = {
     "jc1":EducationLevel.JuniorCollege,
     "s5":EducationLevel.UpperSecondary,
     "s4":EducationLevel.UpperSecondary,
-    "s3":EducationLevel.LowerSecondary,
+    "s3":EducationLevel.UpperSecondary,
     "s2":EducationLevel.LowerSecondary,
     "s1":EducationLevel.LowerSecondary,
     "p6":EducationLevel.Primary,

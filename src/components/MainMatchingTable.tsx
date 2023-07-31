@@ -48,7 +48,7 @@ const MainMatchingTable = () => {
           tutee,
           tutorInfo
         }
-        console.log("tutpr parsed :", tutorParsedData, "state", selectedTuteeMatchesState)
+        console.log("tutor parsed :", tutorParsedData, "state", selectedTuteeMatchesState)
         dispatch(selectedTuteeMatchesActions.updateSelectedTuteeMatches(selectedTuteeMatchesState))
         navigate("/details")
       }

@@ -21,6 +21,7 @@ import {transformKSGeneralTuteeData} from "@/utils/parseKSGeneraTuteeData"
 
 import {getMatchScore} from '@/utils/score'
 import KSSSOTuteeFormat from '@/utils/data/KSSSOTuteeFormat';
+import KSGeneralTuteeFormat from '@/utils/data/KSGeneralTuteeFormat';
 import KSTutorFormat from '@/utils/data/KSTutorFormat';
 
 import { parse } from 'papaparse';
@@ -54,17 +55,20 @@ const DataLoadAndMatchForm = () => {
         const tutorRawData = useCsvTutor ? (tutorRawDataIn ?? await getGSheetsData(API_ENDPOINT_TUTOR, false)) : await getGSheetsData(API_ENDPOINT_TUTOR, false); 
         const tutorFormatter = new KSTutorFormat(tutorRawData);
         const tutorParsedData = tutorFormatter.fromDataMatrix();
-        console.log(tutorParsedData);
+        console.log("Tutor pasrsed data", tutorParsedData)
         const tuteeRawData = useCsvTutee ? (tuteeRawDataIn ?? await getGSheetsData(API_ENDPOINT_TUTEE, false)) : await getGSheetsData(API_ENDPOINT_TUTEE, false);
+        // console.log(tuteeRawData)
         let tuteeParsedData : Tutee[] = [];
         switch (selectedTuteeDataFormat){
             case TuteeDataFormat.KSGeneral:
-                tuteeParsedData = transformKSGeneralTuteeData(tuteeRawData)
+                // tuteeParsedData = transformKSGeneralTuteeData(tuteeRawData)
+                const formatterKSGen = new KSGeneralTuteeFormat(tuteeRawData)
+                tuteeParsedData = formatterKSGen.fromDataMatrix();
+                console.log("Tutee parsed data", tuteeParsedData)
                 break
             case TuteeDataFormat.KSSSO:
-                // console.log("Using new formatter");
-                const formatter = new KSSSOTuteeFormat(tuteeRawData)
-                tuteeParsedData = formatter.fromDataMatrix();
+                const formatterKSSSO = new KSSSOTuteeFormat(tuteeRawData)
+                tuteeParsedData = formatterKSSSO.fromDataMatrix();
                 console.log("Tutee parsed data", tuteeParsedData)
                 break
         }
@@ -83,7 +87,6 @@ const DataLoadAndMatchForm = () => {
   const calculateMatches = () => {
     const tutorParsedData: Tutor[] = window.tutorParsedData
     const tuteeParsedData: Tutee[] = window.tuteeParsedData
-    console.log("Tutor - ", tutorParsedData, "Tutee - ", tuteeParsedData)
     if (!tutorParsedData || !tuteeParsedData) {
       alert('Data not loaded!')
       return
@@ -140,14 +143,11 @@ const DataLoadAndMatchForm = () => {
     delete window.matchingList;
     dispatch(matchesSummaryActions.resetMatchesSummary())
     dispatch(selectedTuteeMatchesActions.resetSelectedTuteeMatches())
-    // dispatch(unmatchedTuteesActions.resetUnmatchedTutees())
-    // dispatch(selectedTutorMatchesActions.resetSelectedTutorMatches())
     navigate('/')
   }
 
   const handleSelectorChange = (event: Select.SelectChangeEvent) => {
     setSelectedTuteeDataFormat(()=>event.target.value)
-    // console.log(selectedTuteeDataFormat)    
   }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, name: string, stateChange: typeof setCsvTutorData, filenameChange: typeof setCsvTutorFilename) => {

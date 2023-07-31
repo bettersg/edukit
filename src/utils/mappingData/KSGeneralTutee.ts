@@ -97,7 +97,7 @@
     "junior college (jc) 1": EducationLevel.JuniorCollege,
     "secondary 5": EducationLevel.LowerSecondary,
     "secondary 4": EducationLevel.LowerSecondary,
-    "secondary 3": EducationLevel.LowerSecondary,
+    "secondary 3": EducationLevel.UpperSecondary,
     "secondary 2": EducationLevel.UpperSecondary,
     "secondary 1": EducationLevel.UpperSecondary,
     "primary 6":EducationLevel.Primary,

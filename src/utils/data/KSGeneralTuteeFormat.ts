@@ -4,6 +4,7 @@ import { MatrixData } from "@/types/google-sheets";
 import { EducationLevel, IBSubjects, JCSubjects, PrimarySubjects, SecondaryStream, SecondarySubjects } from "@/types/educationSubjects";
 import { DataFormatter } from './GenericFormat';
 import { educationLevelMapping, educationLevelSubjectMappingMapping, streamMapping, finAidMapping } from "../mappingData/KSGeneralTutee";
+import { string } from "prop-types";
 
 export default class KSGeneralTuteeFormat extends GenericFormat implements DataFormatter<Tutee> {
     constructor(data: MatrixData[]) {
@@ -48,7 +49,8 @@ export default class KSGeneralTuteeFormat extends GenericFormat implements DataF
                 fieldName: "educationLevel",
                 type: "string",
                 getterType: "cell_value",
-                columnKeywords: ["level of education","2023"],
+                columnKeywords: ["level of education"],
+                multipleColumns: true,
                 filter: {
                     params: educationLevelMapping, // because of the ordering of this variable, the first index will be the highest education level
                     noMatchValue: EducationLevel.undefined
@@ -85,6 +87,16 @@ export default class KSGeneralTuteeFormat extends GenericFormat implements DataF
         super(data, format)
     }
 
+    private findHighestListedEduLevel = (eduLevelEntries : string[]) : EducationLevel => {
+        const educationLevelStrArr = Object.values(EducationLevel)
+        for (let eduLevelOption of educationLevelStrArr){
+            if (eduLevelEntries.includes(eduLevelOption as EducationLevel)) {
+                return eduLevelOption as EducationLevel
+            }
+        }
+        return EducationLevel.undefined
+    }
+
     public fromDataMatrix() {
         const rawData = super.rawFromGSheets();
         console.log("rawData", rawData, "format", this.format)
@@ -99,8 +111,9 @@ export default class KSGeneralTuteeFormat extends GenericFormat implements DataF
                     }
                 },
                 preferedGender: tutee["preferedGender"] as PreferedGender,
-                isOnFinancialAid: true, // for parity with parseKSSSOTuteeData.ts, I assume this is todo
-                educationLevel: tutee["educationLevel"] as EducationLevel,
+                isOnFinancialAid: tutee["isOnFinancialAid"] as boolean | undefined, 
+                // educationLevel: tutee["educationLevel"] as EducationLevel,
+                educationLevel: this.findHighestListedEduLevel(tutee["educationLevel"] as string[]),
                 secondaryStream: tutee["secondaryStream"] as SecondaryStream,
                 // subjects:[]
                 subjects: ((tutee["subjects"] as string[][]).map(col => 

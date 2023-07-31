@@ -16,6 +16,7 @@
     "@mui/material": "^5.12.1",
     "@mui/x-data-grid": "^6.2.1",
     "@reduxjs/toolkit": "^1.9.5",
+    "@tanstack/react-table": "^8.9.3",
     "flowbite": "^1.7.0",
     "flowbite-react": "^0.5.0",
     "papaparse": "^5.4.1",

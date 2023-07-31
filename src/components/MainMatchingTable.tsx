@@ -4,61 +4,134 @@ import {useSelector, useDispatch } from 'react-redux';
 import { Tutee, Tutor } from '@/types/person';
 
 import { selectedTuteeMatchesActions } from '../store/selectedTuteeMatchesSlice'; 
-import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@mui/x-data-grid'
+import { createColumnHelper, getCoreRowModel, useReactTable, flexRender } from '@tanstack/react-table';
+import { Table } from 'flowbite-react';
+import React, { useMemo } from 'react';
+
+interface MatchingTableData {
+  tutee: string,
+  tutor1: number,
+  tutor2: number,
+  tutor3: number,
+  tutor4: number,
+  tutor5: number
+}
 
 const MainMatchingTable = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const matchingTable = useSelector((state)=>state.matchesSummary)
-    const columns: GridColDef[] = [
-        { field: 'Tutee', headerName: 'Tutee Name — Row', width: 170 },
-        { field: 'Tutor1', headerName: 'Tutor 1', width: 70, type: 'number'},
-        { field: 'Tutor2', headerName: 'Tutor 2', width: 70, type: 'number'},
-        { field: 'Tutor3', headerName: 'Tutor 3', width: 70, type: 'number'},
-        { field: 'Tutor4', headerName: 'Tutor 4', width: 70, type: 'number'},
-        { field: 'Tutor5', headerName: 'Tutor 5', width: 70, type: 'number'},
-      ];
-      const rows = matchingTable.map((tuteeDetail, idx)=>{
-        return {id:idx, Tutee:(tuteeDetail.tutee.name + " - "+String(tuteeDetail.tutee.index)), Tutor1: tuteeDetail.tutor1.index, Tutor2: tuteeDetail.tutor2.index, Tutor3: tuteeDetail.tutor3.index, Tutor4: tuteeDetail.tutor4.index, Tutor5: tuteeDetail.tutor5.index}
-      })
-      // console.log("Matched data:")
-      // console.log(rows)
-      // const rows = matchingTable.map((tutorDetail, idx)=>{
-      //   return {id:idx, Tutor:(tutorDetail.tutor.name + " - "+String(tutorDetail.tutor.index)), Tutee1: tutorDetail.tutee1.index, Tutee2: tutorDetail.tutee2.index, Tutee3: tutorDetail.tutee3.index, Tutee4: tutorDetail.tutee4.index, Tutee5: tutorDetail.tutee5.index}
-      // })
-      const handleRowClick : GridEventListener = (params, event, details) => {
-        const tuteeIndex = parseInt(params.row.Tutee.split("-")[1])
-        const tutee = window.tuteeParsedData.find((row:Tutee)=>(parseInt(row.personalData.index) === tuteeIndex))
-        const tuteeMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutee.index==tuteeIndex))
-        const tutorParsedData: Tutor[] = window.tutorParsedData
-        let tutor1 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor1)))
-        tutor1 = {...tutor1, matchingScore:(tuteeMatchSummary.tutor1.matchingScore)} 
-        let tutor2 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor2)))
-        tutor2 = {...tutor2, matchingScore:tuteeMatchSummary.tutor2.matchingScore}
-        let tutor3 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor3)))
-        tutor3 = {...tutor3, matchingScore:tuteeMatchSummary.tutor3.matchingScore}
-        let tutor4 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor4)))
-        tutor4 = {...tutor4, matchingScore:tuteeMatchSummary.tutor4.matchingScore}
-        let tutor5 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor5)))
-        tutor5 = {...tutor5, matchingScore:tuteeMatchSummary.tutor5.matchingScore}
-        const tutorInfo = [tutor1, tutor2, tutor3, tutor4, tutor5]
-        console.log("Tutor-Parsed-Data", window.tutorParsedData)
-        const selectedTuteeMatchesState = {
-          tutee,
-          tutorInfo
-        }
-        console.log("tutpr parsed :", tutorParsedData, "state", selectedTuteeMatchesState)
-        dispatch(selectedTuteeMatchesActions.updateSelectedTuteeMatches(selectedTuteeMatchesState))
-        navigate("/details")
+    // console.log(matchingTable, "MATCHING TABLE")
+    const rows: MatchingTableData[] = matchingTable.map((tuteeMatch, i) => {
+      return {
+        // id: i,
+        tutee: tuteeMatch.tutee.name + " - " + String(tuteeMatch.tutee.index),
+        tutor1: tuteeMatch.tutor1.index,
+        tutor2: tuteeMatch.tutor2.index,
+        tutor3: tuteeMatch.tutor3.index,
+        tutor4: tuteeMatch.tutor4.index,
+        tutor5: tuteeMatch.tutor5.index
       }
+    });
 
+    const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+      const tuteeParsedData: Tutee[] = window.tuteeParsedData;
+      const tutorParsedData: Tutor[] = window.tutorParsedData;
+
+      const row = rows[Number(e.currentTarget.dataset.row)];
+      const rawRow = matchingTable[Number(e.currentTarget.dataset.row)];
+
+      const tuteeIndex = parseInt(row.tutee.split("-")[1])
+      const tutee = tuteeParsedData.find((row) => row.personalData.index === tuteeIndex);
+
+      let tutorInfo: {
+        matchingScore: any;
+        personalData?: Person | undefined;
+        isProBonoOk?: boolean | undefined;
+        isUnaidedOk?: boolean | undefined;
+        acceptableSecondaryStreams?: SecondaryStream[] | undefined;
+        tutorSubjects?: TutorSubjects | undefined;
+        commitStr?: string | undefined;
+      }[] = [];
+
+      for (let i = 1; i < Object.keys(row).length; i++) {
+        const tutorIndex = parseInt(row[Object.keys(row)[i]])
+        let tutorRaw = tutorParsedData.find((row) => row.personalData.index === tutorIndex);
+        let tutor = {...tutorRaw, matchingScore: rawRow["tutor" + String(i)].matchingScore}
+
+        tutorInfo.push(tutor)
+      }
+      const selectedTuteeMatchesState = {
+        tutee,
+        tutorInfo
+      }
+      console.log(selectedTuteeMatchesState, "state Change")
+      dispatch(selectedTuteeMatchesActions.updateSelectedTuteeMatches(selectedTuteeMatchesState))
+      navigate("/details")
+    }
+    
+    const columnHelper = createColumnHelper<MatchingTableData>();
+
+    const columns = useMemo(() => [
+      columnHelper.accessor('tutee', {
+        header: () => <span>Tutee Name — Row</span>
+      }),
+      columnHelper.accessor('tutor1', {
+        header: () => <span>Tutor 1</span>
+      }),
+      columnHelper.accessor('tutor2', {
+        header: () => <span>Tutor 2</span>
+      }),
+      columnHelper.accessor('tutor3', {
+        header: () => <span>Tutor 3</span>
+      }),
+      columnHelper.accessor('tutor4', {
+        header: () => <span>Tutor 4</span>
+      }),
+      columnHelper.accessor('tutor5', {
+        header: () => <span>Tutor 5</span>
+      }),
+
+    ], []);
+    const table = useReactTable({
+      data: rows,
+      columns,
+      getCoreRowModel: getCoreRowModel(),
+      autoResetAll: false
+    })
   return (
     <>
-        <div class="flex flex-col items-center">
-          <h2 className="h2 my-4">Overview</h2>
-
-          <DataGrid sx={{cursor: 'pointer', width: "100%"}} rows={rows} columns={columns} onRowClick={handleRowClick}/>
-
+        <div class="flex flex-col items-center gap-4">
+          <h2 className="h2">Overview</h2>
+          <Table hoverable>
+            <Table.Head>
+              {table.getHeaderGroups().map(headerGroup => (
+                <React.Fragment key={headerGroup.id}>
+                  {headerGroup.headers.map(header => (
+                    <Table.HeadCell key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </Table.HeadCell>
+                  ))}
+                </React.Fragment>
+              ))}
+            </Table.Head>
+            <Table.Body>
+            {table.getRowModel().rows.map((row, i) => (
+              <Table.Row key={i} data-row={i} onClick={handleRowClick} className="cursor-pointer">
+                {row.getVisibleCells().map(cell => (
+                  <Table.Cell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </Table.Cell>
+                ))}
+              </Table.Row>
+            ))}
+            </Table.Body>
+          </Table>
         </div>
     </>
   )

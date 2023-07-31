@@ -6,6 +6,21 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { useEffect } from 'react'
 import { EducationLevel, SecondaryStream, fancyPrimarySubjects, fancySecondarySubjects, fancyJcSubjects, fancyIbSubjects } from '@/types/educationSubjects'
 import { Subject, TutorSubjects } from '@/types/person'
+import { Badge, Button, Table } from 'flowbite-react'
+import { createColumnHelper, getCoreRowModel, useReactTable, flexRender } from '@tanstack/react-table'
+import React, { useMemo } from 'react'
+
+interface DetailsTableData {
+  id: number,
+  name: string,
+  gender: string,
+  subjects: string,
+  isProbonoOk: string,
+  isNoFinAidOk: string,
+  secStreams: string,
+  commit: string,
+  matchingScore: number
+}
 
 const mapception = {
   "primary": fancyPrimarySubjects,
@@ -69,7 +84,59 @@ const MatchDetailsPage = () => {
     "ib": "IB"
   }
 
-  const columns: GridColDef[] = [
+  const rows: DetailsTableData[] = selectedTuteeMatches.tutorInfo.map((tutor, i)=>(
+    {
+      entity: "Tutor",
+      id: tutor.personalData.index,
+      name: tutor.personalData.name,
+      gender: tutor.personalData.gender,
+      subjects: getRelevantSubjects(selectedTuteeMatches.tutee.educationLevel, tutor.tutorSubjects),
+      isProbonoOk: booleanMap[String(tutor.isProBonoOk)],
+      isNoFinAidOk: booleanMap[String(tutor.isUnaidedOk)],
+      secStreams: tutor.acceptableSecondaryStreams.map((stream) => streamMapping[stream]).join(", "),
+      commit: tutor.commitStr,
+      matchingScore: tutor.matchingScore
+    }
+  ));
+
+  const columnHelper = createColumnHelper<DetailsTableData>();
+
+  const columns = useMemo(() => [
+    columnHelper.display({
+      id: 'entity',
+      header: () => <span>Entity</span>,
+      cell: (props) => <Badge color="success" className="justify-center">{props.row.original.entity}</Badge>,
+    }),
+    columnHelper.accessor('id', {
+      header: () => <span>Row</span>,
+    }),
+    columnHelper.accessor('name', {
+      header: () => <span>Name</span>,
+    }),
+    columnHelper.accessor('gender', {
+      header: () => <span>Gender — Gender Pref</span>
+    }),
+    columnHelper.accessor('subjects', {
+      header: () => <span>Edu Level — Subjects</span>
+    }),
+    columnHelper.accessor('isProbonoOk', {
+      header: () => <span>Probono Ok?</span>
+    }),
+    columnHelper.accessor('isNoFinAidOk', {
+      header: () => <span>On Fin Aid</span>
+    }),
+    columnHelper.accessor('secStreams', {
+      header: () => <span>Sec Streams</span>
+    }),
+    columnHelper.accessor('commit', {
+      header: () => <span>hrs/wk — thru year?</span>
+    }),
+    columnHelper.accessor('matchingScore', {
+      header: () => <span>M-Score</span>
+    }),
+  ], []);
+
+  const columnsMUI: GridColDef[] = [
     { field: 'Entity', headerName: 'Entity', width: 90 },
     { field: 'Index', headerName: 'Row', width: 20, type: 'number'},
     { field: 'Name', headerName: 'Name', width: 120, type: 'string'},
@@ -96,21 +163,111 @@ const MatchDetailsPage = () => {
     Commit: (tutor?.commitStr)
   }})
   console.log(selectedTuteeMatches)
-  const rows = [
-    {id: 0, 
+  const rowsMUI = [
+    {
+      id: 0, 
       Entity: "Tutee", 
-      Index:selectedTuteeMatches.tutee.personalData?.index, 
-      Name:selectedTuteeMatches.tutee.personalData?.name, 
+      Index: selectedTuteeMatches.tutee.personalData?.index, 
+      Name: selectedTuteeMatches.tutee.personalData?.name, 
       Gender_GenderPref: (selectedTuteeMatches.tutee.personalData?.gender + " — " + selectedTuteeMatches.tutee.preferedGender), 
       SubjectsEduLevel: (levelMapping[selectedTuteeMatches.tutee.educationLevel] + " — " + selectedTuteeMatches.tutee.subjects?.map((subject) => mapception[selectedTuteeMatches.tutee.educationLevel][subject]).join(", ")), 
       IsNoFinAidOk: booleanMap[(selectedTuteeMatches.tutee.isOnFinancialAid)],
-      SecStreams: (selectedTuteeMatches.tutee.secondaryStream) == SecondaryStream.undefined ? "" : (selectedTuteeMatches.tutee.secondaryStream)},
+      SecStreams: (selectedTuteeMatches.tutee.secondaryStream) == SecondaryStream.undefined ? "" : (selectedTuteeMatches.tutee.secondaryStream),
+      Commit: "",
+      MatchingScore: ""
+    },
     ...rowsTutors,
   ]
+
+  const table = useReactTable({
+    data: rows,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    autoResetAll: false
+  })
   return (
-    <div class="flex flex-col items-center">
-      <h2 className="h2 my-4">Match Details</h2>
-      <DataGrid getRowHeight={() => 'auto'} sx={{maxWidth: "100%"}} rows={rows} columns={columns}/>
+    <div class="flex flex-col gap-4 items-center">
+      <h2 className="h2">Match Details</h2>
+      {/* <Table>
+        <Table.Head>
+          <Table.HeadCell>
+            Row
+          </Table.HeadCell>
+          <Table.HeadCell>
+            Name
+          </Table.HeadCell>
+          <Table.HeadCell>
+            Gender — Gender Pref
+          </Table.HeadCell>
+          <Table.HeadCell>
+            Edu Level — Subjects
+          </Table.HeadCell>
+          <Table.HeadCell>
+            Probono Ok?
+          </Table.HeadCell>
+          <Table.HeadCell>
+            On Fin Aid
+          </Table.HeadCell>
+          <Table.HeadCell>
+            Sec Streams
+          </Table.HeadCell>
+          <Table.HeadCell>
+            hrs/wk — thru year?
+          </Table.HeadCell>
+          <Table.HeadCell>
+            M-Score
+          </Table.HeadCell>
+        </Table.Head>
+        
+      </Table> */}
+
+      <Table>
+        <Table.Head>
+          {table.getHeaderGroups().map(headerGroup => (
+            <React.Fragment key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <Table.HeadCell key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </Table.HeadCell>
+              ))}
+            </React.Fragment>
+          ))}
+        </Table.Head>
+        <Table.Body>
+          <Table.Row>
+            <Table.Cell><Badge color="warning" className="justify-center">Tutee</Badge></Table.Cell>
+            <Table.Cell>{rowsMUI[0].Index}</Table.Cell>
+            <Table.Cell>{rowsMUI[0].Name}</Table.Cell>
+            <Table.Cell>{rowsMUI[0].Gender_GenderPref}</Table.Cell>
+            <Table.Cell>{rowsMUI[0].SubjectsEduLevel}</Table.Cell>
+            <Table.Cell>N/A</Table.Cell>
+            <Table.Cell>{rowsMUI[0].IsNoFinAidOk}</Table.Cell>
+            <Table.Cell>{rowsMUI[0].SecStreams}</Table.Cell>
+            <Table.Cell>N/A</Table.Cell>
+            <Table.Cell>N/A</Table.Cell>
+          </Table.Row>
+        </Table.Body>
+        <Table.Body>
+        {table.getRowModel().rows.map((row, i) => (
+          <Table.Row key={i} data-row={i}>
+            {row.getVisibleCells().map(cell => (
+              <Table.Cell key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </Table.Cell>
+            ))}
+          </Table.Row>
+        ))}
+        </Table.Body>
+      </Table>
+
+      <DataGrid getRowHeight={() => 'auto'} sx={{maxWidth: "100%"}} rows={rowsMUI} columns={columnsMUI}/>
+
+      <Button color="primary" onClick={() => navigate("/")}>Back</Button>
     </div>
   )
 }

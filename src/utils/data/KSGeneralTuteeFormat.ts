@@ -3,9 +3,9 @@ import GenericFormat, { DataFormat } from "./GenericFormat";
 import { MatrixData } from "@/types/google-sheets";
 import { EducationLevel, IBSubjects, JCSubjects, PrimarySubjects, SecondaryStream, SecondarySubjects } from "@/types/educationSubjects";
 import { DataFormatter } from './GenericFormat';
-import { educationLevelMapping, educationLevelSubjectMappingMapping, streamMapping } from "../mappingData/KSSSOTutee";
+import { educationLevelMapping, educationLevelSubjectMappingMapping, streamMapping, finAidMapping } from "../mappingData/KSGeneralTutee";
 
-export default class KSSSOTuteeFormat extends GenericFormat implements DataFormatter<Tutee> {
+export default class KSGeneralTuteeFormat extends GenericFormat implements DataFormatter<Tutee> {
     constructor(data: MatrixData[]) {
         const format: DataFormat = [
             {
@@ -17,13 +17,13 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
                 fieldName: "name",
                 type: "string",
                 getterType: "cell_value",
-                columnKeywords: ["name", "tutee"]
+                columnKeywords: ["name"]
             },
             {
                 fieldName: "gender",
                 type: "string",
                 getterType: "cell_value",
-                columnKeywords: ["gender", "tutee"],
+                columnKeywords: ["gender"],
                 filter: {
                     params: [Gender.Female, Gender.Male],
                 }
@@ -32,13 +32,13 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
                 fieldName: "phone",
                 type: "number",
                 getterType: "cell_value",
-                columnKeywords: ["contact number"]
+                columnKeywords: ["phone"]
             },
             {
                 fieldName: "preferedGender",
                 type: "string",
                 getterType: "cell_value",
-                columnKeywords: ["gender", "preference"],
+                columnKeywords: ["gender", "?"],
                 filter: {
                     params: [PreferedGender.Female, PreferedGender.Male] as string[],
                     noMatchValue: PreferedGender.None,
@@ -48,7 +48,7 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
                 fieldName: "educationLevel",
                 type: "string",
                 getterType: "cell_value",
-                columnKeywords: ["level", "education"],
+                columnKeywords: ["level of education","2023"],
                 filter: {
                     params: educationLevelMapping, // because of the ordering of this variable, the first index will be the highest education level
                     noMatchValue: EducationLevel.undefined
@@ -58,10 +58,10 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
                 fieldName: "secondaryStream",
                 type: "string",
                 getterType: "cell_value",
-                columnKeywords: ["secondary level", "!subject"],
+                columnKeywords: ["stream"],
                 filter: {
                     params: streamMapping,
-                    noMatchValue: SecondaryStream.undefined
+                    noMatchValue: undefined
                 }
             },
             {
@@ -70,6 +70,16 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
                 getterType: "cell_value",
                 columnKeywords: ["subject"],
                 multipleColumns: true,
+            },
+            {
+                fieldName: "isOnFinancialAid",
+                type: "string",
+                getterType: "cell_value",
+                columnKeywords: ["financial aid", "currently on"],
+                filter: {
+                    params: finAidMapping,
+                    noMatchValue: SecondaryStream.undefined
+                }
             }
         ]
         super(data, format)

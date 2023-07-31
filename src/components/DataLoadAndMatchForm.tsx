@@ -21,6 +21,7 @@ import {transformKSGeneralTuteeData} from "@/utils/parseKSGeneraTuteeData"
 
 import {getMatchScore} from '@/utils/score'
 import KSSSOTuteeFormat from '@/utils/data/KSSSOTuteeFormat';
+import KSGeneralTuteeFormat from '@/utils/data/KSGeneralTuteeFormat';
 import KSTutorFormat from '@/utils/data/KSTutorFormat';
 
 import { parse } from 'papaparse';
@@ -60,6 +61,8 @@ const DataLoadAndMatchForm = () => {
         switch (selectedTuteeDataFormat){
             case TuteeDataFormat.KSGeneral:
                 tuteeParsedData = transformKSGeneralTuteeData(tuteeRawData)
+                const formatterKSGen = new KSGeneralTuteeFormat(tuteeRawData)
+                // tuteeParsedData = formatterKSGen.fromDataMatrix();
                 break
             case TuteeDataFormat.KSSSO:
                 // console.log("Using new formatter");

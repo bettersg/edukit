@@ -66,9 +66,8 @@ const DataLoadAndMatchForm = () => {
                 console.log("Tutee parsed data", tuteeParsedData)
                 break
             case TuteeDataFormat.KSSSO:
-                // console.log("Using new formatter");
-                const formatter = new KSSSOTuteeFormat(tuteeRawData)
-                tuteeParsedData = formatter.fromDataMatrix();
+                const formatterKSSSO = new KSSSOTuteeFormat(tuteeRawData)
+                tuteeParsedData = formatterKSSSO.fromDataMatrix();
                 console.log("Tutee parsed data", tuteeParsedData)
                 break
         }
@@ -87,7 +86,6 @@ const DataLoadAndMatchForm = () => {
   const calculateMatches = () => {
     const tutorParsedData: Tutor[] = window.tutorParsedData
     const tuteeParsedData: Tutee[] = window.tuteeParsedData
-    // console.log("Tutor - ", tutorParsedData, "Tutee - ", tuteeParsedData)
     if (!tutorParsedData || !tuteeParsedData) {
       alert('Data not loaded!')
       return
@@ -144,14 +142,11 @@ const DataLoadAndMatchForm = () => {
     delete window.matchingList;
     dispatch(matchesSummaryActions.resetMatchesSummary())
     dispatch(selectedTuteeMatchesActions.resetSelectedTuteeMatches())
-    // dispatch(unmatchedTuteesActions.resetUnmatchedTutees())
-    // dispatch(selectedTutorMatchesActions.resetSelectedTutorMatches())
     navigate('/')
   }
 
   const handleSelectorChange = (event: Select.SelectChangeEvent) => {
     setSelectedTuteeDataFormat(()=>event.target.value)
-    // console.log(selectedTuteeDataFormat)    
   }
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, name: string, stateChange: typeof setCsvTutorData, filenameChange: typeof setCsvTutorFilename) => {

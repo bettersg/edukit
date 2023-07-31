@@ -308,7 +308,7 @@ class GenericFormat {
     public format: DataFormat;
     public data: MatrixData[];
     private columnsCompiled: boolean = false;
-    private DEBUG: boolean = false;
+    private DEBUG: boolean = true;
  
 
     constructor (data: MatrixData[], format: DataFormat) {
@@ -316,7 +316,7 @@ class GenericFormat {
         this.data = data;
         this.format = format;
         this.compileColumns();
-        // console.log(this.format)
+        console.log(this.format)
         if (this.DEBUG) console.log(this.format)
         
     }
@@ -342,6 +342,7 @@ class GenericFormat {
                     });
 
                     if (headerIndex == -1) {
+                        alert(`Incorrect Data Header Format! Didnt Find - ${formatRule.fieldName}`)
                         throw new Error(`Column with keywords ${formatRule.columnKeywords} not found for format rule ${formatRule.fieldName}`);
                     }
                     formatRule.columnIndex = headerIndex;
@@ -363,6 +364,7 @@ class GenericFormat {
                     }
                     
                     if (headerIndices.length < 1) {
+                        alert(`Incorrect Data Header Format! Didnt Find - ${formatRule.fieldName}`)
                         throw new Error(`Columns with keywords ${formatRule.columnKeywords} not found for format rule ${formatRule.fieldName}`);
                     } else {
                         formatRule.columnIndex = headerIndices;
@@ -575,21 +577,20 @@ class GenericFormat {
                             Object.keys(formatRule.filter!.boolParams).every((item) => {
                                 let value = (formatRule as Extract<DataFormat[number], {type: "boolean"}>).filter!.boolParams[item as "true" | "false"];
                                 let key = string2bool[item as "true" | "false"];
-
+                                // console.log("Inside Bool Conversion", key, value, raw)
                                 if (value instanceof Array) {
                                     let found = true;
                                     for (let filterItem of value) {
-                                        
                                         if (filterItem.startsWith("|")) {
                                             found = found || raw.toLowerCase().trim().includes(filterItem.slice(1).toLowerCase());
                                         } else {
                                             found = found && raw.toLowerCase().trim().includes(filterItem.toLowerCase());
                                         }
                                     }
+                                    // console.log("Inside Bool Conversion", key, value, raw, found)
                                     if (found) {
                                         dataRow[formatRule.fieldName] = key;
                                         matched = true;
-
                                         return false;
                                     }
                                 } else {
@@ -601,8 +602,10 @@ class GenericFormat {
                                 }   
                                 return true;
                             });
+                            // console.log("Matched", formatRule.fieldName, formatRule.filter!.boolParams, "Row#", i, dataRow[formatRule.fieldName])
                             if (!matched) {
                                 if (raw !== "" && this.DEBUG) console.log("no match", raw, formatRule.fieldName, formatRule.filter!.boolParams);
+                                // console.log("no match", raw, formatRule.fieldName, formatRule.filter!.boolParams, "Row#", i, dataRow[formatRule.fieldName])
                                 dataRow[formatRule.fieldName] = formatRule.filter!.noMatchValue ?? false;
                             }
                         } else {
@@ -613,7 +616,7 @@ class GenericFormat {
             }
             output.push(dataRow);
         }
-
+        // console.log("Output", output)
         return output;
     }
 }

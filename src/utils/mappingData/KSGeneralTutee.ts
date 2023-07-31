@@ -7,6 +7,8 @@
     IBSubjects,
   } from '@/types/educationSubjects'
 
+  // all the key values to be kept in lower case
+  
   export const primarySubjectTextToEnumMapping = {
     "english language": PrimarySubjects.English,
     "mathematics": PrimarySubjects.Math,
@@ -81,25 +83,26 @@
     "biology (sl)": IBSubjects.BiologySL,
     "physics (sl)": IBSubjects.PhysicsSL,
     "chemistry (sl)": IBSubjects.ChemistrySL,
-    "mathematics (hl)": IBSubjects.MathSL,
-    "geography (hl)": IBSubjects.GeographySL,
-    "history (hl)": IBSubjects.HistorySL,
-    "english literature (hl)": IBSubjects.EnglishLiteratureSL,
-    "economics (hl)": IBSubjects.EconomicsSL,
-    "biology (hl)": IBSubjects.BiologySL,
-    "physics (hl)": IBSubjects.PhysicsSL,
+    "mathematics (hl)": IBSubjects.MathHL,
+    "geography (hl)": IBSubjects.GeographyHL,
+    "history (hl)": IBSubjects.HistoryHL,
+    "english literature (hl)": IBSubjects.EnglishLiteratureHL,
+    "economics (hl)": IBSubjects.EconomicsHL,
+    "biology (hl)": IBSubjects.BiologyHL,
+    "physics (hl)": IBSubjects.PhysicsHL,
     "chemistry (hl)": IBSubjects.ChemistryHL
   }
   export const educationLevelMapping = {
     "international baccalaureate (ib) grade 12": EducationLevel.InternationalBaccalaureate,
     "international baccalaureate (ib) grade 11": EducationLevel.InternationalBaccalaureate,
+    "international baccalaureate (ib)": EducationLevel.InternationalBaccalaureate,
     "junior college (jc) 2": EducationLevel.JuniorCollege,
     "junior college (jc) 1": EducationLevel.JuniorCollege,
-    "secondary 5": EducationLevel.LowerSecondary,
-    "secondary 4": EducationLevel.LowerSecondary,
+    "secondary 5": EducationLevel.UpperSecondary,
+    "secondary 4": EducationLevel.UpperSecondary,
     "secondary 3": EducationLevel.UpperSecondary,
-    "secondary 2": EducationLevel.UpperSecondary,
-    "secondary 1": EducationLevel.UpperSecondary,
+    "secondary 2": EducationLevel.LowerSecondary,
+    "secondary 1": EducationLevel.LowerSecondary,
     "primary 6":EducationLevel.Primary,
     "primary 5":EducationLevel.Primary,
     "primary 4":EducationLevel.Primary,

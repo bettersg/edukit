@@ -77,7 +77,6 @@ export default class KSSSOTuteeFormat extends GenericFormat implements DataForma
 
     public fromDataMatrix() {
         const rawData = super.rawFromGSheets();
-        console.log("rawData", rawData, "format", this.format)
         return rawData.map((tutee) => (
             {
                 personalData: {

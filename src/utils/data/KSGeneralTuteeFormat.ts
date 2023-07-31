@@ -63,7 +63,7 @@ export default class KSGeneralTuteeFormat extends GenericFormat implements DataF
                 columnKeywords: ["stream"],
                 filter: {
                     params: streamMapping,
-                    noMatchValue: undefined
+                    noMatchValue: SecondaryStream.undefined
                 }
             },
             {
@@ -80,7 +80,7 @@ export default class KSGeneralTuteeFormat extends GenericFormat implements DataF
                 columnKeywords: ["financial aid", "currently on"],
                 filter: {
                     params: finAidMapping,
-                    noMatchValue: SecondaryStream.undefined
+                    noMatchValue: undefined
                 }
             }
         ]
@@ -99,7 +99,6 @@ export default class KSGeneralTuteeFormat extends GenericFormat implements DataF
 
     public fromDataMatrix() {
         const rawData = super.rawFromGSheets();
-        console.log("rawData", rawData, "format", this.format)
         return rawData.map((tutee) => (
             {
                 personalData: {

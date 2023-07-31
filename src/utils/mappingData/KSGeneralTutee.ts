@@ -1,9 +1,3 @@
-import {
-    Tutee,
-    Gender,
-    PreferedGender,
-    Subject,
-  } from '@/types/person'
   import {
     EducationLevel,
     SecondaryStream,
@@ -96,13 +90,6 @@ import {
     "physics (hl)": IBSubjects.PhysicsSL,
     "chemistry (hl)": IBSubjects.ChemistryHL
   }
-  export const educationLevelSubjectMappingMapping = {
-    [EducationLevel.JuniorCollege]: jcSubjectTextToEnumMapping,
-    [EducationLevel.InternationalBaccalaureate]: ibSubjectTextToEnumMapping,
-    [EducationLevel.UpperSecondary]: secondarySubjectTextToEnumMapping,
-    [EducationLevel.LowerSecondary]: secondarySubjectTextToEnumMapping,
-    [EducationLevel.Primary]: primarySubjectTextToEnumMapping,
-  }
   export const educationLevelMapping = {
     "international baccalaureate (ib) grade 12": EducationLevel.InternationalBaccalaureate,
     "international baccalaureate (ib) grade 11": EducationLevel.InternationalBaccalaureate,
@@ -119,6 +106,13 @@ import {
     "primary 3":EducationLevel.Primary,
     "primary 2":EducationLevel.Primary,
     "primary 1":EducationLevel.Primary,
+  }
+  export const educationLevelSubjectMappingMapping = {
+    [EducationLevel.JuniorCollege]: jcSubjectTextToEnumMapping,
+    [EducationLevel.InternationalBaccalaureate]: ibSubjectTextToEnumMapping,
+    [EducationLevel.UpperSecondary]: secondarySubjectTextToEnumMapping,
+    [EducationLevel.LowerSecondary]: secondarySubjectTextToEnumMapping,
+    [EducationLevel.Primary]: primarySubjectTextToEnumMapping,
   }
   export const streamMapping = {
     "express": SecondaryStream.Express,

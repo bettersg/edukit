@@ -55,17 +55,15 @@ const DataLoadAndMatchForm = () => {
         const tutorRawData = useCsvTutor ? (tutorRawDataIn ?? await getGSheetsData(API_ENDPOINT_TUTOR, false)) : await getGSheetsData(API_ENDPOINT_TUTOR, false); 
         const tutorFormatter = new KSTutorFormat(tutorRawData);
         const tutorParsedData = tutorFormatter.fromDataMatrix();
-        // console.log(tutorParsedData);
-        // const tuteeRawData = useCsvTutee ? (tuteeRawDataIn ?? await getGSheetsData(API_ENDPOINT_TUTEE, false)) : await getGSheetsData(API_ENDPOINT_TUTEE, false);
-        const tuteeRawData = await getGSheetsData(API_ENDPOINT_TUTEE, false);
+        const tuteeRawData = useCsvTutee ? (tuteeRawDataIn ?? await getGSheetsData(API_ENDPOINT_TUTEE, false)) : await getGSheetsData(API_ENDPOINT_TUTEE, false);
+        // const tuteeRawData = await getGSheetsData(API_ENDPOINT_TUTEE, false);
         let tuteeParsedData : Tutee[] = [];
-        console.log("Tutee raw Data In", tuteeRawDataIn)
-        console.log("Tutee raw Data", tuteeRawData)
         switch (selectedTuteeDataFormat){
             case TuteeDataFormat.KSGeneral:
-                tuteeParsedData = transformKSGeneralTuteeData(tuteeRawData)
+                // tuteeParsedData = transformKSGeneralTuteeData(tuteeRawData)
                 const formatterKSGen = new KSGeneralTuteeFormat(tuteeRawData)
-                // tuteeParsedData = formatterKSGen.fromDataMatrix();
+                tuteeParsedData = formatterKSGen.fromDataMatrix();
+                console.log("Tutee parsed data", tuteeParsedData)
                 break
             case TuteeDataFormat.KSSSO:
                 // console.log("Using new formatter");
@@ -89,7 +87,7 @@ const DataLoadAndMatchForm = () => {
   const calculateMatches = () => {
     const tutorParsedData: Tutor[] = window.tutorParsedData
     const tuteeParsedData: Tutee[] = window.tuteeParsedData
-    console.log("Tutor - ", tutorParsedData, "Tutee - ", tuteeParsedData)
+    // console.log("Tutor - ", tutorParsedData, "Tutee - ", tuteeParsedData)
     if (!tutorParsedData || !tuteeParsedData) {
       alert('Data not loaded!')
       return

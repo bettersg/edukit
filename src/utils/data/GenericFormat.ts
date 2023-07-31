@@ -312,17 +312,18 @@ class GenericFormat {
  
 
     constructor (data: MatrixData[], format: DataFormat) {
-        console.log(data)
+        // console.log(data)
         this.data = data;
         this.format = format;
         this.compileColumns();
+        // console.log(this.format)
         if (this.DEBUG) console.log(this.format)
         
     }
     // Idneitifies column # in the matrix for different inputs
     public compileColumns() {
         const headers = this.data[0];
-        console.log(this.data[0])
+        // console.log(this.data[0])
         for (let [i, formatRule] of this.format.entries()) {
             if ("columnKeywords" in formatRule && formatRule.columnKeywords.length > 0 && formatRule.getterType == "cell_value") {
                 if (!("multipleColumns" in formatRule) || !formatRule.multipleColumns) {

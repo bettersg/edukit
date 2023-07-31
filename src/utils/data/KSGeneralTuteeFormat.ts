@@ -102,8 +102,17 @@ export default class KSGeneralTuteeFormat extends GenericFormat implements DataF
                 isOnFinancialAid: true, // for parity with parseKSSSOTuteeData.ts, I assume this is todo
                 educationLevel: tutee["educationLevel"] as EducationLevel,
                 secondaryStream: tutee["secondaryStream"] as SecondaryStream,
+                // subjects:[]
                 subjects: ((tutee["subjects"] as string[][]).map(col => 
-                    col.map(subject => educationLevelSubjectMappingMapping[tutee["educationLevel"] as EducationLevel][subject.toLowerCase()])) )
+                    col.map((subject) => {
+                        try{
+                            return educationLevelSubjectMappingMapping[tutee["educationLevel"] as EducationLevel][subject.toLowerCase()]
+                        } catch{
+                            return undefined
+                        }
+                    })
+                    )
+                    )
                     .flat(1)
                     .filter(subject => subject !== undefined),
             }

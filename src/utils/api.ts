@@ -29,7 +29,7 @@ export const getGSheetsData = async <T = MatrixData>(
 
   const data: GSheetsResponse = await response.json()
   const rawData = data.content
-
+  console.log("Raw Data from GSheet Fn", rawData)
   if (dropHeaderRow) rawData.shift()
   if (transformFn) return rawData.map(transformFn)
   return rawData as unknown as T[]

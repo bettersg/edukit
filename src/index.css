@@ -3,33 +3,33 @@
 @tailwind utilities;
 
 @layer components {
-    .h1 {
-        @apply text-5xl font-extrabold dark:text-white;
-    }
+  .h1 {
+    @apply text-5xl font-extrabold dark:text-white;
+  }
 
-    .h2 {
-        @apply text-4xl font-bold dark:text-white;
-    }
+  .h2 {
+    @apply text-4xl font-bold dark:text-white;
+  }
 
-    .h4 {
-        @apply text-2xl font-bold dark:text-white;
-    }
-    
-    .link {
-        @apply font-medium text-blue-600 dark:text-blue-500 hover:underline;
-    }
+  .h4 {
+    @apply text-2xl font-bold dark:text-white;
+  }
 
-    .card-buttons {
-        @apply flex flex-row flex-grow items-end gap-2;
-    }
+  .link {
+    @apply font-medium text-blue-600 dark:text-blue-500 hover:underline;
+  }
 
-    tbody {
-        @apply divide-y;
-    }
+  .card-buttons {
+    @apply flex flex-row flex-grow items-end gap-2;
+  }
+
+  tbody {
+    @apply divide-y;
+  }
 }
 
 .MuiCard-root {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

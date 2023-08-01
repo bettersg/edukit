@@ -6,6 +6,6 @@
  * @returns
  */
 export const stringToArray = (rawInput: string, delimiter = ','): string[] => {
-  if (!rawInput) return []
-  return rawInput.split(delimiter).map((input: string) => input.trim())
-}
+  if (!rawInput) return [];
+  return rawInput.split(delimiter).map((input: string) => input.trim());
+};

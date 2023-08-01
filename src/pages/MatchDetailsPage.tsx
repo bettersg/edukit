@@ -10,7 +10,7 @@ import {
   fancyJcSubjects,
   fancyIbSubjects,
 } from '@/types/educationSubjects';
-import { Subject, TutorSubjects } from '@/types/person';
+import { Gender, Subject, TutorSubjects } from '@/types/person';
 import { Badge, Button, Pagination, Select, Table } from 'flowbite-react';
 import {
   createColumnHelper,
@@ -34,6 +34,7 @@ interface DetailsTableData {
   secStreams: string;
   commit: string;
   matchingScore: number;
+  phoneNum: string;
 }
 
 const mapception = {
@@ -61,6 +62,10 @@ const MatchDetailsPage = () => {
   const initSort: SortingState = [
     {
       id: 'matchingScore',
+      desc: true,
+    },
+    {
+      id: 'commit',
       desc: true,
     },
     {
@@ -147,6 +152,10 @@ const MatchDetailsPage = () => {
         .join(', '),
       commit: tutor.commitStr,
       matchingScore: tutor.matchingScore,
+      phoneNum: String(tutor.personalData.contact?.phone).replace(
+        'undefined',
+        'Unprovided',
+      ),
     }),
   );
 
@@ -198,6 +207,11 @@ const MatchDetailsPage = () => {
         header: () => <span>M-Score</span>,
         enableMultiSort: true,
       }),
+      columnHelper.accessor('phoneNum', {
+        header: () => <span>Phone</span>,
+        enableMultiSort: false,
+        enableSorting: false,
+      }),
     ],
     [],
   );
@@ -209,7 +223,10 @@ const MatchDetailsPage = () => {
     entity: 'Tutee',
     name: selectedTuteeMatches.tutee.personalData?.name!,
     gender:
-      selectedTuteeMatches.tutee.personalData?.gender +
+      String(selectedTuteeMatches.tutee.personalData?.gender!).replace(
+        'undefined',
+        'Unprovided',
+      ) +
       ' — ' +
       selectedTuteeMatches.tutee.preferedGender,
     subjects:
@@ -230,6 +247,9 @@ const MatchDetailsPage = () => {
         : streamMapping[selectedTuteeMatches.tutee.secondaryStream!],
     commit: '',
     matchingScore: 0,
+    phoneNum: String(
+      selectedTuteeMatches.tutee.personalData?.contact?.phone,
+    ).replace('undefined', 'Unprovided'),
   };
 
   const table = useReactTable({
@@ -362,6 +382,7 @@ const MatchDetailsPage = () => {
                 <Table.Cell>{tuteeRow.secStreams}</Table.Cell>
                 <Table.Cell>N/A</Table.Cell>
                 <Table.Cell>N/A</Table.Cell>
+                <Table.Cell>{tuteeRow.phoneNum}</Table.Cell>
               </Table.Row>
             </Table.Body>
             <Table.Body>

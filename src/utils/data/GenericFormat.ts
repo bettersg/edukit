@@ -4,7 +4,7 @@ export type DataFormat = // Shared parameters
   ({
     fieldName: string;
   } & (
-      | {
+    | {
         type: 'number';
         /**
          * Method of how the value is retrieved
@@ -13,7 +13,7 @@ export type DataFormat = // Shared parameters
          */
         getterType: 'row_index';
       }
-      | {
+    | {
         type: 'string';
         /**
          * Method of how the value is retrieved
@@ -85,7 +85,7 @@ export type DataFormat = // Shared parameters
           strictEquality?: boolean;
         };
       }
-      | {
+    | {
         type: 'string';
         /**
          * Method of how the value is retrieved
@@ -147,7 +147,7 @@ export type DataFormat = // Shared parameters
           noMatchValue?: any;
         };
       }
-      | {
+    | {
         type: 'number';
         /**
          * Method of how the value is retrieved
@@ -193,7 +193,7 @@ export type DataFormat = // Shared parameters
           noMatchValue?: any;
         };
       }
-      | {
+    | {
         /**
          * Example of a valid CSV format:
          * `"Lorem, Ipsum, Dolor, sit, amet"`
@@ -224,7 +224,7 @@ export type DataFormat = // Shared parameters
          */
         mapping?: Record<string, string>;
       }
-      | {
+    | {
         /**
          * Example of a valid CSV format:
          * `"Lorem, Ipsum, Dolor, sit, amet"`
@@ -255,7 +255,7 @@ export type DataFormat = // Shared parameters
          */
         mapping?: Record<string, string> | Record<string, string>[];
       }
-      | {
+    | {
         type: 'boolean';
         getterType: 'cell_value';
         columnIndex?: number;
@@ -288,7 +288,7 @@ export type DataFormat = // Shared parameters
           noMatchValue?: any;
         };
       }
-    ))[];
+  ))[];
 
 export type GenericRawOutputFormat = Record<
   string,
@@ -702,7 +702,8 @@ class GenericFormat {
               }
             } else {
               throw new TypeError(
-                `Boolean type requires a filter at ${(formatRule as DataFormat[number]).fieldName
+                `Boolean type requires a filter at ${
+                  (formatRule as DataFormat[number]).fieldName
                 }`,
                 { cause: { code: 'BOOLEAN_NO_FILTER' } },
               );

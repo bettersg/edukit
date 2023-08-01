@@ -18,12 +18,19 @@ export const primarySubjectTextToEnumMapping = {
 };
 
 export const secondarySubjectTextToEnumMapping = {
+  'combined humanities (social studies)':
+    SecondarySubjects.CombinedHumanitiesSocialStudies,
+  'combined humanities (geography)':
+    SecondarySubjects.CombinedHumanitiesGeography,
+  'combined humanities (history)': SecondarySubjects.CombinedHumanitiesHistory,
+  'combined humanities (literature)':
+    SecondarySubjects.CombinedHumanitiesLiterature,
   'english language': SecondarySubjects.English,
   'chinese language': SecondarySubjects.Chinese,
   'malay language': SecondarySubjects.Malay,
   'tamil language': SecondarySubjects.Tamil,
-  mathematics: SecondarySubjects.EMath,
   'a-mathematics': SecondarySubjects.AMath,
+  mathematics: SecondarySubjects.EMath,
   'principle of accounting': SecondarySubjects.Accounting,
   'combined science (biology)': SecondarySubjects.CombinedScienceBiology,
   'combined science (chemistry)': SecondarySubjects.CombinedScienceChemistry,
@@ -35,13 +42,6 @@ export const secondarySubjectTextToEnumMapping = {
   history: SecondarySubjects.History,
   'english literature': SecondarySubjects.EnglishLiterature,
   'social studies': SecondarySubjects.SocialStudies,
-  'combined humanities (social studies)':
-    SecondarySubjects.CombinedHumanitiesSocialStudies,
-  'combined humanities (geography)':
-    SecondarySubjects.CombinedHumanitiesGeography,
-  'combined humanities (history)': SecondarySubjects.CombinedHumanitiesHistory,
-  'combined humanities (literature)':
-    SecondarySubjects.CombinedHumanitiesLiterature,
 };
 
 export const jcSubjectTextToEnumMapping = {
@@ -79,13 +79,13 @@ export const ibSubjectTextToEnumMapping = {
   'biology (sl)': IBSubjects.BiologySL,
   'physics (sl)': IBSubjects.PhysicsSL,
   'chemistry (sl)': IBSubjects.ChemistrySL,
-  'mathematics (hl)': IBSubjects.MathSL,
-  'geography (hl)': IBSubjects.GeographySL,
-  'history (hl)': IBSubjects.HistorySL,
-  'english literature (hl)': IBSubjects.EnglishLiteratureSL,
-  'economics (hl)': IBSubjects.EconomicsSL,
-  'biology (hl)': IBSubjects.BiologySL,
-  'physics (hl)': IBSubjects.PhysicsSL,
+  'mathematics (hl)': IBSubjects.MathHL,
+  'geography (hl)': IBSubjects.GeographyHL,
+  'history (hl)': IBSubjects.HistoryHL,
+  'english literature (hl)': IBSubjects.EnglishLiteratureHL,
+  'economics (hl)': IBSubjects.EconomicsHL,
+  'biology (hl)': IBSubjects.BiologyHL,
+  'physics (hl)': IBSubjects.PhysicsHL,
   'chemistry (hl)': IBSubjects.ChemistryHL,
 };
 

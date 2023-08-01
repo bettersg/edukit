@@ -68,15 +68,19 @@ const DataLoadAndMatchForm = () => {
         alert('Please select a valid tutee data format');
         return;
       }
-      const tutorRawData = useCsvTutor
-        ? tutorRawDataIn ?? (await getGSheetsData(API_ENDPOINT_TUTOR, false))
-        : await getGSheetsData(API_ENDPOINT_TUTOR, false);
+      const [tutorRawData, tuteeRawData] = await Promise.all([
+        useCsvTutor
+          ? tutorRawDataIn ?? getGSheetsData(API_ENDPOINT_TUTOR, false)
+          : getGSheetsData(API_ENDPOINT_TUTOR, false),
+        useCsvTutee
+          ? tuteeRawDataIn ?? (await getGSheetsData(API_ENDPOINT_TUTEE, false))
+          : await getGSheetsData(API_ENDPOINT_TUTEE, false),
+      ]);
+
       const tutorFormatter = new KSTutorFormat(tutorRawData);
       const tutorParsedData = tutorFormatter.fromDataMatrix();
       console.log('Tutor parsed data', tutorParsedData);
-      const tuteeRawData = useCsvTutee
-        ? tuteeRawDataIn ?? (await getGSheetsData(API_ENDPOINT_TUTEE, false))
-        : await getGSheetsData(API_ENDPOINT_TUTEE, false);
+
       // console.log(tuteeRawData)
       let tuteeParsedData: Tutee[] = [];
       switch (selectedTuteeDataFormat) {

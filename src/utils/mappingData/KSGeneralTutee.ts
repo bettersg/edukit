@@ -19,23 +19,6 @@ export const primarySubjectTextToEnumMapping = {
   'social studies': PrimarySubjects.SocialStudies,
 };
 export const secondarySubjectTextToEnumMapping = {
-  'english language': SecondarySubjects.English,
-  'chinese language': SecondarySubjects.Chinese,
-  'malay language': SecondarySubjects.Malay,
-  'tamil language': SecondarySubjects.Tamil,
-  mathematics: SecondarySubjects.EMath,
-  'a-mathematics': SecondarySubjects.AMath,
-  'principle of accounting': SecondarySubjects.Accounting,
-  physics: SecondarySubjects.Physics,
-  biology: SecondarySubjects.Biology,
-  chemistry: SecondarySubjects.Chemistry,
-  'combined science (biology)': SecondarySubjects.CombinedScienceBiology,
-  'combined science (chemistry)': SecondarySubjects.CombinedScienceChemistry,
-  'combined science (physics)': SecondarySubjects.CombinedSciencePhysics,
-  geography: SecondarySubjects.Geography,
-  history: SecondarySubjects.History,
-  'english literature': SecondarySubjects.EnglishLiterature,
-  'social studies': SecondarySubjects.SocialStudies,
   'combined humanities (social studies)':
     SecondarySubjects.CombinedHumanitiesSocialStudies,
   'combined humanities (geography)':
@@ -43,6 +26,23 @@ export const secondarySubjectTextToEnumMapping = {
   'combined humanities (history)': SecondarySubjects.CombinedHumanitiesHistory,
   'combined humanities (literature)':
     SecondarySubjects.CombinedHumanitiesLiterature,
+  'combined science (biology)': SecondarySubjects.CombinedScienceBiology,
+  'combined science (chemistry)': SecondarySubjects.CombinedScienceChemistry,
+  'combined science (physics)': SecondarySubjects.CombinedSciencePhysics,
+  'english language': SecondarySubjects.English,
+  'chinese language': SecondarySubjects.Chinese,
+  'malay language': SecondarySubjects.Malay,
+  'tamil language': SecondarySubjects.Tamil,
+  'a-mathematics': SecondarySubjects.AMath,
+  mathematics: SecondarySubjects.EMath,
+  'principle of accounting': SecondarySubjects.Accounting,
+  physics: SecondarySubjects.Physics,
+  biology: SecondarySubjects.Biology,
+  chemistry: SecondarySubjects.Chemistry,
+  geography: SecondarySubjects.Geography,
+  history: SecondarySubjects.History,
+  'english literature': SecondarySubjects.EnglishLiterature,
+  'social studies': SecondarySubjects.SocialStudies,
 };
 export const jcSubjectTextToEnumMapping = {
   'general paper (gp)': JCSubjects.GeneralPaper,
@@ -68,16 +68,6 @@ export const jcSubjectTextToEnumMapping = {
   'h2 economics': JCSubjects.H2Econs,
 };
 export const ibSubjectTextToEnumMapping = {
-  'english language': IBSubjects.English,
-  'chinese language': IBSubjects.Chinese,
-  mathematics: IBSubjects.MathSL,
-  geography: IBSubjects.GeographySL,
-  history: IBSubjects.HistorySL,
-  'english literature': IBSubjects.EnglishLiteratureSL,
-  economics: IBSubjects.EconomicsSL,
-  biology: IBSubjects.BiologySL,
-  physics: IBSubjects.PhysicsSL,
-  chemistry: IBSubjects.ChemistrySL,
   'mathematics (sl)': IBSubjects.MathSL,
   'geography (sl)': IBSubjects.GeographySL,
   'history (sl)': IBSubjects.HistorySL,
@@ -94,6 +84,16 @@ export const ibSubjectTextToEnumMapping = {
   'biology (hl)': IBSubjects.BiologyHL,
   'physics (hl)': IBSubjects.PhysicsHL,
   'chemistry (hl)': IBSubjects.ChemistryHL,
+  'english language': IBSubjects.English,
+  'chinese language': IBSubjects.Chinese,
+  mathematics: IBSubjects.MathSL,
+  geography: IBSubjects.GeographySL,
+  history: IBSubjects.HistorySL,
+  'english literature': IBSubjects.EnglishLiteratureSL,
+  economics: IBSubjects.EconomicsSL,
+  biology: IBSubjects.BiologySL,
+  physics: IBSubjects.PhysicsSL,
+  chemistry: IBSubjects.ChemistrySL,
 };
 export const educationLevelMapping = {
   'international baccalaureate (ib) grade 12':

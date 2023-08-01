@@ -46,7 +46,7 @@ export default class KSTutorFormat extends GenericFormat implements DataFormatte
                         true: ["free", "|both"],
                         false: ["opt out", "receive remuneration"]
                     },
-                    noMatchValue: "null"
+                    noMatchValue: undefined
                 }
             },
             {
@@ -59,7 +59,7 @@ export default class KSTutorFormat extends GenericFormat implements DataFormatte
                         true: "yes",
                         false: "no"
                     },
-                    noMatchValue: "null"
+                    noMatchValue: undefined
                 }
             },
             {

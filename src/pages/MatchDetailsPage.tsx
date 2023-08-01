@@ -32,7 +32,8 @@ const mapception = {
 const booleanMap = {
   "true": "Yes",
   "false": "No",
-  "null": "Null"
+  "null": "Null",
+  "undefined": "Null"
 }
 
 const MatchDetailsPage = () => {
@@ -166,7 +167,7 @@ const MatchDetailsPage = () => {
     subjects: (levelMapping[selectedTuteeMatches.tutee.educationLevel!] + " — " + selectedTuteeMatches.tutee.subjects?.map((subject) => mapception[selectedTuteeMatches.tutee.educationLevel!][subject]).join(", ")), 
     isNoFinAidOk: booleanMap[String(selectedTuteeMatches.tutee.isOnFinancialAid!)],
     isProbonoOk: String(false),
-    secStreams: (selectedTuteeMatches.tutee.secondaryStream == SecondaryStream.undefined) ? "" : (selectedTuteeMatches.tutee.secondaryStream!),
+    secStreams: (selectedTuteeMatches.tutee.secondaryStream == SecondaryStream.undefined) ? "" : streamMapping[(selectedTuteeMatches.tutee.secondaryStream!)],
     commit: "",
     matchingScore: 0
   }
@@ -252,7 +253,7 @@ const MatchDetailsPage = () => {
                 <Table.Cell>{tuteeRow.subjects}</Table.Cell>
                 <Table.Cell>N/A</Table.Cell>
                 <Table.Cell>{tuteeRow.isNoFinAidOk}</Table.Cell>
-                <Table.Cell>{tuteeRow.isProbonoOk}</Table.Cell>
+                <Table.Cell>{tuteeRow.secStreams}</Table.Cell>
                 <Table.Cell>N/A</Table.Cell>
                 <Table.Cell>N/A</Table.Cell>
               </Table.Row>

@@ -125,7 +125,7 @@ const MainMatchingTable = () => {
               </Table.Head>
               <Table.Body>
               {table.getRowModel().rows.map((row, i) => (
-                <Table.Row key={i} data-row={i} onClick={handleRowClick} className="cursor-pointer">
+                <Table.Row key={i + table.getState().pagination.pageSize * table.getState().pagination.pageIndex} data-row={i + table.getState().pagination.pageSize * table.getState().pagination.pageIndex} onClick={handleRowClick} className="cursor-pointer">
                   {row.getVisibleCells().map(cell => (
                     <Table.Cell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

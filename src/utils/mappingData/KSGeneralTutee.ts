@@ -1,9 +1,3 @@
-import {
-    Tutee,
-    Gender,
-    PreferedGender,
-    Subject,
-  } from '@/types/person'
   import {
     EducationLevel,
     SecondaryStream,
@@ -13,6 +7,8 @@ import {
     IBSubjects,
   } from '@/types/educationSubjects'
 
+  // all the key values to be kept in lower case
+  
   export const primarySubjectTextToEnumMapping = {
     "english language": PrimarySubjects.English,
     "mathematics": PrimarySubjects.Math,
@@ -87,31 +83,39 @@ import {
     "biology (sl)": IBSubjects.BiologySL,
     "physics (sl)": IBSubjects.PhysicsSL,
     "chemistry (sl)": IBSubjects.ChemistrySL,
-    "mathematics (hl)": IBSubjects.MathSL,
-    "geography (hl)": IBSubjects.GeographySL,
-    "history (hl)": IBSubjects.HistorySL,
-    "english literature (hl)": IBSubjects.EnglishLiteratureSL,
-    "economics (hl)": IBSubjects.EconomicsSL,
-    "biology (hl)": IBSubjects.BiologySL,
-    "physics (hl)": IBSubjects.PhysicsSL,
+    "mathematics (hl)": IBSubjects.MathHL,
+    "geography (hl)": IBSubjects.GeographyHL,
+    "history (hl)": IBSubjects.HistoryHL,
+    "english literature (hl)": IBSubjects.EnglishLiteratureHL,
+    "economics (hl)": IBSubjects.EconomicsHL,
+    "biology (hl)": IBSubjects.BiologyHL,
+    "physics (hl)": IBSubjects.PhysicsHL,
     "chemistry (hl)": IBSubjects.ChemistryHL
   }
   export const educationLevelMapping = {
-    "primary 1":EducationLevel.Primary,
-    "primary 2":EducationLevel.Primary,
-    "primary 3":EducationLevel.Primary,
-    "primary 4":EducationLevel.Primary,
-    "primary 5":EducationLevel.Primary,
-    "primary 6":EducationLevel.Primary,
-    "secondary 1": EducationLevel.LowerSecondary,
-    "secondary 2": EducationLevel.LowerSecondary,
-    "secondary 3": EducationLevel.LowerSecondary,
-    "secondary 4": EducationLevel.UpperSecondary,
-    "secondary 5": EducationLevel.UpperSecondary,
-    "junior college (jc) 1": EducationLevel.JuniorCollege,
-    "junior college (jc) 2": EducationLevel.JuniorCollege,
-    "international baccalaureate (ib) grade 11": EducationLevel.InternationalBaccalaureate,
     "international baccalaureate (ib) grade 12": EducationLevel.InternationalBaccalaureate,
+    "international baccalaureate (ib) grade 11": EducationLevel.InternationalBaccalaureate,
+    "international baccalaureate (ib)": EducationLevel.InternationalBaccalaureate,
+    "junior college (jc) 2": EducationLevel.JuniorCollege,
+    "junior college (jc) 1": EducationLevel.JuniorCollege,
+    "secondary 5": EducationLevel.UpperSecondary,
+    "secondary 4": EducationLevel.UpperSecondary,
+    "secondary 3": EducationLevel.UpperSecondary,
+    "secondary 2": EducationLevel.LowerSecondary,
+    "secondary 1": EducationLevel.LowerSecondary,
+    "primary 6":EducationLevel.Primary,
+    "primary 5":EducationLevel.Primary,
+    "primary 4":EducationLevel.Primary,
+    "primary 3":EducationLevel.Primary,
+    "primary 2":EducationLevel.Primary,
+    "primary 1":EducationLevel.Primary,
+  }
+  export const educationLevelSubjectMappingMapping = {
+    [EducationLevel.JuniorCollege]: jcSubjectTextToEnumMapping,
+    [EducationLevel.InternationalBaccalaureate]: ibSubjectTextToEnumMapping,
+    [EducationLevel.UpperSecondary]: secondarySubjectTextToEnumMapping,
+    [EducationLevel.LowerSecondary]: secondarySubjectTextToEnumMapping,
+    [EducationLevel.Primary]: primarySubjectTextToEnumMapping,
   }
   export const streamMapping = {
     "express": SecondaryStream.Express,
@@ -119,6 +123,10 @@ import {
     "normal technical (nt)": SecondaryStream.NormalTechnical,
     "integrated program (ip)": SecondaryStream.IntegratedProgramme,
     "international baccalaureate (ib)": SecondaryStream.InternationalBaccalaureate
+  }
+  export const finAidMapping = {
+    "yes": true,
+    "no": false
   }
   // Keep all identifiers below in lower case
   export const colIdentifierContentMapping = {

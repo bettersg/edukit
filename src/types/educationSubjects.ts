@@ -1,9 +1,9 @@
 export enum EducationLevel {
-    Primary = "primary",
-    LowerSecondary = "lowerSecondary",
-    UpperSecondary = "upperSecondary",
-    JuniorCollege = "jc",
     InternationalBaccalaureate = "ib",
+    JuniorCollege = "jc",
+    UpperSecondary = "upperSecondary",
+    LowerSecondary = "lowerSecondary",
+    Primary = "primary",
     undefined = "ud",
   }
   

@@ -127,9 +127,12 @@ export default class KSTutorFormat extends GenericFormat implements DataFormatte
     }
 
     public fromDataMatrix() {
+        
         const rawData = super.rawFromGSheets();
-        console.log("rawData", rawData, "format", this.format)
-        return rawData.map((tutor) => (
+        // console.log("Raw Data", rawData)
+        return rawData.map((tutor) => {
+            // console.log(tutor)
+            const formattedData = 
             {
                 personalData: {
                     index: tutor["index"] as number,
@@ -151,6 +154,8 @@ export default class KSTutorFormat extends GenericFormat implements DataFormatte
                 },
                 commitStr: `${tutor["commitWk"]} hr${tutor["commitWk"] == 1 ? "" : "s"}/wk — ${tutor["commitYr"]}`
             }
-        ))
+            // console.log(tutor, formattedData)
+        return formattedData
+    })
     }
 } 

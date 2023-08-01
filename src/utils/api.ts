@@ -25,11 +25,10 @@ export const getGSheetsData = async <T = MatrixData>(
 ): Promise<T[]> => {
   console.log("Fetching data from GSheets");
   const response = await fetch(sheetsURL)
+  // console.log("Response", response)
   if (!response.ok) return []
-
   const data: GSheetsResponse = await response.json()
   const rawData = data.content
-  console.log("Raw data from GSheets", rawData, sheetsURL)
   if (dropHeaderRow) rawData.shift()
   if (transformFn) return rawData.map(transformFn)
   return rawData as unknown as T[]

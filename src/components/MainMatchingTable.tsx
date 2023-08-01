@@ -1,70 +1,206 @@
 // @ts-nocheck
-import {useNavigate} from 'react-router-dom'
-import {useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { Tutee, Tutor } from '@/types/person';
-import {selectedTutorMatchesActions} from "../store/selectedTutorMatchesSlice"
-import { selectedTuteeMatchesActions } from '../store/selectedTuteeMatchesSlice'; 
-import {Stack, Typography, Box} from '@mui/material'
-import {DataGrid, GridColDef, GridEventListener, GridValueGetterParams} from '@mui/x-data-grid'
 
-const MainMatchingTable = () => {
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const matchingTable = useSelector((state)=>state.matchesSummary)
-    const columns: GridColDef[] = [
-        { field: 'Tutee', headerName: 'Tutee Name — Row', width: 170 },
-        { field: 'Tutor1', headerName: 'Tutor 1', width: 70, type: 'number'},
-        { field: 'Tutor2', headerName: 'Tutor 2', width: 70, type: 'number'},
-        { field: 'Tutor3', headerName: 'Tutor 3', width: 70, type: 'number'},
-        { field: 'Tutor4', headerName: 'Tutor 4', width: 70, type: 'number'},
-        { field: 'Tutor5', headerName: 'Tutor 5', width: 70, type: 'number'},
-      ];
-      const rows = matchingTable.map((tuteeDetail, idx)=>{
-        return {id:idx, Tutee:(tuteeDetail.tutee.name + " - "+String(tuteeDetail.tutee.index)), Tutor1: tuteeDetail.tutor1.index, Tutor2: tuteeDetail.tutor2.index, Tutor3: tuteeDetail.tutor3.index, Tutor4: tuteeDetail.tutor4.index, Tutor5: tuteeDetail.tutor5.index}
-      })
-      // console.log("Matched data:")
-      // console.log(rows)
-      // const rows = matchingTable.map((tutorDetail, idx)=>{
-      //   return {id:idx, Tutor:(tutorDetail.tutor.name + " - "+String(tutorDetail.tutor.index)), Tutee1: tutorDetail.tutee1.index, Tutee2: tutorDetail.tutee2.index, Tutee3: tutorDetail.tutee3.index, Tutee4: tutorDetail.tutee4.index, Tutee5: tutorDetail.tutee5.index}
-      // })
-      const handleRowClick : GridEventListener = (params, event, details) => {
-        const tuteeIndex = parseInt(params.row.Tutee.split("-")[1])
-        const tutee = window.tuteeParsedData.find((row:Tutee)=>(parseInt(row.personalData.index) === tuteeIndex))
-        const tuteeMatchSummary = matchingTable.find((matchItem)=>(matchItem.tutee.index==tuteeIndex))
-        const tutorParsedData: Tutor[] = window.tutorParsedData
-        let tutor1 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor1)))
-        tutor1 = {...tutor1, matchingScore:(tuteeMatchSummary.tutor1.matchingScore)} 
-        let tutor2 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor2)))
-        tutor2 = {...tutor2, matchingScore:tuteeMatchSummary.tutor2.matchingScore}
-        let tutor3 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor3)))
-        tutor3 = {...tutor3, matchingScore:tuteeMatchSummary.tutor3.matchingScore}
-        let tutor4 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor4)))
-        tutor4 = {...tutor4, matchingScore:tuteeMatchSummary.tutor4.matchingScore}
-        let tutor5 = tutorParsedData.find((row)=>(parseInt(row.personalData.index) === parseInt(params.row.Tutor5)))
-        tutor5 = {...tutor5, matchingScore:tuteeMatchSummary.tutor5.matchingScore}
-        const tutorInfo = [tutor1, tutor2, tutor3, tutor4, tutor5]
-        console.log("Tutor-Parsed-Data", window.tutorParsedData)
-        const selectedTuteeMatchesState = {
-          tutee,
-          tutorInfo
-        }
-        console.log("tutor parsed :", tutorParsedData, "state", selectedTuteeMatchesState)
-        dispatch(selectedTuteeMatchesActions.updateSelectedTuteeMatches(selectedTuteeMatchesState))
-        navigate("/details")
-      }
+import { selectedTuteeMatchesActions } from '../store/selectedTuteeMatchesSlice';
+import {
+  createColumnHelper,
+  getCoreRowModel,
+  useReactTable,
+  flexRender,
+  getPaginationRowModel,
+} from '@tanstack/react-table';
+import { Table, Pagination, Select } from 'flowbite-react';
+import React, { useMemo } from 'react';
+import { MatchingList } from '@/types/globalVariables';
 
-  return (
-    <>
-        <Stack alignItems="center" sx={{maxWidth: "100%"}}>
-          <Typography variant="h2" sx={{my: 2}}> 
-            Overview
-          </Typography>
-
-          <DataGrid sx={{cursor: 'pointer', width: "100%"}} rows={rows} columns={columns} onRowClick={handleRowClick}/>
-
-        </Stack>
-    </>
-  )
+interface MatchingTableData {
+  tutee: string;
+  tutor1: number;
+  tutor2: number;
+  tutor3: number;
+  tutor4: number;
+  tutor5: number;
 }
 
-export default MainMatchingTable
+const MainMatchingTable = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const matchingTable = useSelector(state => state.matchesSummary);
+  // console.log(matchingTable, "MATCHING TABLE")
+  const rows: MatchingTableData[] = matchingTable.map((tuteeMatch, i) => {
+    return {
+      // id: i,
+      tutee: tuteeMatch.tutee.name + ' - ' + String(tuteeMatch.tutee.index),
+      tutor1: tuteeMatch.tutor1.index,
+      tutor2: tuteeMatch.tutor2.index,
+      tutor3: tuteeMatch.tutor3.index,
+      tutor4: tuteeMatch.tutor4.index,
+      tutor5: tuteeMatch.tutor5.index,
+    };
+  });
+
+  const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
+    const tuteeParsedData: Tutee[] = window.tuteeParsedData;
+    const tutorParsedData: Tutor[] = window.tutorParsedData;
+    const matchingTable: MatchingList = window.matchingList;
+    const row = matchingTable[Number(e.currentTarget.dataset.row)];
+
+    const tuteeIndex = row.tutee.index;
+    const tutee = tuteeParsedData.find(
+      row => row.personalData.index === tuteeIndex,
+    );
+
+    let tutorInfo: {
+      matchingScore: any;
+      personalData?: Person | undefined;
+      isProBonoOk?: boolean | undefined;
+      isUnaidedOk?: boolean | undefined;
+      acceptableSecondaryStreams?: SecondaryStream[] | undefined;
+      tutorSubjects?: TutorSubjects | undefined;
+      commitStr?: string | undefined;
+    }[] = [];
+
+    for (let i = 0; i < row.tutorMatches.length; i++) {
+      const tutorIndex = row.tutorMatches[i].index;
+      let tutorRaw = tutorParsedData.find(
+        row => row.personalData.index === tutorIndex,
+      );
+      let tutor = {
+        ...tutorRaw,
+        matchingScore: row.tutorMatches[i].matchingScore,
+      };
+
+      tutorInfo.push(tutor);
+    }
+    tutorInfo = tutorInfo.filter(tutor => tutor.matchingScore > 0);
+    const selectedTuteeMatchesState = {
+      tutee,
+      tutorInfo,
+    };
+    console.log(selectedTuteeMatchesState, 'state Change');
+    dispatch(
+      selectedTuteeMatchesActions.updateSelectedTuteeMatches(
+        selectedTuteeMatchesState,
+      ),
+    );
+    navigate('/details');
+  };
+
+  const columnHelper = createColumnHelper<MatchingTableData>();
+
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor('tutee', {
+        header: () => <span>Tutee Name — Row</span>,
+      }),
+      columnHelper.accessor('tutor1', {
+        header: () => <span>Tutor 1</span>,
+      }),
+      columnHelper.accessor('tutor2', {
+        header: () => <span>Tutor 2</span>,
+      }),
+      columnHelper.accessor('tutor3', {
+        header: () => <span>Tutor 3</span>,
+      }),
+      columnHelper.accessor('tutor4', {
+        header: () => <span>Tutor 4</span>,
+      }),
+      columnHelper.accessor('tutor5', {
+        header: () => <span>Tutor 5</span>,
+      }),
+    ],
+    [],
+  );
+  const table = useReactTable({
+    data: rows,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    autoResetAll: false,
+    getPaginationRowModel: getPaginationRowModel(),
+  });
+  return (
+    <>
+      <div class="flex flex-col items-center gap-4">
+        <h2 className="h2">Overview</h2>
+        <div className="flex gap-2 flex-col">
+          <Table hoverable>
+            <Table.Head>
+              {table.getHeaderGroups().map(headerGroup => (
+                <React.Fragment key={headerGroup.id}>
+                  {headerGroup.headers.map(header => (
+                    <Table.HeadCell key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </Table.HeadCell>
+                  ))}
+                </React.Fragment>
+              ))}
+            </Table.Head>
+            <Table.Body>
+              {table.getRowModel().rows.map((row, i) => (
+                <Table.Row
+                  key={
+                    i +
+                    table.getState().pagination.pageSize *
+                      table.getState().pagination.pageIndex
+                  }
+                  data-row={
+                    i +
+                    table.getState().pagination.pageSize *
+                      table.getState().pagination.pageIndex
+                  }
+                  onClick={handleRowClick}
+                  className="cursor-pointer"
+                >
+                  {row.getVisibleCells().map(cell => (
+                    <Table.Cell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </Table.Cell>
+                  ))}
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table>
+          {table.getPageCount() > 1 ? (
+            <div className="flex flex-row justify-between items-center">
+              <Pagination
+                layout="pagination"
+                currentPage={table.getState().pagination.pageIndex + 1}
+                showIcons
+                totalPages={table.getPageCount()}
+                onPageChange={p => table.setPageIndex(p - 1)}
+              />
+              <div>
+                <Select
+                  value={table.getState().pagination.pageSize}
+                  onChange={e => {
+                    table.setPageSize(Number(e.target.value));
+                  }}
+                >
+                  {[10, 20, 30, 40, 50].map(pageSize => (
+                    <option key={pageSize} value={pageSize}>
+                      Show {pageSize} entries
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default MainMatchingTable;

@@ -20,9 +20,9 @@ import { getGSheetsData } from '@/utils/api';
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/api';
 
 import { getMatchScore } from '@/utils/score';
-import KSSSOTuteeFormat from '@/utils/data/KSSSOTuteeFormat';
-import KSGeneralTuteeFormat from '@/utils/data/KSGeneralTuteeFormat';
-import KSTutorFormat from '@/utils/data/KSTutorFormat';
+import KSSSOTuteeFormat from '@/utils/classes/KSSSOTuteeFormat';
+import KSGeneralTuteeFormat from '@/utils/classes/KSGeneralTuteeFormat';
+import KSTutorFormat from '@/utils/classes/KSTutorFormat';
 
 import {
   Card,

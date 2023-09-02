@@ -13,12 +13,11 @@ class TuteeMatches {
             const tuteeMatches: {
               tutee: TuteeSummary;
               tutorMatches: TutorMatchSummary[];
-            } = { tutee: {}
+            } = { tutee: {
+                index: tutee.personalData.index ?? 0,
+                name: tutee.personalData.name ?? "no data",
+              }
               , tutorMatches: [] };
-            tuteeMatches.tutee = {
-              index: tutee.personalData.index,
-              name: tutee.personalData.name,
-            };
             for (let tutor of tutorParsedData) {
               const tutorMatchingScoreObj = {
                 index: tutor.personalData.index,
@@ -29,7 +28,9 @@ class TuteeMatches {
               tuteeMatches.tutorMatches.push(tutorMatchingScoreObj);
             }
             tuteeMatches.tutorMatches.sort(
-              (a, b) => b.matchingScore - a.matchingScore,
+              (a, b) => {
+                if ((!a.matchingScore)||(!b.matchingScore)) {return 0}
+                return (b.matchingScore - a.matchingScore)},
             );
             if (tuteeMatches.tutorMatches.length > 51) {
               tuteeMatches.tutorMatches = tuteeMatches.tutorMatches.slice(0, 50);

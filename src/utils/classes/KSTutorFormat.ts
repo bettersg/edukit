@@ -142,9 +142,7 @@ export default class KSTutorFormat
 
   public getRelevantData() {
     const rawData = super.parseRawData();
-    console.log("Raw Data", this.data[1])
     return rawData.map(tutor => {
-      // console.log(tutor)
       const formattedData = {
         personalData: {
           index: tutor['index'] as number,
@@ -170,7 +168,6 @@ export default class KSTutorFormat
           tutor['commitWk'] == 1 ? '' : 's'
         }/wk — ${tutor['commitYr']}`,
       };
-      // console.log(tutor, formattedData)
       return formattedData;
     });
   }

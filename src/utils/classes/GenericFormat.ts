@@ -317,17 +317,14 @@ class GenericFormat {
   private DEBUG: boolean = false;
 
   constructor(data: MatrixData[], format: DataFormat) {
-    // console.log(data)
     this.data = data;
     this.format = format;
     this.compileColumnHeader();
-    // console.log(this.format);
     if (this.DEBUG) console.log(this.format);
   }
   // Idneitifies column # in the matrix for different inputs
   public compileColumnHeader() {
     const headers = this.data[0];
-    // console.log(this.data[0])
     for (let [i, formatRule] of this.format.entries()) {
       if (
         'columnKeywords' in formatRule &&
@@ -652,7 +649,6 @@ class GenericFormat {
                   formatRule as Extract<DataFormat[number], { type: 'boolean' }>
                 ).filter!.boolParams[item as 'true' | 'false'];
                 let key = string2bool[item as 'true' | 'false'];
-                // console.log("Inside Bool Conversion", key, value, raw)
                 if (value instanceof Array) {
                   let found = true;
                   for (let filterItem of value) {
@@ -672,7 +668,6 @@ class GenericFormat {
                           .includes(filterItem.toLowerCase());
                     }
                   }
-                  // console.log("Inside Bool Conversion", key, value, raw, found)
                   if (found) {
                     dataRow[formatRule.fieldName] = key;
                     matched = true;
@@ -687,7 +682,6 @@ class GenericFormat {
                 }
                 return true;
               });
-              // console.log("Matched", formatRule.fieldName, formatRule.filter!.boolParams, "Row#", i, dataRow[formatRule.fieldName])
               if (!matched) {
                 if (raw !== '' && this.DEBUG)
                   console.log(
@@ -696,7 +690,6 @@ class GenericFormat {
                     formatRule.fieldName,
                     formatRule.filter!.boolParams,
                   );
-                // console.log("no match", raw, formatRule.fieldName, formatRule.filter!.boolParams, "Row#", i, dataRow[formatRule.fieldName])
                 dataRow[formatRule.fieldName] =
                   formatRule.filter!.noMatchValue ?? false;
               }
@@ -713,7 +706,6 @@ class GenericFormat {
       }
       output.push(dataRow);
     }
-    // console.log("Output", output)
     return output;
   }
 }

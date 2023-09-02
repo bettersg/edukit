@@ -28,7 +28,6 @@ const MainMatchingTable = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const matchingTable = useSelector(state => state.matchesSummary);
-  // console.log(matchingTable, "MATCHING TABLE")
   const rows: MatchingTableData[] = matchingTable.map((tuteeMatch, i) => {
     return {
       // id: i,
@@ -79,7 +78,6 @@ const MainMatchingTable = () => {
       tutee,
       tutorInfo,
     };
-    console.log(selectedTuteeMatchesState, 'state Change');
     dispatch(
       selectedTuteeMatchesActions.updateSelectedTuteeMatches(
         selectedTuteeMatchesState,

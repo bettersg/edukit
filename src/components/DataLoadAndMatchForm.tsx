@@ -79,22 +79,16 @@ const DataLoadAndMatchForm = () => {
       ]);
 
       const tutorFormatter = new KSTutorFormat(tutorRawData);
-      console.log("Tutor Class Data", KSTutorFormat.data)
       const tutorParsedData = tutorFormatter.getRelevantData();
-      // console.log('Tutor parsed data', tutorParsedData);
-
-      // console.log(tuteeRawData)
       let tuteeParsedData: Tutee[] = [];
       switch (selectedTuteeDataFormat) {
         case TuteeDataFormat.KSGeneral:
           const formatterKSGen = new KSGeneralTuteeFormat(tuteeRawData);
           tuteeParsedData = formatterKSGen.getRelevantData();
-          // console.log('Tutee parsed data', tuteeParsedData);
           break;
         case TuteeDataFormat.KSSSO:
           const formatterKSSSO = new KSSSOTuteeFormat(tuteeRawData);
           tuteeParsedData = formatterKSSSO.getRelevantData();
-          // console.log('Tutee parsed data', tuteeParsedData);
           break;
       }
       if (tutorParsedData.length > 0 && tuteeParsedData.length > 0) {
@@ -111,57 +105,7 @@ const DataLoadAndMatchForm = () => {
       );
     }
   };
-  // const calculateMatches = () => {
-  //   const tutorParsedData: Tutor[] = window.tutorParsedData;
-  //   const tuteeParsedData: Tutee[] = window.tuteeParsedData;
-  //   if (!tutorParsedData || !tuteeParsedData) {
-  //     alert('Data not loaded!');
-  //     return;
-  //   }
-  //   const matchingList: MatchingList = [];
-  //   for (let tutee of tuteeParsedData) {
-  //     const tuteeMatches: {
-  //       tutee: TuteeSummary;
-  //       tutorMatches: TutorMatchSummary[];
-  //     } = { tutee: {}, tutorMatches: [] };
-  //     tuteeMatches.tutee = {
-  //       index: tutee.personalData.index,
-  //       name: tutee.personalData.name,
-  //     };
-  //     for (let tutor of tutorParsedData) {
-  //       const tutorMatchingScoreObj = {
-  //         index: tutor.personalData.index,
-  //         contactNum: tutor.personalData.contact?.phone,
-  //         name: tutor.personalData.name,
-  //         matchingScore: getMatchScore(tutor, tutee),
-  //       };
-  //       tuteeMatches.tutorMatches.push(tutorMatchingScoreObj);
-  //     }
-  //     tuteeMatches.tutorMatches.sort(
-  //       (a, b) => b.matchingScore - a.matchingScore,
-  //     );
-  //     if (tuteeMatches.tutorMatches.length > 51) {
-  //       tuteeMatches.tutorMatches = tuteeMatches.tutorMatches.slice(0, 50);
-  //     }
-  //     matchingList.push(tuteeMatches);
-  //   }
-  //   window.matchingList = matchingList;
-  //   const matchesSummary = [];
-  //   for (let matchingListItem of matchingList) {
-  //     const matchesSummaryItem = {
-  //       tutee: matchingListItem.tutee,
-  //       tutor1: matchingListItem.tutorMatches[0],
-  //       tutor2: matchingListItem.tutorMatches[1],
-  //       tutor3: matchingListItem.tutorMatches[2],
-  //       tutor4: matchingListItem.tutorMatches[3],
-  //       tutor5: matchingListItem.tutorMatches[4],
-  //     };
-  //     matchesSummary.push(matchesSummaryItem);
-  //   }
-  //   dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary));
-  //   // console.log("matching list", matchingList)
-  //   navigate('/');
-  // };
+  
   const calculateMatches = () => {
     const tutorParsedData: Tutor[] = window.tutorParsedData;
     const tuteeParsedData: Tutee[] = window.tuteeParsedData;
@@ -211,9 +155,9 @@ const DataLoadAndMatchForm = () => {
       matchesSummary.push(matchesSummaryItem);
     }
     dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary));
-    // console.log("matching list", matchingList)
     navigate('/');
   };
+
   const clearData = () => {
     delete window.tutorParsedData;
     delete window.tuteeParsedData;
@@ -245,7 +189,6 @@ const DataLoadAndMatchForm = () => {
 
     reader.onload = e => {
       if (!e?.target?.result) {
-        console.log(e.target.result);
         return;
       }
       const { result }: { result: string } = e.target;

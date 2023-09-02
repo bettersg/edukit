@@ -25,7 +25,6 @@ export const getGSheetsData = async <T = MatrixData>(
 ): Promise<T[]> => {
   console.log('Fetching data from GSheets');
   const response = await fetch(sheetsURL);
-  // console.log("Response", response)
   if (!response.ok) return [];
   const data: GSheetsResponse = await response.json();
   const rawData = data.content;

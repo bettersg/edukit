@@ -140,9 +140,9 @@ export default class KSTutorFormat
     super(data, format);
   }
 
-  public fromDataMatrix() {
-    const rawData = super.rawFromGSheets();
-    // console.log("Raw Data", rawData)
+  public getRelevantData() {
+    const rawData = super.parseRawData();
+    console.log("Raw Data", this.data[1])
     return rawData.map(tutor => {
       // console.log(tutor)
       const formattedData = {

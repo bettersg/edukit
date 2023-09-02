@@ -302,7 +302,7 @@ export type GenericRawOutputFormat = Record<
 >[];
 
 export interface DataFormatter<OutputType extends Record<string, unknown>> {
-  fromDataMatrix(): OutputType[];
+  getRelevantData(): OutputType[];
 }
 
 /**
@@ -314,18 +314,18 @@ class GenericFormat {
   public format: DataFormat;
   public data: MatrixData[];
   private columnsCompiled: boolean = false;
-  private DEBUG: boolean = true;
+  private DEBUG: boolean = false;
 
   constructor(data: MatrixData[], format: DataFormat) {
     // console.log(data)
     this.data = data;
     this.format = format;
-    this.compileColumns();
-    console.log(this.format);
+    this.compileColumnHeader();
+    // console.log(this.format);
     if (this.DEBUG) console.log(this.format);
   }
   // Idneitifies column # in the matrix for different inputs
-  public compileColumns() {
+  public compileColumnHeader() {
     const headers = this.data[0];
     // console.log(this.data[0])
     for (let [i, formatRule] of this.format.entries()) {
@@ -399,7 +399,7 @@ class GenericFormat {
   }
 
   // Converts data into a clear enum format
-  public rawFromGSheets(): GenericRawOutputFormat {
+  public parseRawData(): GenericRawOutputFormat {
     if (!this.columnsCompiled) {
       throw new Error('Columns not compiled');
     }

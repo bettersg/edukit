@@ -122,7 +122,7 @@ const MainMatchingTable = () => {
   });
   return (
     <>
-      <div class="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-4">
         <h2 className="h2">Overview</h2>
         <div className="flex gap-2 flex-col">
           <Table hoverable>

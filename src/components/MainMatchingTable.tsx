@@ -28,7 +28,6 @@ const MainMatchingTable = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const matchingTable = useSelector(state => state.matchesSummary);
-  // console.log(matchingTable, "MATCHING TABLE")
   const rows: MatchingTableData[] = matchingTable.map((tuteeMatch, i) => {
     return {
       // id: i,
@@ -79,7 +78,6 @@ const MainMatchingTable = () => {
       tutee,
       tutorInfo,
     };
-    console.log(selectedTuteeMatchesState, 'state Change');
     dispatch(
       selectedTuteeMatchesActions.updateSelectedTuteeMatches(
         selectedTuteeMatchesState,
@@ -122,7 +120,7 @@ const MainMatchingTable = () => {
   });
   return (
     <>
-      <div class="flex flex-col items-center gap-4">
+      <div className="flex flex-col items-center gap-4">
         <h2 className="h2">Overview</h2>
         <div className="flex gap-2 flex-col">
           <Table hoverable>

@@ -140,11 +140,9 @@ export default class KSTutorFormat
     super(data, format);
   }
 
-  public fromDataMatrix() {
-    const rawData = super.rawFromGSheets();
-    // console.log("Raw Data", rawData)
+  public getRelevantData() {
+    const rawData = super.parseRawData();
     return rawData.map(tutor => {
-      // console.log(tutor)
       const formattedData = {
         personalData: {
           index: tutor['index'] as number,
@@ -170,7 +168,6 @@ export default class KSTutorFormat
           tutor['commitWk'] == 1 ? '' : 's'
         }/wk — ${tutor['commitYr']}`,
       };
-      // console.log(tutor, formattedData)
       return formattedData;
     });
   }

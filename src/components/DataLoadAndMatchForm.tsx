@@ -20,9 +20,10 @@ import { getGSheetsData } from '@/utils/api';
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/api';
 
 import { getMatchScore } from '@/utils/score';
-import KSSSOTuteeFormat from '@/utils/data/KSSSOTuteeFormat';
-import KSGeneralTuteeFormat from '@/utils/data/KSGeneralTuteeFormat';
-import KSTutorFormat from '@/utils/data/KSTutorFormat';
+import KSSSOTuteeFormat from '@/utils/classes/KSSSOTuteeFormat';
+import KSGeneralTuteeFormat from '@/utils/classes/KSGeneralTuteeFormat';
+import KSTutorFormat from '@/utils/classes/KSTutorFormat';
+import TuteeMatches from '@/utils/classes/TuteeMatches';
 
 import {
   Card,
@@ -78,21 +79,16 @@ const DataLoadAndMatchForm = () => {
       ]);
 
       const tutorFormatter = new KSTutorFormat(tutorRawData);
-      const tutorParsedData = tutorFormatter.fromDataMatrix();
-      console.log('Tutor parsed data', tutorParsedData);
-
-      // console.log(tuteeRawData)
+      const tutorParsedData = tutorFormatter.getRelevantData();
       let tuteeParsedData: Tutee[] = [];
       switch (selectedTuteeDataFormat) {
         case TuteeDataFormat.KSGeneral:
           const formatterKSGen = new KSGeneralTuteeFormat(tuteeRawData);
-          tuteeParsedData = formatterKSGen.fromDataMatrix();
-          console.log('Tutee parsed data', tuteeParsedData);
+          tuteeParsedData = formatterKSGen.getRelevantData();
           break;
         case TuteeDataFormat.KSSSO:
           const formatterKSSSO = new KSSSOTuteeFormat(tuteeRawData);
-          tuteeParsedData = formatterKSSSO.fromDataMatrix();
-          console.log('Tutee parsed data', tuteeParsedData);
+          tuteeParsedData = formatterKSSSO.getRelevantData();
           break;
       }
       if (tutorParsedData.length > 0 && tuteeParsedData.length > 0) {
@@ -109,6 +105,7 @@ const DataLoadAndMatchForm = () => {
       );
     }
   };
+  
   const calculateMatches = () => {
     const tutorParsedData: Tutor[] = window.tutorParsedData;
     const tuteeParsedData: Tutee[] = window.tuteeParsedData;
@@ -143,7 +140,8 @@ const DataLoadAndMatchForm = () => {
       }
       matchingList.push(tuteeMatches);
     }
-    window.matchingList = matchingList;
+    const tuteeMatches = new TuteeMatches(tutorParsedData,tuteeParsedData)
+    window.matchingList = tuteeMatches.matchingList;
     const matchesSummary = [];
     for (let matchingListItem of matchingList) {
       const matchesSummaryItem = {
@@ -157,7 +155,6 @@ const DataLoadAndMatchForm = () => {
       matchesSummary.push(matchesSummaryItem);
     }
     dispatch(matchesSummaryActions.updateMatchesSummary(matchesSummary));
-    // console.log("matching list", matchingList)
     navigate('/');
   };
 
@@ -192,7 +189,6 @@ const DataLoadAndMatchForm = () => {
 
     reader.onload = e => {
       if (!e?.target?.result) {
-        console.log(e.target.result);
         return;
       }
       const { result }: { result: string } = e.target;

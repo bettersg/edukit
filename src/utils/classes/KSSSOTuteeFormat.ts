@@ -89,8 +89,8 @@ export default class KSSSOTuteeFormat
     super(data, format);
   }
 
-  public fromDataMatrix() {
-    const rawData = super.rawFromGSheets();
+  public getRelevantData() {
+    const rawData = super.parseRawData();
     return rawData.map(tutee => ({
       personalData: {
         index: tutee['index'] as number,

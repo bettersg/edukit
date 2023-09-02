@@ -113,8 +113,8 @@ export default class KSGeneralTuteeFormat
       }
       */
 
-  public fromDataMatrix() {
-    const rawData = super.rawFromGSheets();
+  public getRelevantData() {
+    const rawData = super.parseRawData();
 
     return rawData.map(tutee => {
       return {

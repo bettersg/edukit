@@ -20,7 +20,6 @@ const DownloadCSVButton = () => {
   ]);
   useEffect(() => {
     const matchingList: MatchingList = window.matchingList;
-    console.log('mathing List', matchingList);
     if (matchingList) {
       matchingList.map(row => {
         const tutorIDArr = [];

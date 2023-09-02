@@ -216,8 +216,6 @@ const MatchDetailsPage = () => {
     [],
   );
 
-  console.log(selectedTuteeMatches);
-
   const tuteeRow: DetailsTableData = {
     id: selectedTuteeMatches.tutee.personalData?.index!,
     entity: 'Tutee',
@@ -269,7 +267,6 @@ const MatchDetailsPage = () => {
     },
     enableMultiSort: true,
     isMultiSortEvent: e => {
-      console.log(e);
       return true;
     },
   });

@@ -4,9 +4,9 @@ export type TuteeSummary = {
 };
 
 export type TutorMatchSummary = {
-  index: number;
-  contactNum: number;
-  matchingScore: number;
+  index: number | undefined;
+  contactNum: number | undefined;
+  matchingScore: number | undefined;
 };
 
 export type MatchingList = {

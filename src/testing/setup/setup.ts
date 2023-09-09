@@ -4,7 +4,7 @@ import matchers from '@testing-library/jest-dom/matchers';
 import {server} from './server.js'
 
 // extends Vitest's expect method with methods from react-testing-library
-expect.extend(matchers);
+expect.extend(matchers ?? {});
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
 
 

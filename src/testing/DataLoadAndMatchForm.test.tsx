@@ -6,7 +6,7 @@ import DataLoadAndMatchForm from "@/components/DataLoadAndMatchForm";
 
 describe("Render test", () => {
   it("Render test", () => {
-    // renderWithBrowserRouter(<DataLoadAndMatchForm />);
+    renderWithBrowserRouter(<DataLoadAndMatchForm />);
 
     // const title = screen.getByText(/Step 1/);
     // expect(title).toBeInTheDocument();

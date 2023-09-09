@@ -43,4 +43,4 @@ The details of assumptions about column name and the matching algorithm can be f
 ## Next Improvements
 
 This tool will be improved further depending on feedback from the various social-welfare organizations so that it can meet needs of most of them. The data structure is expected to vary with organization. Hence some program flexibility needs to be created.
-Also, will need to add features to point Tutor/Tutee data to a separate location (URL or local file) rather than forcing all to copy-paste into same location. In addition, to improve scalability, some form of back-end might be created (depending on user feedback) to handle very huge data
+Also, will need to add features to point Tutor/Tutee data to a separate location (URL or local file) rather than forcing all to copy-paste into same location. In addition, to improve scalability, some form of back-end might be created (depending on user feedback) to handle very huge data.

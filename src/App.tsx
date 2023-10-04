@@ -10,6 +10,21 @@ import './index.css';
 
 import { Flowbite, type CustomFlowbiteTheme } from 'flowbite-react';
 
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Tutee, Tutor } from './types/person';
+import { MatchingList } from './types/globalVariables';
+
+import './index.d.ts';
+
+declare global {
+  interface Window {
+    tuteeParsedData?: Tutee[];
+    tutorParsedData?: Tutor[];
+    matchingList?: MatchingList;
+    handleCredentialResponse: (response: any) => void;
+  }
+}
+
 export const FlowbiteTheme: CustomFlowbiteTheme = {
   button: {
     color: {
@@ -29,6 +44,8 @@ export const FlowbiteTheme: CustomFlowbiteTheme = {
         colors: {
           primary:
             'focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 border border-gray-300 text-gray-900 ',
+          primaryLeft:
+            'focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 border border-gray-300 text-gray-900',
         },
       },
     },
@@ -57,16 +74,18 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <Flowbite theme={{ theme: FlowbiteTheme as CustomFlowbiteTheme }}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<OverviewPage />}></Route>
-            <Route path="/details" element={<MatchDetailsPage />}></Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </Flowbite>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_ID}>
+      <Flowbite theme={{ theme: FlowbiteTheme as CustomFlowbiteTheme }}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<OverviewPage />}></Route>
+              <Route path="/details" element={<MatchDetailsPage />}></Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </Flowbite>
+    </GoogleOAuthProvider>
   );
 }
 

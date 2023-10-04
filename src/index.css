@@ -26,6 +26,15 @@
   tbody {
     @apply divide-y;
   }
+
+  /* div.relative:has(#tutorSheetsList) {
+    width: auto;
+  } */
+
+  #tutorSheetsList,
+  #tuteeSheetsList {
+    @apply !rounded-r-none;
+  }
 }
 
 .MuiCard-root {

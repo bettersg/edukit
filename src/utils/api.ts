@@ -13,21 +13,33 @@ export const API_ENDPOINT_TUTEE =
 /**
  * Get data from GSheets. Optionally transform the data.
  *
- * @param sheetsURL location of the GSheets
+ * @param sheetId location of the GSheets
  * @param dropHeaderRow whether to drop the header row
  * @param transformFn function to transform the data
  * @returns array of data
  */
+
+
 export const getGSheetsData = async <T = MatrixData>(
-  sheetsURL: string,
+  sheetId: string,
+  sheetName: string,
   dropHeaderRow = true,
   transformFn?: (data: MatrixData) => T,
 ): Promise<T[]> => {
   console.log('Fetching data from GSheets');
-  const response = await fetch(sheetsURL);
-  if (!response.ok) return [];
-  const data: GSheetsResponse = await response.json();
-  const rawData = data.content;
+
+  let resp: Awaited<ReturnType<typeof gapi.client.sheets.spreadsheets.values.get>>;
+  try {
+    resp = await gapi.client.sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: `'${sheetName}'!A:ZZZ`
+    })
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+
+  const rawData = resp.result.values;
   if (dropHeaderRow) rawData.shift();
   if (transformFn) return rawData.map(transformFn);
   return rawData as unknown as T[];

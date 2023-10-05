@@ -26,7 +26,6 @@
         "react-router-dom": "^6.10.0"
     },
     "devDependencies": {
-        "@esbuild/darwin-arm64": "^0.19.2",
         "@types/gapi": "^0.0.44",
         "@types/gapi.client.drive-v3": "^0.0.1",
         "@types/gapi.client.sheets-v4": "^0.0.1",

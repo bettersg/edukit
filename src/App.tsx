@@ -10,7 +10,6 @@ import './index.css';
 
 import { Flowbite, type CustomFlowbiteTheme } from 'flowbite-react';
 
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Tutee, Tutor } from './types/person';
 import { MatchingList } from './types/globalVariables';
 
@@ -74,18 +73,16 @@ function App() {
   const [count, setCount] = useState(0);
 
   return (
-    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_ID}>
-      <Flowbite theme={{ theme: FlowbiteTheme as CustomFlowbiteTheme }}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<OverviewPage />}></Route>
-              <Route path="/details" element={<MatchDetailsPage />}></Route>
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </Flowbite>
-    </GoogleOAuthProvider>
+    <Flowbite theme={{ theme: FlowbiteTheme as CustomFlowbiteTheme }}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<OverviewPage />}></Route>
+            <Route path="/details" element={<MatchDetailsPage />}></Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </Flowbite>
   );
 }
 

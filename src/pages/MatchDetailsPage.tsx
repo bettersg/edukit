@@ -427,6 +427,7 @@ const MatchDetailsPage = () => {
         )}
       </div>
 
+      {/* @ts-expect-error https://github.com/themesberg/flowbite-react/issues/962 */}
       <Button color="primary" onClick={() => navigate('/')}>
         Back
       </Button>

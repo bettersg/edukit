@@ -24,12 +24,6 @@ import KSGeneralTuteeFormat from '@/utils/classes/KSGeneralTuteeFormat';
 import KSTutorFormat from '@/utils/classes/KSTutorFormat';
 import TuteeMatches from '@/utils/classes/TuteeMatches';
 
-// import { GoogleLogin } from '@react-oauth/google';
-
-// import { loadGapiInsideDOM } from 'gapi-script';
-
-// import { google } from 'googleapis';
-
 import {
   Card,
   Checkbox,

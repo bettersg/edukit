@@ -1,0 +1,28 @@
+{
+    "tutee": [
+        {
+            "name": "Josef Roderigo",
+            "levelSubject": "P4 English",
+            "organisation": "Ang Mo Kio FSC",
+            "location": "Punggol",
+            "strength": "Bobby has been an outstanding student to work with. His enthusiasm for learning and dedication to his studies are truly commendable. He consistently demonstrates a strong work ethic and a genuine passion for acquiring knowledge.",
+            "weakness": "Bobby's math skills are rated at 5 on a scale of 1 to 10, indicating an average proficiency. With some dedicated effort and additional practice, Bobby has the potential to strengthen his math abilities and reach a higher level of competence."
+        },
+        {
+            "name": "Peter Tan",
+            "levelSubject": "Sec2 Maths",
+            "organisation": "Gek Poh Ville CC",
+            "location": "Jurong West",
+            "strength": "Peter excels in mathematics, demonstrating an impressive proficiency with a rating of 8 on a scale of 1 to 10. His strong math skills reflect his ability to grasp complex concepts and solve challenging problems effectively.",
+            "weakness": "Peter faces a challenge in the realm of English, with a proficiency rating of 3 on a scale of 1 to 10. Improving his English skills would greatly benefit his overall academic performance and communication abilities."
+        },
+        {
+            "name": "Mary Chua",
+            "levelSubject": "P5 Chinese",
+            "organisation": "CDAC",
+            "location": "Queenstown",
+            "strength": "Mary excels in Chinese, showcasing a high level of proficiency and understanding with a rating of 9 on a scale of 1 to 10. Her strong Chinese skills demonstrate her ability to effectively communicate and comprehend this language.",
+            "weakness": "However, Mary faces challenges in the subject of mathematics, with a proficiency rating of 4 on a scale of 1 to 10. Strengthening her math skills would be beneficial for her overall academic progress and problem-solving abilities."
+        }
+    ]
+}

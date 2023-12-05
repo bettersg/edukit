@@ -1,0 +1,25 @@
+{
+    "session": [
+        {
+            "tutorName": "Jerald Durgan",
+            "tuteeName": "Mary Chua",
+            "sessionDate": "27/8/2023",
+            "hours": 5,
+            "sessionDescrip": "French vocabulary is expanding beautifully for my tutee. Their genuine excitement to learn new words and their effort in integrating them into sentences showcases their genuine passion for language."
+        },
+        {
+            "tutorName": "Gerald Fay",
+            "tuteeName": "Peter Tan",
+            "sessionDate": "15/7/2023",
+            "hours": 3,
+            "sessionDescrip": "Engaging in another physics problem-solving session was a true pleasure. My tutee's persistence and effort in tackling complex problems were evident throughout. Their willingness to embrace challenges head-on speaks volumes about their commitment to growth."
+        },
+        {
+            "tutorName": "Mrs. Jaime Larson",
+            "tuteeName": "Josef Roderigo",
+            "sessionDate": "13/3/2023",
+            "hours": "2",
+            "sessionDescrip": "Coding is a newfound passion for my tutee, and it's evident in their vibrant participation during our session. Their eagerness to learn and their creative problem-solving skills make each session exciting."
+        }
+    ]
+}

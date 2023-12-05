@@ -1,0 +1,4 @@
+.env
+.rest
+/tests
+node_modules

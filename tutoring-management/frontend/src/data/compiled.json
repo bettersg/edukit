@@ -1,0 +1,113 @@
+{ "data":
+[{
+    "session": [
+        {
+            "tutorName": "Jerald Durgan",
+            "tuteeName": "Mary Chua",
+            "sessionDate": "27/8/2023",
+            "hours": 5,
+            "sessionDescrip": "French vocabulary is expanding beautifully for my tutee. Their genuine excitement to learn new words and their effort in integrating them into sentences showcases their genuine passion for language."
+        },
+        {
+            "tutorName": "Gerald Fay",
+            "tuteeName": "Peter Tan",
+            "sessionDate": "15/7/2023",
+            "hours": 3,
+            "sessionDescrip": "Engaging in another physics problem-solving session was a true pleasure. My tutee's persistence and effort in tackling complex problems were evident throughout. Their willingness to embrace challenges head-on speaks volumes about their commitment to growth."
+        },
+        {
+            "tutorName": "Mrs. Jaime Larson",
+            "tuteeName": "Josef Roderigo",
+            "sessionDate": "13/3/2023",
+            "hours": "2",
+            "sessionDescrip": "Coding is a newfound passion for my tutee, and it's evident in their vibrant participation during our session. Their eagerness to learn and their creative problem-solving skills make each session exciting."
+        }
+    ]
+},
+{
+    "tutees": [
+        {
+            "name": "Josef Roderigo",
+            "levelSubject": "P4 English",
+            "organisation": "Ang Mo Kio FSC",
+            "location": "Punggol",
+            "strength": "Bobby has been an outstanding student to work with. His enthusiasm for learning and dedication to his studies are truly commendable. He consistently demonstrates a strong work ethic and a genuine passion for acquiring knowledge.",
+            "weakness": "Bobby's math skills are rated at 5 on a scale of 1 to 10, indicating an average proficiency. With some dedicated effort and additional practice, Bobby has the potential to strengthen his math abilities and reach a higher level of competence.",
+            "tutorName": "Jerald Durgan",
+            "tutorEmail": "123@gmail.com",
+            "tutorPhone": 12345,
+            "tutorEndDate": "1/1/2023",
+            "sessionDate": "27/8/2023",
+            "hours": 5,
+            "noOfSessions": 1,
+            "sessionDescrip": ["French vocabulary is expanding beautifully for my tutee. Their genuine excitement to learn new words and their effort in integrating them into sentences showcases their genuine passion for language."]
+        },
+        {
+            "name": "Peter Tan",
+            "levelSubject": "S2 Maths",
+            "organisation": "Gek Poh Ville CC",
+            "location": "Jurong West",
+            "strength": "Peter excels in mathematics, demonstrating an impressive proficiency with a rating of 8 on a scale of 1 to 10. His strong math skills reflect his ability to grasp complex concepts and solve challenging problems effectively.",
+            "weakness": "Peter faces a challenge in the realm of English, with a proficiency rating of 3 on a scale of 1 to 10. Improving his English skills would greatly benefit his overall academic performance and communication abilities.",
+            "tutorName": "Gerald Fay",
+            "tutorEmail": "55523@gmail.com",
+            "tutorPhone": 22222,
+            "tutorEndDate": "2/1/2023",
+            "sessionDate": "15/7/2023",
+            "hours": 3,
+            "noOfSessions": 1,
+            "sessionDescrip": ["Engaging in another physics problem-solving session was a true pleasure. My tutee's persistence and effort in tackling complex problems were evident throughout. Their willingness to embrace challenges head-on speaks volumes about their commitment to growth."]
+        },
+        {
+            "name": "Mary Chua",
+            "levelSubject": "P5 Chinese",
+            "organisation": "CDAC",
+            "location": "Queenstown",
+            "strength": "Mary excels in Chinese, showcasing a high level of proficiency and understanding with a rating of 9 on a scale of 1 to 10. Her strong Chinese skills demonstrate her ability to effectively communicate and comprehend this language.",
+            "weakness": "However, Mary faces challenges in the subject of mathematics, with a proficiency rating of 4 on a scale of 1 to 10. Strengthening her math skills would be beneficial for her overall academic progress and problem-solving abilities.",
+            "tutorName": "Mrs. Jaime Larson",
+            "tutorEmail": "5566@gmail.com",
+            "tutorPhone": 6666,
+            "tutorEndDate": "3/1/2023",
+            "sessionDate": "13/3/2023",
+            "hours": "2",
+            "noOfSessions": 3,
+            "sessionDescrip": ["Coding is a newfound passion for my tutee, and it's evident in their vibrant participation during our session. Their eagerness to learn and their creative problem-solving skills make each session exciting.", "Another inspiring tutoring session. My tutee's engagement with algebraic concepts bodes well for their upcoming PSLE, indicating solid groundwork.","Essay structuring skills are becoming second nature to my tutee, a vital asset as they prepare for the O levels. Their dedication is evident."]
+        }
+    ]
+},
+{
+    "tutor": [
+        {
+            "name": "Jacquelyn Pollich",
+            "email": "123@gmail.com",
+            "phone": 12345,
+            "endDate": "1/1/2023"
+        },
+        {
+            "name": "Jerald Durgan",
+            "email": "55523@gmail.com",
+            "phone": 22222,
+            "endDate": "2/1/2023"
+        },
+        {
+            "name": "Gerald Fay",
+            "email": "5566@gmail.com",
+            "phone": 6666,
+            "endDate": "3/1/2023"
+        },
+        {
+            "name": "Mrs. Jaime Larson",
+            "email": "jdfv@gmail.com",
+            "phone": 65155,
+            "endDate": "4/1/2023"
+        },
+        {
+            "name": "Lindsay Veum DVM",
+            "email": "dfdfdggfuisd@gmail.com",
+            "phone": 55515,
+            "endDate": "5/1/2023"
+        }
+    ]
+}]
+}

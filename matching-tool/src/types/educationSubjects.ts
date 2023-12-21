@@ -4,6 +4,7 @@ export enum EducationLevel {
   UpperSecondary = 'upperSecondary',
   LowerSecondary = 'lowerSecondary',
   Primary = 'primary',
+  UpperSecondaryAndJC = 'upperSecondaryAndJC',
   undefined = 'ud',
 }
 
@@ -52,6 +53,10 @@ export enum SecondarySubjects {
   History = 'History_S',
   SocialStudies = 'SocialStudies_S',
   Accounting = 'Accounting_S',
+  Economics = 'Economics_S',
+  ElectGeography = 'ElectGeog_S',
+  ElectHistory = 'ElectHistory_S',
+  ElectLiterature = 'ElectLiterature_S',
 }
 
 export enum JCSubjects {

@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 
 import Link from './utility/Link';
 
-import { Tutee, TuteeDataFormat, Tutor } from '../types/person';
+import { Tutee, TuteeDataFormat, Tutor, TutorDataFormat } from '../types/person';
 import {
   MatchingList,
   TuteeSummary,
@@ -19,11 +19,14 @@ import { selectedTuteeMatchesActions } from '@/store/selectedTuteeMatchesSlice';
 import { getGSheetsData } from '@/utils/api';
 import { API_ENDPOINT_TUTEE, API_ENDPOINT_TUTOR } from '@/utils/api';
 
-import { getMatchScore } from '@/utils/score';
+import { getEHMatchScore } from '@/utils/EHscore';
 import KSSSOTuteeFormat from '@/utils/classes/KSSSOTuteeFormat';
 import KSGeneralTuteeFormat from '@/utils/classes/KSGeneralTuteeFormat';
 import KSTutorFormat from '@/utils/classes/KSTutorFormat';
-import TuteeMatches from '@/utils/classes/TuteeMatches';
+import EHTutorFormat from '@/utils/classes/EHTutorFormat';
+// import TuteeMatches from '@/utils/classes/KSTuteeMatches';
+import TuteeMatches from '@/utils/classes/EHTuteeMatches';
+
 
 import {
   Card,
@@ -35,12 +38,16 @@ import {
 } from 'flowbite-react';
 
 import { parse } from 'papaparse';
+import EHTuteeFormat from '@/utils/classes/EHTuteeFormat';
+import { getKSMatchScore } from '@/utils/KSscore';
 
 const DataLoadAndMatchForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [selectedTuteeDataFormat, setSelectedTuteeDataFormat] =
     useState<TuteeDataFormat>(TuteeDataFormat.KSGeneral);
+  const [selectedTutorDataFormat, setSelectedTutorDataFormat] =
+    useState<TutorDataFormat>(TutorDataFormat.KSGeneral);
   const [useCsvTutor, setUseCsvTutor] = useState<boolean>(false);
   const [useCsvTutee, setUseCsvTutee] = useState<boolean>(false);
   const [csvTutorData, setCsvTutorData] = useState<MatrixData[]>();
@@ -64,7 +71,8 @@ const DataLoadAndMatchForm = () => {
       console.log('loading', selectedTuteeDataFormat);
       if (
         selectedTuteeDataFormat !== TuteeDataFormat.KSGeneral &&
-        selectedTuteeDataFormat !== TuteeDataFormat.KSSSO
+        selectedTuteeDataFormat !== TuteeDataFormat.KSSSO && 
+        selectedTuteeDataFormat !== TuteeDataFormat.EH
       ) {
         alert('Please select a valid tutee data format');
         return;
@@ -78,8 +86,18 @@ const DataLoadAndMatchForm = () => {
           : await getGSheetsData(API_ENDPOINT_TUTEE, false),
       ]);
 
-      const tutorFormatter = new KSTutorFormat(tutorRawData);
-      const tutorParsedData = tutorFormatter.getRelevantData();
+      let tutorParsedData: Tutor[] = [];
+      switch (selectedTutorDataFormat) {
+        case TutorDataFormat.KSGeneral:
+          const formatterKSGen = new KSTutorFormat(tutorRawData);
+          tutorParsedData = formatterKSGen.getRelevantData();
+          break;
+        case TutorDataFormat.EH:
+          const formatterEH = new EHTutorFormat(tutorRawData);
+          tutorParsedData = formatterEH.getRelevantData();
+          break;
+      }
+
       let tuteeParsedData: Tutee[] = [];
       switch (selectedTuteeDataFormat) {
         case TuteeDataFormat.KSGeneral:
@@ -90,7 +108,12 @@ const DataLoadAndMatchForm = () => {
           const formatterKSSSO = new KSSSOTuteeFormat(tuteeRawData);
           tuteeParsedData = formatterKSSSO.getRelevantData();
           break;
+        case TuteeDataFormat.EH:
+          const formatterEH = new EHTuteeFormat(tuteeRawData);
+          tuteeParsedData = formatterEH.getRelevantData();
+          break;
       }
+
       if (tutorParsedData.length > 0 && tuteeParsedData.length > 0) {
         window.tutorParsedData = tutorParsedData.reverse();
         window.tuteeParsedData = tuteeParsedData;
@@ -105,15 +128,27 @@ const DataLoadAndMatchForm = () => {
       );
     }
   };
-  
   const calculateMatches = () => {
     const tutorParsedData: Tutor[] = window.tutorParsedData;
     const tuteeParsedData: Tutee[] = window.tuteeParsedData;
+    console.log(tutorParsedData);
     if (!tutorParsedData || !tuteeParsedData) {
       alert('Data not loaded!');
       return;
     }
     const matchingList: MatchingList = [];
+    let getMatchScore: (tutor: Tutor, tutee: Tutee) => number;
+    switch (selectedTuteeDataFormat) {
+      case TuteeDataFormat.KSGeneral:
+        getMatchScore = getKSMatchScore;
+        break;
+      case TuteeDataFormat.KSSSO:
+        getMatchScore = getKSMatchScore;
+        break;
+      case TuteeDataFormat.EH:
+        getMatchScore = getEHMatchScore;
+        break;
+    }
     for (let tutee of tuteeParsedData) {
       const tuteeMatches: {
         tutee: TuteeSummary;
@@ -140,7 +175,7 @@ const DataLoadAndMatchForm = () => {
       }
       matchingList.push(tuteeMatches);
     }
-    const tuteeMatches = new TuteeMatches(tutorParsedData,tuteeParsedData)
+    const tuteeMatches = new TuteeMatches(tutorParsedData,tuteeParsedData, getMatchScore);
     window.matchingList = tuteeMatches.matchingList;
     const matchesSummary = [];
     for (let matchingListItem of matchingList) {
@@ -167,8 +202,12 @@ const DataLoadAndMatchForm = () => {
     navigate('/');
   };
 
-  const handleSelectorChange = (event: Select.SelectChangeEvent) => {
+  const handleTuteeSelectorChange = (event: Select.SelectChangeEvent) => {
     setSelectedTuteeDataFormat(() => event.target.value);
+  };
+  
+  const handleTutorSelectorChange = (event: Select.SelectChangeEvent) => {
+    setSelectedTutorDataFormat(() => event.target.value);
   };
 
   const handleFileUpload = (
@@ -224,14 +263,28 @@ const DataLoadAndMatchForm = () => {
           <p className="font-normal text-gray-700 dark:text-gray-400">
             Insert the tutor data into the database or upload a CSV file.
           </p>
+            <div className="mt-[-0.5rem]">
+              <div className="mb-2 block">
+                <Label htmlFor="format-type" value="Select tutor data format" />
+              </div>
+              <Select
+                id="format-type"
+                color="primary"
+                onChange={handleTutorSelectorChange}
+                value={selectedTutorDataFormat}
+              >
+                <option value={TutorDataFormat.KSGeneral}>KS General</option>
+                <option value={TutorDataFormat.EH}>EH</option>
+              </Select>
+            </div>
           <div className="flex items-center gap-2">
             <Checkbox
-              id="tutor-csv"
-              color="primary"
-              value={useCsvTutor}
-              onChange={e => setUseCsvTutor(e.target.checked)}
-            />
-            <Label htmlFor="tutor-csv">Use CSV</Label>
+                id="tutor-csv"
+                color="primary"
+                value={useCsvTutor}
+                onChange={e => setUseCsvTutor(e.target.checked)}
+              />
+              <Label htmlFor="tutor-csv">Use CSV</Label>
           </div>
 
           <div className="card-buttons">
@@ -248,7 +301,7 @@ const DataLoadAndMatchForm = () => {
                   }
                   id="tutor-file"
                   accept=".csv"
-                  helperText="Tutor Format: KS Tutor (.CSV)"
+                  helperText="Tutor Format: KS Tutor or EH (.CSV)"
                 />
               </div>
             ) : (
@@ -295,11 +348,12 @@ const DataLoadAndMatchForm = () => {
             <Select
               id="format-type"
               color="primary"
-              onChange={handleSelectorChange}
+              onChange={handleTuteeSelectorChange}
               value={selectedTuteeDataFormat}
             >
               <option value={TuteeDataFormat.KSSSO}>KS SSO</option>
               <option value={TuteeDataFormat.KSGeneral}>KS General</option>
+              <option value={TuteeDataFormat.EH}>EH</option>
             </Select>
           </div>
           <div className="flex items-center gap-2">
@@ -326,7 +380,7 @@ const DataLoadAndMatchForm = () => {
                   }
                   id="tutee-file"
                   accept=".csv"
-                  helperText="Tutee Format: KS General or KS SSO (.CSV)"
+                  helperText="Tutee Format: KS General or KS SSO or EH (.CSV)"
                 />
               </div>
             ) : (

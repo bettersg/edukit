@@ -48,7 +48,7 @@ const scoreStream = (tutor: Tutor, tutee: Tutee): number => {
     tutee.educationLevel === EducationLevel.LowerSecondary ||
     tutee.educationLevel === EducationLevel.UpperSecondary;
   if (
-    tutor.acceptableSecondaryStreams.length === 0 ||
+    tutor.acceptableSecondaryStreams?.length === 0 ||
     tutee.secondaryStream === SecondaryStream.undefined
   )
     return 0.5;

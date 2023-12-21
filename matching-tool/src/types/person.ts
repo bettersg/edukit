@@ -11,12 +11,12 @@ import {
 export enum TuteeDataFormat {
   KSGeneral = 'KSGeneral',
   KSSSO = 'KSSSO',
-  EH = 'EH'
+  EHTutee = 'EH'
 }
 
 export enum TutorDataFormat {
-  KSGeneral = 'KSGeneral',
-  EH = 'EH'
+  KSTutor = 'KSTutor',
+  EHTutor = 'EH'
 }
 
 export enum Gender {

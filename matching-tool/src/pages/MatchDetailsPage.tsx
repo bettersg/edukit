@@ -148,9 +148,9 @@ const MatchDetailsPage = () => {
       isProbonoOk: booleanMap[String(tutor.isProBonoOk)],
       isNoFinAidOk: booleanMap[String(tutor.isUnaidedOk)],
       secStreams: tutor.acceptableSecondaryStreams
-        .map(stream => streamMapping[stream])
-        .join(', '),
-      commit: tutor.commitStr,
+        ?.map(stream => streamMapping[stream])
+        ?.join(', ') ?? '',
+      commit: tutor.commitStr ?? '',
       matchingScore: tutor.matchingScore,
       phoneNum: String(tutor.personalData.contact?.phone).replace(
         'undefined',

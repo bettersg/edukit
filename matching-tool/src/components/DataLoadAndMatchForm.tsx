@@ -5,7 +5,12 @@ import { useDispatch } from 'react-redux';
 
 import Link from './utility/Link';
 
-import { Tutee, TuteeDataFormat, Tutor, TutorDataFormat } from '../types/person';
+import {
+  Tutee,
+  TuteeDataFormat,
+  Tutor,
+  TutorDataFormat,
+} from '../types/person';
 import {
   MatchingList,
   TuteeSummary,
@@ -27,7 +32,6 @@ import EHTutorFormat from '@/utils/classes/EHTutorFormat';
 // import TuteeMatches from '@/utils/classes/KSTuteeMatches';
 import TuteeMatches from '@/utils/classes/EHTuteeMatches';
 
-
 import {
   Card,
   Checkbox,
@@ -47,7 +51,7 @@ const DataLoadAndMatchForm = () => {
   const [selectedTuteeDataFormat, setSelectedTuteeDataFormat] =
     useState<TuteeDataFormat>(TuteeDataFormat.KSGeneral);
   const [selectedTutorDataFormat, setSelectedTutorDataFormat] =
-    useState<TutorDataFormat>(TutorDataFormat.KSGeneral);
+    useState<TutorDataFormat>(TutorDataFormat.KSTutor);
   const [useCsvTutor, setUseCsvTutor] = useState<boolean>(false);
   const [useCsvTutee, setUseCsvTutee] = useState<boolean>(false);
   const [csvTutorData, setCsvTutorData] = useState<MatrixData[]>();
@@ -71,8 +75,8 @@ const DataLoadAndMatchForm = () => {
       console.log('loading', selectedTuteeDataFormat);
       if (
         selectedTuteeDataFormat !== TuteeDataFormat.KSGeneral &&
-        selectedTuteeDataFormat !== TuteeDataFormat.KSSSO && 
-        selectedTuteeDataFormat !== TuteeDataFormat.EH
+        selectedTuteeDataFormat !== TuteeDataFormat.KSSSO &&
+        selectedTuteeDataFormat !== TuteeDataFormat.EHTutee
       ) {
         alert('Please select a valid tutee data format');
         return;
@@ -88,11 +92,11 @@ const DataLoadAndMatchForm = () => {
 
       let tutorParsedData: Tutor[] = [];
       switch (selectedTutorDataFormat) {
-        case TutorDataFormat.KSGeneral:
+        case TutorDataFormat.KSTutor:
           const formatterKSGen = new KSTutorFormat(tutorRawData);
           tutorParsedData = formatterKSGen.getRelevantData();
           break;
-        case TutorDataFormat.EH:
+        case TutorDataFormat.EHTutor:
           const formatterEH = new EHTutorFormat(tutorRawData);
           tutorParsedData = formatterEH.getRelevantData();
           break;
@@ -108,7 +112,7 @@ const DataLoadAndMatchForm = () => {
           const formatterKSSSO = new KSSSOTuteeFormat(tuteeRawData);
           tuteeParsedData = formatterKSSSO.getRelevantData();
           break;
-        case TuteeDataFormat.EH:
+        case TuteeDataFormat.EHTutee:
           const formatterEH = new EHTuteeFormat(tuteeRawData);
           tuteeParsedData = formatterEH.getRelevantData();
           break;
@@ -145,7 +149,7 @@ const DataLoadAndMatchForm = () => {
       case TuteeDataFormat.KSSSO:
         getMatchScore = getKSMatchScore;
         break;
-      case TuteeDataFormat.EH:
+      case TuteeDataFormat.EHTutee:
         getMatchScore = getEHMatchScore;
         break;
     }
@@ -175,7 +179,11 @@ const DataLoadAndMatchForm = () => {
       }
       matchingList.push(tuteeMatches);
     }
-    const tuteeMatches = new TuteeMatches(tutorParsedData,tuteeParsedData, getMatchScore);
+    const tuteeMatches = new TuteeMatches(
+      tutorParsedData,
+      tuteeParsedData,
+      getMatchScore,
+    );
     window.matchingList = tuteeMatches.matchingList;
     const matchesSummary = [];
     for (let matchingListItem of matchingList) {
@@ -205,7 +213,7 @@ const DataLoadAndMatchForm = () => {
   const handleTuteeSelectorChange = (event: Select.SelectChangeEvent) => {
     setSelectedTuteeDataFormat(() => event.target.value);
   };
-  
+
   const handleTutorSelectorChange = (event: Select.SelectChangeEvent) => {
     setSelectedTutorDataFormat(() => event.target.value);
   };
@@ -263,28 +271,28 @@ const DataLoadAndMatchForm = () => {
           <p className="font-normal text-gray-700 dark:text-gray-400">
             Insert the tutor data into the database or upload a CSV file.
           </p>
-            <div className="mt-[-0.5rem]">
-              <div className="mb-2 block">
-                <Label htmlFor="format-type" value="Select tutor data format" />
-              </div>
-              <Select
-                id="format-type"
-                color="primary"
-                onChange={handleTutorSelectorChange}
-                value={selectedTutorDataFormat}
-              >
-                <option value={TutorDataFormat.KSGeneral}>KS General</option>
-                <option value={TutorDataFormat.EH}>EH</option>
-              </Select>
+          <div className="mt-[-0.5rem]">
+            <div className="mb-2 block">
+              <Label htmlFor="format-type" value="Select tutor data format" />
             </div>
+            <Select
+              id="format-type"
+              color="primary"
+              onChange={handleTutorSelectorChange}
+              value={selectedTutorDataFormat}
+            >
+              <option value={TutorDataFormat.KSTutor}>KS Tutor</option>
+              <option value={TutorDataFormat.EHTutor}>EH Tutor</option>
+            </Select>
+          </div>
           <div className="flex items-center gap-2">
             <Checkbox
-                id="tutor-csv"
-                color="primary"
-                value={useCsvTutor}
-                onChange={e => setUseCsvTutor(e.target.checked)}
-              />
-              <Label htmlFor="tutor-csv">Use CSV</Label>
+              id="tutor-csv"
+              color="primary"
+              value={useCsvTutor}
+              onChange={e => setUseCsvTutor(e.target.checked)}
+            />
+            <Label htmlFor="tutor-csv">Use CSV</Label>
           </div>
 
           <div className="card-buttons">
@@ -301,7 +309,7 @@ const DataLoadAndMatchForm = () => {
                   }
                   id="tutor-file"
                   accept=".csv"
-                  helperText="Tutor Format: KS Tutor or EH (.CSV)"
+                  helperText="Tutor Format: KS Tutor or EH Tutor (.CSV)"
                 />
               </div>
             ) : (
@@ -353,7 +361,7 @@ const DataLoadAndMatchForm = () => {
             >
               <option value={TuteeDataFormat.KSSSO}>KS SSO</option>
               <option value={TuteeDataFormat.KSGeneral}>KS General</option>
-              <option value={TuteeDataFormat.EH}>EH</option>
+              <option value={TuteeDataFormat.EHTutee}>EH Tutee</option>
             </Select>
           </div>
           <div className="flex items-center gap-2">
@@ -380,7 +388,7 @@ const DataLoadAndMatchForm = () => {
                   }
                   id="tutee-file"
                   accept=".csv"
-                  helperText="Tutee Format: KS General or KS SSO or EH (.CSV)"
+                  helperText="Tutee Format: KS General, KS SSO, or EH Tutee (.CSV)"
                 />
               </div>
             ) : (

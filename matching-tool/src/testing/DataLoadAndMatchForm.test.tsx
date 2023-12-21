@@ -1,13 +1,12 @@
 import '@testing-library/jest-dom';
-import { describe, expect, it } from "vitest";
-import { screen, waitFor } from "@testing-library/react";
-import { renderWithBrowserRouter } from "./setup/renderFunctions";
-import DataLoadAndMatchForm from "@/components/DataLoadAndMatchForm";
+import { describe, expect, it } from 'vitest';
+import { screen, waitFor } from '@testing-library/react';
+import { renderWithBrowserRouter } from './setup/renderFunctions';
+import DataLoadAndMatchForm from '@/components/DataLoadAndMatchForm';
 
-describe("Render test", () => {
-  it("Render test", () => {
+describe('Render test', () => {
+  it('Render test', () => {
     // renderWithBrowserRouter(<DataLoadAndMatchForm />);
-
     // const title = screen.getByText(/Step 1/);
     // expect(title).toBeInTheDocument();
   });

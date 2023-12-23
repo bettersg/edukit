@@ -27,26 +27,30 @@ export default class EHTutorFormat
         getterType: 'cell_value',
         columnKeywords: ['level', 'education'],
         mapping: {
-          // both: [EducationLevel.UpperSecondary, EducationLevel.JuniorCollege],
+          both: [EducationLevel.UpperSecondary, EducationLevel.JuniorCollege],
           'a level': EducationLevel.JuniorCollege,
           'o level': EducationLevel.UpperSecondary,
         },
       },
       {
         fieldName: 'upperSecondary',
-        type: 'csv',
+        type: 'string',
         getterType: 'cell_value',
         columnKeywords: ['subject'],
         multipleColumns: true,
-        mapping: secondarySubjectTextToEnumMapping,
+        filter: {
+          params: secondarySubjectTextToEnumMapping
+        },
       },
       {
         fieldName: 'jc',
-        type: 'csv',
+        type: 'string',
         getterType: 'cell_value',
         columnKeywords: ['subject'],
         multipleColumns: true,
-        mapping: jcSubjectTextToEnumMapping,
+        filter: {
+          params: jcSubjectTextToEnumMapping
+        },
       },
       {
         fieldName: 'noOfStudents',

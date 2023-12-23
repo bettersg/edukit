@@ -62,7 +62,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainLayout />}>
             <Route index element={<OverviewPage />}></Route>
-            <Route path="/details" element={<MatchDetailsPage />}></Route>
+            <Route path="/details" element={<MatchDetailsPage/>}></Route>
           </Route>
         </Routes>
       </BrowserRouter>

@@ -1,4 +1,4 @@
-import { Tutee } from '@/types/person';
+import { Subject, Tutee } from '@/types/person';
 import GenericFormat, { DataFormat } from './GenericFormat';
 import { DataFormatter } from './GenericFormat';
 import { MatrixData } from '@/types/google-sheets';
@@ -6,6 +6,7 @@ import { EducationLevel } from '@/types/educationSubjects';
 import {
   educationLevelMapping,
   educationLevelSubjectMapping,
+  subjectMappings,
 } from '../mappingData/EHTutee';
 
 export default class EHTuteeFormat extends GenericFormat {
@@ -40,8 +41,8 @@ export default class EHTuteeFormat extends GenericFormat {
         },
       },
       {
-        fieldName: 'subject',
-        type: 'csv',
+        fieldName: 'subjects',
+        type: 'string',
         getterType: 'cell_value',
         columnKeywords: ['subject'],
         multipleColumns: true,
@@ -89,9 +90,8 @@ export default class EHTuteeFormat extends GenericFormat {
           secondTutorIndex: tutee['secondTutorIndex'] as number,
           thirdTutorIndex: tutee['thirdTutorIndex'] as number,
         },
-        subjects: (tutee['subject'] as string[][])
-          .map(col =>
-            col.map(subject => {
+        subjects: (tutee['subjects'] as string[])
+            .map(subject => {
               try {
                 return educationLevelSubjectMapping[
                   tutee['educationLevel'] as EducationLevel
@@ -99,10 +99,9 @@ export default class EHTuteeFormat extends GenericFormat {
               } catch {
                 return undefined;
               }
-            }),
-          )
-          .flat(1)
-          .filter(subject => subject !== undefined),
+            })
+          .flat(Infinity)
+          .filter(subject => subject !== undefined)
       };
     });
   }

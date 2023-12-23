@@ -83,7 +83,6 @@ const scoreSubjectLevel = (tutor: Tutor, tutee: Tutee): number => {
   if (!relevantTutorSubjects || relevantTutorSubjects?.length == 0) {
     return 0;
   }
-  console.log(relevantTutorSubjects);
   return relevantTutorSubjects?.reduce<number>(
     (cumulativeScore: number, tutorSubject: Subject): number => {
       const score =

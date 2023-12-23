@@ -7,18 +7,17 @@ import type { UserConfig as VitestUserConfigInterface } from 'vitest/config';
 // typing for Vitest config
 const vitestConfig: VitestUserConfigInterface = {
   test: {
-    includeSource: ["src/**/*.{ts,tsx}"],
+    includeSource: ['src/**/*.{ts,tsx}'],
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./src/testing/setup/setup.ts'],
   },
 };
 
-
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: [{ find: '@', replacement: path.resolve(__dirname, 'src') }],
   },
-  test: vitestConfig.test
+  test: vitestConfig.test,
 });

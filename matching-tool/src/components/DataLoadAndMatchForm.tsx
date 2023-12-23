@@ -29,6 +29,7 @@ import KSSSOTuteeFormat from '@/utils/classes/KSSSOTuteeFormat';
 import KSGeneralTuteeFormat from '@/utils/classes/KSGeneralTuteeFormat';
 import KSTutorFormat from '@/utils/classes/KSTutorFormat';
 import EHTutorFormat from '@/utils/classes/EHTutorFormat';
+import { DataFormat } from '@/types/dataFormat';
 // import TuteeMatches from '@/utils/classes/KSTuteeMatches';
 import TuteeMatches from '@/utils/classes/EHTuteeMatches';
 
@@ -121,6 +122,15 @@ const DataLoadAndMatchForm = () => {
       if (tutorParsedData.length > 0 && tuteeParsedData.length > 0) {
         window.tutorParsedData = tutorParsedData.reverse();
         window.tuteeParsedData = tuteeParsedData;
+        window.dataFormat = DataFormat.KSFormat;
+        if (selectedTuteeDataFormat === TuteeDataFormat.EHTutee && selectedTutorDataFormat === TutorDataFormat.EHTutor) {
+          window.dataFormat = DataFormat.EHFormat;
+        } else if (
+            (selectedTuteeDataFormat === TuteeDataFormat.KSGeneral || selectedTuteeDataFormat === TuteeDataFormat.KSSSO) &&
+            selectedTutorDataFormat === TutorDataFormat.KSTutor
+        ) {
+            window.dataFormat = DataFormat.KSFormat;
+        }      
         alert('Tutor & Tutee Data Loaded');
       } else {
         alert('Data not Loaded');
@@ -135,7 +145,6 @@ const DataLoadAndMatchForm = () => {
   const calculateMatches = () => {
     const tutorParsedData: Tutor[] = window.tutorParsedData;
     const tuteeParsedData: Tutee[] = window.tuteeParsedData;
-    console.log(tutorParsedData);
     if (!tutorParsedData || !tuteeParsedData) {
       alert('Data not loaded!');
       return;

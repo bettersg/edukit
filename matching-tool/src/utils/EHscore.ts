@@ -33,24 +33,14 @@ const scoreChoices = (tutor: Tutor, tutee: Tutee): number => {
   return 0;
 };
 
-function flattenArray(nestedArray) {
-  let flattenedArray = [];
-  for (let i = 0; i < nestedArray.length; i++) {
-      flattenedArray = flattenedArray.concat(nestedArray[i]);
-  }
-  return flattenedArray;
-}
-
 const scoreSubjectLevel = (tutor: Tutor, tutee: Tutee): number => {
   let relevantTutorSubjects: Subject[] | undefined = [];
   switch (tutee.educationLevel) {
     case EducationLevel.UpperSecondary:
-      relevantTutorSubjects = flattenArray(tutor.tutorSubjects.upperSecondary); // im not sure why it becomes an array within an array
-      // relevantTutorSubjects = tutor.tutorSubjects.upperSecondary;
+      relevantTutorSubjects = tutor.tutorSubjects.upperSecondary;
       break;
     case EducationLevel.JuniorCollege:
-      relevantTutorSubjects = flattenArray(tutor.tutorSubjects.jc);
-      // relevantTutorSubjects = tutor.tutorSubjects.jc;
+      relevantTutorSubjects = tutor.tutorSubjects.jc;
       break;
     default:
       return 0;

@@ -222,7 +222,7 @@ export type DataFormat = // Shared parameters
          * Acts similar to the filter with object. All array items that match exactly (case-sensitive) with the keys of the mapping
          * object are added to the final output array as the corresponding value of the mapping object.
          */
-        mapping?: Record<string, string>;
+        mapping?: Record<string, string | string[]>;
       }
     | {
         /**
@@ -253,7 +253,7 @@ export type DataFormat = // Shared parameters
          * Acts similar to the filter with object. All array items that are contained (case-insensitive) within the keys of the mapping
          * object are added to the final output array as the corresponding value of the mapping object.
          */
-        mapping?: Record<string, string> | Record<string, string>[];
+        mapping?: Record<string, string | string[]> | Record<string, string | string[]>[];
       }
     | {
         type: 'boolean';
@@ -565,17 +565,17 @@ class GenericFormat {
                         .filter(key =>
                           item.toLowerCase().trim().includes(key.toLowerCase()),
                         )
-                        .map(
-                          key =>
-                            (
-                              formatRule as Extract<
-                                DataFormat[number],
-                                {
-                                  type: 'csv';
-                                }
-                              >
-                            ).mapping![key],
-                        );
+                        .flatMap(key => {
+                          let value: (string | number) | (string | number)[] = (
+                            formatRule as Extract<DataFormat[number], { type: 'csv' }>
+                          ).mapping![key];
+                      
+                          if (Array.isArray(value)) {
+                            return value; // Return the array directly
+                          } else {
+                            return [value]; // Wrap the single value in an array
+                          }
+                        });
                       mapped.push(toPush);
                     }
                   }
@@ -590,17 +590,17 @@ class GenericFormat {
                         .filter(key =>
                           key.toLowerCase().includes(item.toLowerCase().trim()),
                         )
-                        .map(
-                          key =>
-                            (
-                              formatRule as Extract<
-                                DataFormat[number],
-                                {
-                                  type: 'csv';
-                                }
-                              >
-                            ).mapping![i][key],
-                        );
+                        .flatMap(key => {
+                          let value: (string | number) | (string | number)[] = (
+                            formatRule as Extract<DataFormat[number], { type: 'csv' }>
+                          ).mapping![i][key];
+                      
+                          if (Array.isArray(value)) {
+                            return value; // Return the array directly
+                          } else {
+                            return [value]; // Wrap the single value in an array
+                          }
+                        });
                       mapped.push(toPush);
                     }
                   }
@@ -619,14 +619,17 @@ class GenericFormat {
                 for (let item of raw) {
                   for (let key in formatRule.mapping!) {
                     if (item.toLowerCase().trim().includes(key.toLowerCase())) {
-                      mapped.push(
-                        (
-                          formatRule as Extract<
-                            DataFormat[number],
-                            { type: 'csv' }
-                          >
-                        ).mapping![key],
-                      );
+                      let value = (
+                        formatRule as Extract<
+                         DataFormat[number],
+                         { type: 'csv' }
+                        >
+                      ).mapping![key];
+                      if (Array.isArray(value)) {
+                        mapped = [...mapped, ...value]; // Concatenate arrays
+                      } else {
+                        mapped.push(value);
+                      }
                       break; // Possibly remove this break
                     }
                   }

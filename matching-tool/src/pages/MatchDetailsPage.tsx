@@ -20,6 +20,7 @@ import {
   getPaginationRowModel,
   SortingState,
   getSortedRowModel,
+  ColumnDef
 } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 
@@ -73,10 +74,10 @@ const MatchDetailsPage = () => {
       id: 'matchingScore',
       desc: true,
     },
-    {
-      id: 'commit',
-      desc: true,
-    },
+    // {
+    //   id: 'commit',
+    //   desc: true,
+    // },
     {
       id: 'name',
       desc: false,
@@ -144,195 +145,210 @@ const MatchDetailsPage = () => {
     ib: 'IB',
   };
 
-  let rows: any[] = [];
-  let columns: any;
-  let tuteeRow: BaseDetailsTableData | KSTableData;
+  const [KScolumns, setKSColumns] = useState<ColumnDef<KSTableData, any>[]>([]);
+  const [EHcolumns, setEHcolumns] = useState<ColumnDef<BaseDetailsTableData, any>[]>([]);
+  const [rows, setRows] = useState<KSTableData[] | BaseDetailsTableData[]>([]);
+  const [tuteeRows, setTuteeRows] = useState<BaseDetailsTableData | KSTableData | undefined>();
 
-  switch (selectedTuteeMatches.dataFormat) {
-    case 'KSFormat': {
-      rows = selectedTuteeMatches.tutorInfo.map(
-        (tutor, i) => ({
-          entity: 'Tutor',
-          id: tutor.personalData.index!,
-          name: tutor.personalData.name!,
-          gender: tutor.personalData.gender!,
-          subjects: getRelevantSubjects(
-            selectedTuteeMatches.tutee.educationLevel!,
-            tutor.tutorSubjects,
-          ),
-          isProbonoOk: booleanMap[String(tutor.isProBonoOk)],
-          isNoFinAidOk: booleanMap[String(tutor.isUnaidedOk)],
-          secStreams: tutor.acceptableSecondaryStreams
-            ?.map(stream => streamMapping[stream])
-            ?.join(', ') ?? '',
-          commit: tutor.commitStr ?? '',
-          matchingScore: tutor.matchingScore,
-          phoneNum: String(tutor.personalData.contact?.phone).replace(
-            'undefined',
-            'Unprovided',
-          ),
-        }),
-      );
-      const columnHelper = createColumnHelper<KSTableData>();
+  useEffect(() => {
+    if (!selectedTuteeMatches) {
+      navigate('/');
+    } 
+    else {
+      switch (selectedTuteeMatches.dataFormat) {
+        case 'KSFormat': {
+          const ksRows = selectedTuteeMatches.tutorInfo.map(
+            (tutor, i) => ({
+              entity: 'Tutor',
+              id: tutor.personalData.index!,
+              name: tutor.personalData.name!,
+              gender: tutor.personalData.gender!,
+              subjects: getRelevantSubjects(
+                selectedTuteeMatches.tutee.educationLevel!,
+                tutor.tutorSubjects,
+              ),
+              isProbonoOk: booleanMap[String(tutor.isProBonoOk)],
+              isNoFinAidOk: booleanMap[String(tutor.isUnaidedOk)],
+              secStreams: tutor.acceptableSecondaryStreams
+                ?.map(stream => streamMapping[stream])
+                ?.join(', ') ?? '',
+              commit: tutor.commitStr ?? '',
+              matchingScore: tutor.matchingScore,
+              phoneNum: String(tutor.personalData.contact?.phone).replace(
+                'undefined',
+                'Unprovided',
+              ),
+            }),
+          );
+          const columnHelper = createColumnHelper<KSTableData>();
 
-      columns = useMemo(
-        () => [
-          columnHelper.display({
-            id: 'entity',
-            header: () => <span>Entity</span>,
-            cell: props => (
-              <Badge color="success" className="justify-center">
-                {props.row.original.entity}
-              </Badge>
-            ),
-          }),
-          columnHelper.accessor('id', {
-            header: () => <span>Index</span>,
-          }),
-          columnHelper.accessor('name', {
-            header: () => <span>Name</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('gender', {
-            header: () => <span>Gender — Gender Pref</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('subjects', {
-            header: () => <span>Edu Level — Subjects</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('isProbonoOk', {
-            header: () => <span>Probono Ok?</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('isNoFinAidOk', {
-            header: () => <span>On Fin Aid</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('secStreams', {
-            header: () => <span>Sec Streams</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('commit', {
-            header: () => <span>hrs/wk — thru year?</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('matchingScore', {
-            header: () => <span>M-Score</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('phoneNum', {
-            header: () => <span>Phone</span>,
-            enableMultiSort: false,
-            enableSorting: false,
-          }),
-        ],
-        [],
-      );
-      
-      tuteeRow = {
-        id: selectedTuteeMatches.tutee.personalData?.index!,
-        entity: 'Tutee',
-        name: selectedTuteeMatches.tutee.personalData?.name!,
-        gender:
-          String(selectedTuteeMatches.tutee.personalData?.gender!).replace(
-            'undefined',
-            'Unprovided',
-          ) +
-          ' — ' +
-          selectedTuteeMatches.tutee.preferedGender,
-        subjects:
-          levelMapping[selectedTuteeMatches.tutee.educationLevel!] +
-          ' — ' +
-          selectedTuteeMatches.tutee.subjects
-            ?.map(
-              subject =>
-                mapception[selectedTuteeMatches.tutee.educationLevel!][subject],
-            )
-            .join(', '),
-        isNoFinAidOk:
-          booleanMap[String(selectedTuteeMatches.tutee.isOnFinancialAid!)],
-        isProbonoOk: String(false),
-        secStreams:
-          selectedTuteeMatches.tutee.secondaryStream == SecondaryStream.undefined
-            ? ''
-            : streamMapping[selectedTuteeMatches.tutee.secondaryStream!],
-        commit: '',
-        matchingScore: 0,
-        phoneNum: String(
-          selectedTuteeMatches.tutee.personalData?.contact?.phone,
-        ).replace('undefined', 'Unprovided'),
-      } as KSTableData };
-      break;
-    case 'EHFormat': {
-      rows = selectedTuteeMatches.tutorInfo.map(
-        (tutor, i) => ({
-          entity: 'Tutor',
-          id: tutor.personalData.index!,
-          name: tutor.personalData.name!,
-          subjects: getRelevantSubjects(
-            selectedTuteeMatches.tutee.educationLevel!,
-            tutor.tutorSubjects,
-          ),
-          matchingScore: tutor.matchingScore,
-        }),
-      );
-    
-      const columnHelper = createColumnHelper<BaseDetailsTableData>();
-    
-      columns = useMemo(
-        () => [
-          columnHelper.display({
-            id: 'entity',
-            header: () => <span>Entity</span>,
-            cell: props => (
-              <Badge color="success" className="justify-center">
-                {props.row.original.entity}
-              </Badge>
-            ),
-          }),
-          columnHelper.accessor('id', {
-            header: () => <span>Row</span>,
-          }),
-          columnHelper.accessor('name', {
-            header: () => <span>Name</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('subjects', {
-            header: () => <span>Edu Level — Subjects</span>,
-            enableMultiSort: true,
-          }),
-          columnHelper.accessor('matchingScore', {
-            header: () => <span>M-Score</span>,
-            enableMultiSort: true,
-          }),
-        ],
-        [],
-      );
-      tuteeRow = {
-        id: selectedTuteeMatches.tutee.personalData?.index!,
-        entity: 'Tutee',
-        name: selectedTuteeMatches.tutee.personalData?.name!,
-        subjects:
-          levelMapping[selectedTuteeMatches.tutee.educationLevel!] +
-          ' — ' +
-          selectedTuteeMatches.tutee.subjects
-            ?.map(
-              subject =>
-                mapception[selectedTuteeMatches.tutee.educationLevel!][subject],
-            )
-            .join(', '),
-        matchingScore: 0,
-      } as BaseDetailsTableData;
+          setKSColumns([
+              columnHelper.display({
+                id: 'entity',
+                header: () => <span>Entity</span>,
+                cell: props => (
+                  <Badge color="success" className="justify-center">
+                    {props.row.original.entity}
+                  </Badge>
+                ),
+              }),
+              columnHelper.accessor('id', {
+                header: () => <span>Index</span>,
+              }),
+              columnHelper.accessor('name', {
+                header: () => <span>Name</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('gender', {
+                header: () => <span>Gender — Gender Pref</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('subjects', {
+                header: () => <span>Edu Level — Subjects</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('isProbonoOk', {
+                header: () => <span>Probono Ok?</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('isNoFinAidOk', {
+                header: () => <span>On Fin Aid</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('secStreams', {
+                header: () => <span>Sec Streams</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('commit', {
+                header: () => <span>hrs/wk — thru year?</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('matchingScore', {
+                header: () => <span>M-Score</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('phoneNum', {
+                header: () => <span>Phone</span>,
+                enableMultiSort: false,
+                enableSorting: false,
+              })
+            ]);
+          setRows(ksRows as KSTableData[]);
+
+          setTuteeRows({
+            id: selectedTuteeMatches.tutee.personalData?.index!,
+            entity: 'Tutee',
+            name: selectedTuteeMatches.tutee.personalData?.name!,
+            gender:
+              String(selectedTuteeMatches.tutee.personalData?.gender!).replace(
+                'undefined',
+                'Unprovided',
+              ) +
+              ' — ' +
+              selectedTuteeMatches.tutee.preferedGender,
+            subjects:
+              levelMapping[selectedTuteeMatches.tutee.educationLevel!] +
+              ' — ' +
+              selectedTuteeMatches.tutee.subjects
+                ?.map(
+                  subject =>
+                    mapception[selectedTuteeMatches.tutee.educationLevel!][subject],
+                )
+                .join(', '),
+            isNoFinAidOk:
+              booleanMap[String(selectedTuteeMatches.tutee.isOnFinancialAid!)],
+            isProbonoOk: String(false),
+            secStreams:
+              selectedTuteeMatches.tutee.secondaryStream == SecondaryStream.undefined
+                ? ''
+                : streamMapping[selectedTuteeMatches.tutee.secondaryStream!],
+            commit: '',
+            matchingScore: 0,
+            phoneNum: String(
+              selectedTuteeMatches.tutee.personalData?.contact?.phone,
+            ).replace('undefined', 'Unprovided'),
+          } as KSTableData);
+        }
+          break;
+        case 'EHFormat': {
+          const ehRows = selectedTuteeMatches.tutorInfo.map(
+            (tutor, i) => ({
+              entity: 'Tutor',
+              id: tutor.personalData.index!,
+              name: tutor.personalData.name!,
+              subjects: getRelevantSubjects(
+                selectedTuteeMatches.tutee.educationLevel!,
+                tutor.tutorSubjects,
+              ),
+              matchingScore: tutor.matchingScore,
+            }),
+          );
+        
+          const columnHelper = createColumnHelper<BaseDetailsTableData>();
+        
+          setEHcolumns([
+              columnHelper.display({
+                id: 'entity',
+                header: () => <span>Entity</span>,
+                cell: props => (
+                  <Badge color="success" className="justify-center">
+                    {props.row.original.entity}
+                  </Badge>
+                ),
+              }),
+              columnHelper.accessor('id', {
+                header: () => <span>Row</span>,
+              }),
+              columnHelper.accessor('name', {
+                header: () => <span>Name</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('subjects', {
+                header: () => <span>Edu Level — Subjects</span>,
+                enableMultiSort: true,
+              }),
+              columnHelper.accessor('matchingScore', {
+                header: () => <span>M-Score</span>,
+                enableMultiSort: true,
+              }),
+            ]
+          );
+          setRows(ehRows as BaseDetailsTableData[]);
+          setTuteeRows({
+            id: selectedTuteeMatches.tutee.personalData?.index!,
+            entity: 'Tutee',
+            name: selectedTuteeMatches.tutee.personalData?.name!,
+            subjects:
+              levelMapping[selectedTuteeMatches.tutee.educationLevel!] +
+              ' — ' +
+              selectedTuteeMatches.tutee.subjects
+                ?.map(
+                  subject =>
+                    mapception[selectedTuteeMatches.tutee.educationLevel!][subject],
+                )
+                .join(', '),
+            matchingScore: 0,
+          } as BaseDetailsTableData
+          )
+        }
+          break;
+        default: 
+          break;
+      }
     }
-      break;
-    default: 
-      break;
+  }, []);
+
+  function castColumns(
+    columns: ColumnDef<KSTableData, any>[] | ColumnDef<BaseDetailsTableData, any>[]
+  ): ColumnDef<BaseDetailsTableData | KSTableData, any>[] {
+    return columns as ColumnDef<BaseDetailsTableData | KSTableData, any>[];
   }
 
-  const table = useReactTable({
+  const table = useReactTable<KSTableData | BaseDetailsTableData>({
     data: rows,
-    columns,
+    columns: castColumns(
+      selectedTuteeMatches.dataFormat === 'KSFormat' ? KScolumns : EHcolumns
+    ),    
     getCoreRowModel: getCoreRowModel(),
     autoResetAll: false,
     getPaginationRowModel: getPaginationRowModel(),
@@ -341,7 +357,6 @@ const MatchDetailsPage = () => {
       sorting,
     },
     getSortedRowModel: getSortedRowModel(),
-    // enableMultiSort: true,
     initialState: {
       sorting: initSort,
     },
@@ -349,7 +364,7 @@ const MatchDetailsPage = () => {
     isMultiSortEvent: e => {
       return true;
     },
-  });
+   });
 
   const renderTutorFormat = (tuteeRow: BaseDetailsTableData | KSTableData) => {
     switch(selectedTuteeMatches.dataFormat) {
@@ -482,7 +497,7 @@ const MatchDetailsPage = () => {
             </Table.Head>
             <Table.Body className={rows.length > 0 ? 'border-b' : ''}>
               <Table.Row>
-                {renderTutorFormat(tuteeRow)}
+                {tuteeRows && renderTutorFormat(tuteeRows)}
               </Table.Row>
             </Table.Body>
             <Table.Body>

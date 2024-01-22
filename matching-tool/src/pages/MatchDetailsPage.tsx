@@ -20,7 +20,7 @@ import {
   getPaginationRowModel,
   SortingState,
   getSortedRowModel,
-  ColumnDef
+  ColumnDef,
 } from '@tanstack/react-table';
 import React, { useMemo } from 'react';
 
@@ -146,19 +146,22 @@ const MatchDetailsPage = () => {
   };
 
   const [KScolumns, setKSColumns] = useState<ColumnDef<KSTableData, any>[]>([]);
-  const [EHcolumns, setEHcolumns] = useState<ColumnDef<BaseDetailsTableData, any>[]>([]);
+  const [EHcolumns, setEHcolumns] = useState<
+    ColumnDef<BaseDetailsTableData, any>[]
+  >([]);
   const [rows, setRows] = useState<KSTableData[] | BaseDetailsTableData[]>([]);
-  const [tuteeRows, setTuteeRows] = useState<BaseDetailsTableData | KSTableData | undefined>();
+  const [tuteeRows, setTuteeRows] = useState<
+    BaseDetailsTableData | KSTableData | undefined
+  >();
 
   useEffect(() => {
     if (!selectedTuteeMatches) {
       navigate('/');
-    } 
-    else {
+    } else {
       switch (selectedTuteeMatches.dataFormat) {
-        case 'KSFormat': {
-          const ksRows = selectedTuteeMatches.tutorInfo.map(
-            (tutor, i) => ({
+        case 'KSFormat':
+          {
+            const ksRows = selectedTuteeMatches.tutorInfo.map((tutor, i) => ({
               entity: 'Tutor',
               id: tutor.personalData.index!,
               name: tutor.personalData.name!,
@@ -169,20 +172,20 @@ const MatchDetailsPage = () => {
               ),
               isProbonoOk: booleanMap[String(tutor.isProBonoOk)],
               isNoFinAidOk: booleanMap[String(tutor.isUnaidedOk)],
-              secStreams: tutor.acceptableSecondaryStreams
-                ?.map(stream => streamMapping[stream])
-                ?.join(', ') ?? '',
+              secStreams:
+                tutor.acceptableSecondaryStreams
+                  ?.map(stream => streamMapping[stream])
+                  ?.join(', ') ?? '',
               commit: tutor.commitStr ?? '',
               matchingScore: tutor.matchingScore,
               phoneNum: String(tutor.personalData.contact?.phone).replace(
                 'undefined',
                 'Unprovided',
               ),
-            }),
-          );
-          const columnHelper = createColumnHelper<KSTableData>();
+            }));
+            const columnHelper = createColumnHelper<KSTableData>();
 
-          setKSColumns([
+            setKSColumns([
               columnHelper.display({
                 id: 'entity',
                 header: () => <span>Entity</span>,
@@ -231,48 +234,52 @@ const MatchDetailsPage = () => {
                 header: () => <span>Phone</span>,
                 enableMultiSort: false,
                 enableSorting: false,
-              })
+              }),
             ]);
-          setRows(ksRows as KSTableData[]);
+            setRows(ksRows as KSTableData[]);
 
-          setTuteeRows({
-            id: selectedTuteeMatches.tutee.personalData?.index!,
-            entity: 'Tutee',
-            name: selectedTuteeMatches.tutee.personalData?.name!,
-            gender:
-              String(selectedTuteeMatches.tutee.personalData?.gender!).replace(
-                'undefined',
-                'Unprovided',
-              ) +
-              ' — ' +
-              selectedTuteeMatches.tutee.preferedGender,
-            subjects:
-              levelMapping[selectedTuteeMatches.tutee.educationLevel!] +
-              ' — ' +
-              selectedTuteeMatches.tutee.subjects
-                ?.map(
-                  subject =>
-                    mapception[selectedTuteeMatches.tutee.educationLevel!][subject],
-                )
-                .join(', '),
-            isNoFinAidOk:
-              booleanMap[String(selectedTuteeMatches.tutee.isOnFinancialAid!)],
-            isProbonoOk: String(false),
-            secStreams:
-              selectedTuteeMatches.tutee.secondaryStream == SecondaryStream.undefined
-                ? ''
-                : streamMapping[selectedTuteeMatches.tutee.secondaryStream!],
-            commit: '',
-            matchingScore: 0,
-            phoneNum: String(
-              selectedTuteeMatches.tutee.personalData?.contact?.phone,
-            ).replace('undefined', 'Unprovided'),
-          } as KSTableData);
-        }
+            setTuteeRows({
+              id: selectedTuteeMatches.tutee.personalData?.index!,
+              entity: 'Tutee',
+              name: selectedTuteeMatches.tutee.personalData?.name!,
+              gender:
+                String(
+                  selectedTuteeMatches.tutee.personalData?.gender!,
+                ).replace('undefined', 'Unprovided') +
+                ' — ' +
+                selectedTuteeMatches.tutee.preferedGender,
+              subjects:
+                levelMapping[selectedTuteeMatches.tutee.educationLevel!] +
+                ' — ' +
+                selectedTuteeMatches.tutee.subjects
+                  ?.map(
+                    subject =>
+                      mapception[selectedTuteeMatches.tutee.educationLevel!][
+                        subject
+                      ],
+                  )
+                  .join(', '),
+              isNoFinAidOk:
+                booleanMap[
+                  String(selectedTuteeMatches.tutee.isOnFinancialAid!)
+                ],
+              isProbonoOk: String(false),
+              secStreams:
+                selectedTuteeMatches.tutee.secondaryStream ==
+                SecondaryStream.undefined
+                  ? ''
+                  : streamMapping[selectedTuteeMatches.tutee.secondaryStream!],
+              commit: '',
+              matchingScore: 0,
+              phoneNum: String(
+                selectedTuteeMatches.tutee.personalData?.contact?.phone,
+              ).replace('undefined', 'Unprovided'),
+            } as KSTableData);
+          }
           break;
-        case 'EHFormat': {
-          const ehRows = selectedTuteeMatches.tutorInfo.map(
-            (tutor, i) => ({
+        case 'EHFormat':
+          {
+            const ehRows = selectedTuteeMatches.tutorInfo.map((tutor, i) => ({
               entity: 'Tutor',
               id: tutor.personalData.index!,
               name: tutor.personalData.name!,
@@ -281,12 +288,11 @@ const MatchDetailsPage = () => {
                 tutor.tutorSubjects,
               ),
               matchingScore: tutor.matchingScore,
-            }),
-          );
-        
-          const columnHelper = createColumnHelper<BaseDetailsTableData>();
-        
-          setEHcolumns([
+            }));
+
+            const columnHelper = createColumnHelper<BaseDetailsTableData>();
+
+            setEHcolumns([
               columnHelper.display({
                 id: 'entity',
                 header: () => <span>Entity</span>,
@@ -311,44 +317,40 @@ const MatchDetailsPage = () => {
                 header: () => <span>M-Score</span>,
                 enableMultiSort: true,
               }),
-            ]
-          );
-          setRows(ehRows as BaseDetailsTableData[]);
-          setTuteeRows({
-            id: selectedTuteeMatches.tutee.personalData?.index!,
-            entity: 'Tutee',
-            name: selectedTuteeMatches.tutee.personalData?.name!,
-            subjects:
-              levelMapping[selectedTuteeMatches.tutee.educationLevel!] +
-              ' — ' +
-              selectedTuteeMatches.tutee.subjects
-                ?.map(
-                  subject =>
-                    mapception[selectedTuteeMatches.tutee.educationLevel!][subject],
-                )
-                .join(', '),
-            matchingScore: 0,
-          } as BaseDetailsTableData
-          )
-        }
+            ]);
+            setRows(ehRows as BaseDetailsTableData[]);
+            setTuteeRows({
+              id: selectedTuteeMatches.tutee.personalData?.index!,
+              entity: 'Tutee',
+              name: selectedTuteeMatches.tutee.personalData?.name!,
+              subjects:
+                levelMapping[selectedTuteeMatches.tutee.educationLevel!] +
+                ' — ' +
+                selectedTuteeMatches.tutee.subjects
+                  ?.map(
+                    subject =>
+                      mapception[selectedTuteeMatches.tutee.educationLevel!][
+                        subject
+                      ],
+                  )
+                  .join(', '),
+              matchingScore: 0,
+            } as BaseDetailsTableData);
+          }
           break;
-        default: 
+        default:
           break;
       }
     }
   }, []);
 
-  function castColumns(
-    columns: ColumnDef<KSTableData, any>[] | ColumnDef<BaseDetailsTableData, any>[]
-  ): ColumnDef<BaseDetailsTableData | KSTableData, any>[] {
-    return columns as ColumnDef<BaseDetailsTableData | KSTableData, any>[];
-  }
+  type CorrectCols = ColumnDef<BaseDetailsTableData | KSTableData, any>[];
 
   const table = useReactTable<KSTableData | BaseDetailsTableData>({
     data: rows,
-    columns: castColumns(
-      selectedTuteeMatches.dataFormat === 'KSFormat' ? KScolumns : EHcolumns
-    ),    
+    columns: (selectedTuteeMatches.dataFormat === 'KSFormat'
+      ? KScolumns
+      : EHcolumns) as CorrectCols,
     getCoreRowModel: getCoreRowModel(),
     autoResetAll: false,
     getPaginationRowModel: getPaginationRowModel(),
@@ -364,44 +366,46 @@ const MatchDetailsPage = () => {
     isMultiSortEvent: e => {
       return true;
     },
-   });
+  });
 
   const renderTutorFormat = (tuteeRow: BaseDetailsTableData | KSTableData) => {
-    switch(selectedTuteeMatches.dataFormat) {
+    switch (selectedTuteeMatches.dataFormat) {
       case 'KSFormat':
-        return(
-        <>
-        <Table.Cell>
-          <Badge color="warning" className="justify-center">
-            Tutee
-          </Badge>
-        </Table.Cell>
-        <Table.Cell>{tuteeRow.id}</Table.Cell>
-        <Table.Cell>{tuteeRow.name}</Table.Cell>
-        <Table.Cell>{(tuteeRow as KSTableData).gender}</Table.Cell>
-        <Table.Cell>{tuteeRow.subjects}</Table.Cell>
-        <Table.Cell>N/A</Table.Cell>
-        <Table.Cell>{(tuteeRow as KSTableData).isNoFinAidOk}</Table.Cell>
-        <Table.Cell>{(tuteeRow as KSTableData).secStreams}</Table.Cell>
-        <Table.Cell>N/A</Table.Cell>
-        <Table.Cell>N/A</Table.Cell>
-        <Table.Cell>{(tuteeRow as KSTableData).phoneNum}</Table.Cell>
-       </>);
+        return (
+          <>
+            <Table.Cell>
+              <Badge color="warning" className="justify-center">
+                Tutee
+              </Badge>
+            </Table.Cell>
+            <Table.Cell>{tuteeRow.id}</Table.Cell>
+            <Table.Cell>{tuteeRow.name}</Table.Cell>
+            <Table.Cell>{(tuteeRow as KSTableData).gender}</Table.Cell>
+            <Table.Cell>{tuteeRow.subjects}</Table.Cell>
+            <Table.Cell>N/A</Table.Cell>
+            <Table.Cell>{(tuteeRow as KSTableData).isNoFinAidOk}</Table.Cell>
+            <Table.Cell>{(tuteeRow as KSTableData).secStreams}</Table.Cell>
+            <Table.Cell>N/A</Table.Cell>
+            <Table.Cell>N/A</Table.Cell>
+            <Table.Cell>{(tuteeRow as KSTableData).phoneNum}</Table.Cell>
+          </>
+        );
       case 'EHFormat':
-        return(
-        <>
-        <Table.Cell>
-          <Badge color="warning" className="justify-center">
-            Tutee
-          </Badge>
-        </Table.Cell>
-        <Table.Cell>{tuteeRow.id}</Table.Cell>
-        <Table.Cell>{tuteeRow.name}</Table.Cell>
-        <Table.Cell>{tuteeRow.subjects}</Table.Cell>
-        <Table.Cell>N/A</Table.Cell>
-       </>);
+        return (
+          <>
+            <Table.Cell>
+              <Badge color="warning" className="justify-center">
+                Tutee
+              </Badge>
+            </Table.Cell>
+            <Table.Cell>{tuteeRow.id}</Table.Cell>
+            <Table.Cell>{tuteeRow.name}</Table.Cell>
+            <Table.Cell>{tuteeRow.subjects}</Table.Cell>
+            <Table.Cell>N/A</Table.Cell>
+          </>
+        );
     }
-  }
+  };
   return (
     <div className="flex flex-col gap-4 items-center">
       <h2 className="h2">Match Details</h2>
@@ -496,9 +500,7 @@ const MatchDetailsPage = () => {
               ))}
             </Table.Head>
             <Table.Body className={rows.length > 0 ? 'border-b' : ''}>
-              <Table.Row>
-                {tuteeRows && renderTutorFormat(tuteeRows)}
-              </Table.Row>
+              <Table.Row>{tuteeRows && renderTutorFormat(tuteeRows)}</Table.Row>
             </Table.Body>
             <Table.Body>
               {table.getRowModel().rows.map((row, i) => (

@@ -122,6 +122,8 @@ const DataLoadAndMatchForm = () => {
       if (tutorParsedData.length > 0 && tuteeParsedData.length > 0) {
         window.tutorParsedData = tutorParsedData.reverse();
         window.tuteeParsedData = tuteeParsedData;
+        console.log("Tutor Data", tutorParsedData)
+        console.log("Tutee Data", tuteeParsedData)
         window.dataFormat = DataFormat.KSFormat;
         if (selectedTuteeDataFormat === TuteeDataFormat.EHTutee && selectedTutorDataFormat === TutorDataFormat.EHTutor) {
           window.dataFormat = DataFormat.EHFormat;
@@ -149,7 +151,7 @@ const DataLoadAndMatchForm = () => {
       alert('Data not loaded!');
       return;
     }
-    const matchingList: MatchingList = [];
+    // const matchingList: MatchingList = [];
     let getMatchScore: (tutor: Tutor, tutee: Tutee) => number;
     switch (selectedTuteeDataFormat) {
       case TuteeDataFormat.KSGeneral:
@@ -162,40 +164,42 @@ const DataLoadAndMatchForm = () => {
         getMatchScore = getEHMatchScore;
         break;
     }
-    for (let tutee of tuteeParsedData) {
-      const tuteeMatches: {
-        tutee: TuteeSummary;
-        tutorMatches: TutorMatchSummary[];
-      } = { tutee: {}, tutorMatches: [] };
-      tuteeMatches.tutee = {
-        index: tutee.personalData.index,
-        name: tutee.personalData.name,
-      };
-      for (let tutor of tutorParsedData) {
-        const tutorMatchingScoreObj = {
-          index: tutor.personalData.index,
-          contactNum: tutor.personalData.contact?.phone,
-          name: tutor.personalData.name,
-          matchingScore: getMatchScore(tutor, tutee),
-        };
-        tuteeMatches.tutorMatches.push(tutorMatchingScoreObj);
-      }
-      tuteeMatches.tutorMatches.sort(
-        (a, b) => b.matchingScore - a.matchingScore,
-      );
-      if (tuteeMatches.tutorMatches.length > 51) {
-        tuteeMatches.tutorMatches = tuteeMatches.tutorMatches.slice(0, 50);
-      }
-      matchingList.push(tuteeMatches);
-    }
+    // for (let tutee of tuteeParsedData) {
+    //   const tuteeMatches: {
+    //     tutee: TuteeSummary;
+    //     tutorMatches: TutorMatchSummary[];
+    //   } = { tutee: {}, tutorMatches: [] };
+    //   tuteeMatches.tutee = {
+    //     index: tutee.personalData.index,
+    //     name: tutee.personalData.name,
+    //   };
+    //   for (let tutor of tutorParsedData) {
+    //     const tutorMatchingScoreObj = {
+    //       index: tutor.personalData.index,
+    //       contactNum: tutor.personalData.contact?.phone,
+    //       name: tutor.personalData.name,
+    //       matchingScore: getMatchScore(tutor, tutee),
+    //     };
+    //     tuteeMatches.tutorMatches.push(tutorMatchingScoreObj);
+    //   }
+    //   tuteeMatches.tutorMatches.sort(
+    //     (a, b) => b.matchingScore - a.matchingScore,
+    //   );
+    //   if (tuteeMatches.tutorMatches.length > 51) {
+    //     tuteeMatches.tutorMatches = tuteeMatches.tutorMatches.slice(0, 50);
+    //   }
+    //   matchingList.push(tuteeMatches);
+    // }
     const tuteeMatches = new TuteeMatches(
       tutorParsedData,
       tuteeParsedData,
       getMatchScore,
     );
+    // console.log("Matching list", matchingList)
+    console.log("tuteeMatches.matching List", tuteeMatches.matchingList)
     window.matchingList = tuteeMatches.matchingList;
     const matchesSummary = [];
-    for (let matchingListItem of matchingList) {
+    for (let matchingListItem of tuteeMatches.matchingList) {
       const matchesSummaryItem = {
         tutee: matchingListItem.tutee,
         tutor1: matchingListItem.tutorMatches[0],

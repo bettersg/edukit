@@ -33,11 +33,11 @@ const MainMatchingTable = () => {
     return {
       // id: i,
       tutee: tuteeMatch.tutee.name + ' - ' + String(tuteeMatch.tutee.index),
-      tutor1: tuteeMatch.tutor1.index,
-      tutor2: tuteeMatch.tutor2.index,
-      tutor3: tuteeMatch.tutor3.index,
-      tutor4: tuteeMatch.tutor4.index,
-      tutor5: tuteeMatch.tutor5.index,
+      tutor1: tuteeMatch.tutor1?.index,
+      tutor2: tuteeMatch.tutor2?.index,
+      tutor3: tuteeMatch.tutor3?.index,
+      tutor4: tuteeMatch.tutor4?.index,
+      tutor5: tuteeMatch.tutor5?.index,
     };
   });
 

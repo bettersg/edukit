@@ -33,7 +33,7 @@ class TuteeMatches {
         tuteeMatches.tutorMatches.push(tutorMatchingScoreObj);
       }
       tuteeMatches.tutorMatches.sort((a, b) => {
-        if (!a.matchingScore || !b.matchingScore) {
+        if ((a.matchingScore === undefined) || (b.matchingScore === undefined)) {
           return 0;
         }
         return b.matchingScore - a.matchingScore;

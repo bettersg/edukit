@@ -9,6 +9,7 @@ export const secondarySubjectTextToEnumMapping = {
   // 'combined science (physics + biology)': [SecondarySubjects.CombinedSciencePhysics, SecondarySubjects.CombinedScienceBiology],
   // 'combined science (physics + chemistry)': [SecondarySubjects.CombinedSciencePhysics, SecondarySubjects.CombinedScienceChemistry],
   'additional mathematics': SecondarySubjects.AMath,
+  'a math': SecondarySubjects.AMath,
   chinese: SecondarySubjects.Chinese,
   economics: SecondarySubjects.Economics, // just added
   'elect geog': SecondarySubjects.ElectGeography,
@@ -16,6 +17,7 @@ export const secondarySubjectTextToEnumMapping = {
   'elect literature': SecondarySubjects.ElectLiterature,
   english: SecondarySubjects.English,
   'elementary math': SecondarySubjects.EMath,
+  'e math': SecondarySubjects.EMath,
   physics: SecondarySubjects.Physics,
   'pure geography': SecondarySubjects.Geography,
   'pure history': SecondarySubjects.History,

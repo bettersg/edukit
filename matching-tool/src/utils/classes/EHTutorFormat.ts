@@ -18,8 +18,14 @@ export default class EHTutorFormat
       {
         fieldName: 'index',
         type: 'number',
-        getterType: 'cell_value', 
-        columnKeywords: ['code'] // not row no. anymore, its the 4-digit code
+        getterType: 'cell_value',
+        columnKeywords: ['code'], // not row no. anymore, its the 4-digit code
+      },
+      {
+        fieldName: 'name',
+        type: 'string',
+        getterType: 'cell_value',
+        columnKeywords: ['name'],
       },
       {
         fieldName: 'acceptableEducationLevels',
@@ -39,7 +45,7 @@ export default class EHTutorFormat
         columnKeywords: ['subject'],
         multipleColumns: true,
         filter: {
-          params: secondarySubjectTextToEnumMapping
+          params: secondarySubjectTextToEnumMapping,
         },
       },
       {
@@ -49,15 +55,15 @@ export default class EHTutorFormat
         columnKeywords: ['subject'],
         multipleColumns: true,
         filter: {
-          params: jcSubjectTextToEnumMapping
+          params: jcSubjectTextToEnumMapping,
         },
       },
       {
         fieldName: 'noOfStudents',
         type: 'number',
-        getterType: 'cell_value', 
-        columnKeywords: ['take up']
-      }
+        getterType: 'cell_value',
+        columnKeywords: ['take up'],
+      },
     ];
     super(data, format);
   }
@@ -70,6 +76,7 @@ export default class EHTutorFormat
       const formattedData = {
         personalData: {
           index: tutor['index'] as number,
+          name: tutor['name'] as string
         },
         acceptableEducationLevels: tutor['acceptableEducationLevels'] as EducationLevel[],
         tutorSubjects: {

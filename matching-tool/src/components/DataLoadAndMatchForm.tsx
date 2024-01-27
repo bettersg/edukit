@@ -31,7 +31,8 @@ import KSTutorFormat from '@/utils/classes/KSTutorFormat';
 import EHTutorFormat from '@/utils/classes/EHTutorFormat';
 import { DataFormat } from '@/types/dataFormat';
 // import TuteeMatches from '@/utils/classes/KSTuteeMatches';
-import TuteeMatches from '@/utils/classes/EHTuteeMatches';
+// import TuteeMatches from '@/utils/classes/EHTuteeMatches';
+import TuteeMatches from '@/utils/classes/GenericTuteeMatches';
 
 import {
   Card,
@@ -221,6 +222,7 @@ const DataLoadAndMatchForm = () => {
     dispatch(matchesSummaryActions.resetMatchesSummary());
     dispatch(selectedTuteeMatchesActions.resetSelectedTuteeMatches());
     navigate('/');
+    alert('Data Cleared!')
   };
 
   const handleTuteeSelectorChange = (event: Select.SelectChangeEvent) => {

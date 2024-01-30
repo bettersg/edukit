@@ -9,7 +9,7 @@ import { EducationLevel, SecondaryStream } from '@/types/educationSubjects';
  * @param tutee the tutee being evaluated
  * @returns an overall score between tutor and tutee
  */
-export const getMatchScore = (tutor: Tutor, tutee: Tutee): number => {
+export const getKSMatchScore = (tutor: Tutor, tutee: Tutee): number => {
   const genderMatchScore = scoreGender(tutor, tutee);
   const subjectScore = scoreSubjectLevel(tutor, tutee);
   if (genderMatchScore === 0 || subjectScore === 0) return 0;
@@ -48,7 +48,7 @@ const scoreStream = (tutor: Tutor, tutee: Tutee): number => {
     tutee.educationLevel === EducationLevel.LowerSecondary ||
     tutee.educationLevel === EducationLevel.UpperSecondary;
   if (
-    tutor.acceptableSecondaryStreams.length === 0 ||
+    tutor.acceptableSecondaryStreams?.length === 0 ||
     tutee.secondaryStream === SecondaryStream.undefined
   )
     return 0.5;

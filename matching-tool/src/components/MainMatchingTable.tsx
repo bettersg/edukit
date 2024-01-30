@@ -14,6 +14,7 @@ import {
 import { Table, Pagination, Select } from 'flowbite-react';
 import React, { useMemo } from 'react';
 import { MatchingList } from '@/types/globalVariables';
+import { DataFormat } from '@/types/dataFormat';
 
 interface MatchingTableData {
   tutee: string;
@@ -32,17 +33,18 @@ const MainMatchingTable = () => {
     return {
       // id: i,
       tutee: tuteeMatch.tutee.name + ' - ' + String(tuteeMatch.tutee.index),
-      tutor1: tuteeMatch.tutor1.index,
-      tutor2: tuteeMatch.tutor2.index,
-      tutor3: tuteeMatch.tutor3.index,
-      tutor4: tuteeMatch.tutor4.index,
-      tutor5: tuteeMatch.tutor5.index,
+      tutor1: tuteeMatch.tutor1?.index,
+      tutor2: tuteeMatch.tutor2?.index,
+      tutor3: tuteeMatch.tutor3?.index,
+      tutor4: tuteeMatch.tutor4?.index,
+      tutor5: tuteeMatch.tutor5?.index,
     };
   });
 
   const handleRowClick = (e: React.MouseEvent<HTMLTableRowElement>) => {
     const tuteeParsedData: Tutee[] = window.tuteeParsedData;
     const tutorParsedData: Tutor[] = window.tutorParsedData;
+    const dataFormat: DataFormat = window.dataFormat;
     const matchingTable: MatchingList = window.matchingList;
     const row = matchingTable[Number(e.currentTarget.dataset.row)];
 
@@ -75,6 +77,7 @@ const MainMatchingTable = () => {
     }
     tutorInfo = tutorInfo.filter(tutor => tutor.matchingScore > 0);
     const selectedTuteeMatchesState = {
+      dataFormat,
       tutee,
       tutorInfo,
     };

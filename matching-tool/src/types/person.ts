@@ -11,10 +11,12 @@ import {
 export enum TuteeDataFormat {
   KSGeneral = 'KSGeneral',
   KSSSO = 'KSSSO',
+  EHTutee = 'EH'
 }
 
 export enum TutorDataFormat {
-  KSGeneral = 'KSGeneral',
+  KSTutor = 'KSTutor',
+  EHTutor = 'EH'
 }
 
 export enum Gender {
@@ -35,7 +37,7 @@ export type Contact = {
 };
 
 export type Person = {
-  index?: number;
+  index: number;
   name?: string;
   gender?: Gender;
   contact?: Partial<Contact>;
@@ -45,9 +47,10 @@ export type Tutor = {
   personalData: Person;
   isProBonoOk?: boolean | undefined;
   isUnaidedOk?: boolean | undefined;
-  acceptableSecondaryStreams: SecondaryStream[];
+  acceptableSecondaryStreams?: SecondaryStream[];
   tutorSubjects: TutorSubjects;
-  commitStr: string;
+  commitStr?: string;
+  noOfStudents?: number;
 };
 
 export type TutorSubjects = {
@@ -56,6 +59,12 @@ export type TutorSubjects = {
   upperSecondary?: Subject[];
   jc?: Subject[];
   ib?: Subject[];
+};
+
+export type TutorPreference = {
+  firstTutorIndex: number;
+  secondTutorIndex: number;
+  thirdTutorIndex: number;
 };
 
 export type Subject =
@@ -71,6 +80,7 @@ export type Tutee = {
   educationLevel?: EducationLevel;
   secondaryStream?: SecondaryStream;
   subjects: (PrimarySubjects | SecondarySubjects | JCSubjects | IBSubjects)[];
+  tutorPreference?: TutorPreference;
 };
 
 export type TutorMatchScore = Tutor & {

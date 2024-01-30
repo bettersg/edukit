@@ -1,7 +1,9 @@
 // @ts-nocheck
 // Temp and need to delete later
+import { DataFormat } from '@/types/dataFormat';
 import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
+  dataFormat: DataFormat.KSFormat,
   tutee: {
     index: 101,
     name: 'A',
